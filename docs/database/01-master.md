@@ -1,0 +1,119 @@
+# キャラ・形態・画像マスター
+
+[共通ルール](00-common.md) / [全体一覧](../database-design.md)
+
+### rarities — レア度
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| rarity_id | ID | PK |
+| code | 文字列 | UQ、内部コード |
+| name | 文字列 | 表示名 |
+| sort_order | 整数 | 表示順 |
+
+### characters — キャラクター
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| character_id | ID | PK、形態共通 |
+| name | 文字列 | 代表名。名前で一意性を判定しない |
+| rarity_id | ID | 任意、FK → rarities |
+| is_active | 真偽 | 廃止・非表示管理、初期値true |
+
+### character_aliases — 略称・別名
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| alias_id | ID | PK |
+| character_id | ID | FK → characters |
+| alias | 文字列 | 形態を限定しない検索用別名 |
+| is_preferred | 真偽 | 表示用の代表略称か。初期値false |
+
+UQ: `(character_id, alias)`。同じ略称を複数キャラが持つことは許可。
+
+### character_forms — 形態
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| form_id | ID | PK |
+| character_id | ID | FK → characters |
+| form_number | 整数 | 1以上。将来の形態追加を考慮し上限4を固定しない |
+| name | 文字列 | 形態の正式名 |
+| image_id | ID | 任意、FK → image_assets.image_id、その形態を表す画像 |
+| is_active | 真偽 | 初期値true |
+
+UQ: `(character_id, form_number)` および `(character_id, form_id)`。所有・レベルはこのテーブルに持たせない。
+
+1形態につき画像は最大1枚。通常の画面表示・一覧表示・画像認識と照合には同じ画像を使用する。画像未収集の形態も登録できるようimage_idはNULL可とする。
+
+### form_aliases — 形態の略称・別名
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| alias_id | ID | PK |
+| form_id | ID | FK → character_forms |
+| alias | 文字列 | 特定形態を指す略称・検索用別名 |
+| is_preferred | 真偽 | 表示用の代表略称か。初期値false |
+
+UQ: (form_id, alias)。character_aliasesと同様に複数登録可。代表略称未登録なら正式名を表示する。characters / character_formsにshort_nameを重複保存しない。
+正式名はcharacter_forms.nameに保存し、略称として必ず複製する必要はない。
+
+### form_descriptions — 形態の解説
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| description_id | ID | PK |
+| form_id | ID | FK → character_forms |
+| revision_id | ID | FK → master_revisions |
+| description_kind | 文字列 | game_text / editorial |
+| body | 文字列 | 解説本文 |
+| source_id | ID | 任意、FK → sources |
+
+UQ: (form_id, revision_id, description_kind)。ゲーム内説明と独自の解説を区別する。転載文章と自分で作成した解説の出典を混同しない。
+
+### sources — 出典
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| source_id | ID | PK |
+| name | 文字列 | Game8、ユーザー提供スクショなど |
+| page_url | 文字列 | 任意、出典ページ |
+| external_id | 文字列 | 任意、取得元の記事番号など |
+| retrieved_on | 日付 | 取得日 |
+| retrieved_at | 日時 | 任意、取得時刻まで分かる場合 |
+| verified_at | 日時 | 任意、内容を確認した日時 |
+| permission_status | 文字列 | unconfirmed / permitted / restricted |
+| permission_scope | 文字列 | 任意、利用を認められた範囲 |
+| evidence_uri | 文字列 | 任意、許諾や条件を確認できる場所 |
+| notes | 文字列 | 任意 |
+
+出典情報を保持しても権利許諾が得られたことにはならない。URLの一致だけで取得履歴を上書きしない。
+
+### image_assets — 共通画像ファイルマスター
+
+システム全体で使用する画像ファイルのメタデータを管理する。用途分類は持たず、画像が何を表すかは、そのimage_idを参照する専用テーブルで決まる。character_forms・abilities・talent_options・orb_types・materialsはimage_idを直接保持する。
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| image_id | ID | PK |
+| storage_key | 文字列 | UQ、例 `icons/poc_000005_form1.webp`。特定PCの絶対パスは避ける |
+| sha256 | 文字列 | 64桁、索引。同じ内容でも出典が異なる場合は重複可 |
+| mime_type | 文字列 | image/pngなど |
+| width | 整数 | 1以上 |
+| height | 整数 | 1以上 |
+| byte_size | 整数 | 1以上 |
+| source_id | ID | 任意、FK → sources |
+| source_image_url | 文字列 | 任意、取得元の画像URL |
+
+### master_revisions — マスターの版
+
+| 列 | 型 | 制約・用途 |
+|---|---|---|
+| revision_id | ID | PK |
+| version | 文字列 | UQ |
+| game_version | 文字列 | 任意、確認対象のゲーム版 |
+| manifest_storage_key | 文字列 | その版のデータ・画像ハッシュ一覧の保存先 |
+| notes | 文字列 | 任意 |
+
+版を発行したら内容を変更せず新しい版を作る。過去の照合を再現するため画像も上書きしない。
+
