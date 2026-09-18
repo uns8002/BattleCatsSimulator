@@ -8,7 +8,7 @@ DB製品未選定。今回の更新は定義書のみで、既存CSV・画像・
 
 VS Codeでこのファイルを開き、**⌘＋Shift＋V** でプレビュー表示してください。
 各章は1テーブルずつ「論理名 / 物理名 / 型 / 制約・用途」の縦長の表にしています。
-テーブル定義の書式は常に「論理名 / 物理名 / 型 / 制約・用途」の順で記載し、物理名や型を変えずに意味が分かる日本語名を付与します。
+テーブル定義の書式は常に「論理名 / 物理名 / 型 / 制約・用途」の順で記載し、意味が分かる日本語の論理名を付与します。物理名は[共通ルール](database/00-common.md)の命名規則に従います。
 
 ## 章一覧
 
@@ -34,7 +34,7 @@ erDiagram
     character_forms ||--o{ form_descriptions : descriptions
     image_assets |o--o{ character_forms : image_id
     image_assets |o--o{ abilities : image_id
-    image_assets |o--o{ talent_options : image_id
+    image_assets |o--o{ talents : image_id
     image_assets |o--o{ orb_types : image_id
     image_assets |o--o{ materials : image_id
     character_forms ||--o{ recognition_candidates : form_id
@@ -46,7 +46,7 @@ erDiagram
     characters ||--o{ character_level_rules : growth
     growth_rules ||--o{ growth_rule_segments : segments
     growth_rules ||--o{ character_level_rules : assigned
-    talent_options ||--o{ talent_form_applications : applies
+    talents ||--o{ talent_form_applications : applies
     character_forms ||--o{ talent_form_applications : receives
     combos ||--o{ combo_versions : versions
     combo_versions ||--o{ combo_members : members
@@ -122,7 +122,7 @@ erDiagram
 | `abilities`                | 効果の種類               |
 | `form_abilities`           | 形態の特性               |
 | `form_ability_targets`     | 特性の対象属性           |
-| `talent_options`           | 本能の識別情報           |
+| `talents`                  | 本能の識別情報           |
 | `talent_versions`          | 本能の版別仕様           |
 | `talent_levels`            | 各本能レベルの効果       |
 | `talent_form_applications` | 本能が適用される形態     |

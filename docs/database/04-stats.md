@@ -25,29 +25,29 @@
 
 ### calculation_specs — 計算の基準・順序
 
-| 論理名       | 物理名               | 型     | 制約・用途                           |
-| ------------ | -------------------- | ------ | ------------------------------------ |
-| 計算基準ID   | calculation_spec_id  | ID     | PK                                   |
-| 版ID         | revision_id          | ID     | FK → master_revisions                |
-| 計算コード版 | code_version         | 文字列 | 検証済み計算プログラムの版           |
-| FPS          | frames_per_second    | 整数   | 1以上、実データで確認した値          |
-| 基礎値条件   | base_stat_conditions | JSON   | 基礎値のレベル・補正なし条件         |
-| コスト条件   | cost_conditions      | JSON   | コストの基準ステージ・倍率条件       |
-| 再生産条件   | respawn_conditions   | JSON   | 再生産の基準施設状態・下限条件       |
-| 単位変換規則 | conversion_rules     | JSON   | 取得元の単位から保存単位への変換仕様 |
-| 丸め規則     | rounding_rules       | JSON   | 各段階の整数化と補正順序             |
-| 出典ID       | source_id            | ID     | 任意、FK → sources                   |
+| 論理名       | 物理名                   | 型     | 制約・用途                           |
+| ------------ | ------------------------ | ------ | ------------------------------------ |
+| 計算基準ID   | calculation_spec_id      | ID     | PK                                   |
+| 版ID         | revision_id              | ID     | FK → master_revisions                |
+| 計算コード版 | calculation_code_version | 文字列 | 検証済み計算プログラムの版           |
+| FPS          | frames_per_second        | 整数   | 1以上、実データで確認した値          |
+| 基礎値条件   | base_stat_conditions     | JSON   | 基礎値のレベル・補正なし条件         |
+| コスト条件   | cost_conditions          | JSON   | コストの基準ステージ・倍率条件       |
+| 再生産条件   | respawn_conditions       | JSON   | 再生産の基準施設状態・下限条件       |
+| 単位変換規則 | conversion_rules         | JSON   | 取得元の単位から保存単位への変換仕様 |
+| 丸め規則     | rounding_rules           | JSON   | 各段階の整数化と補正順序             |
+| 出典ID       | source_id                | ID     | 任意、FK → sources                   |
 
 UQ(calculation_spec_id, revision_id)。未検証の式は実行しない。
 
 ### growth_rules — 成長パターン
 
-| 論理名         | 物理名         | 型     | 制約・用途            |
-| -------------- | -------------- | ------ | --------------------- |
-| 成長ルールID   | growth_rule_id | ID     | PK                    |
-| 版ID           | revision_id    | ID     | FK → master_revisions |
-| 成長パターン名 | name           | 文字列 | パターン名            |
-| 出典ID         | source_id      | ID     | 任意、FK → sources    |
+| 論理名         | 物理名           | 型     | 制約・用途            |
+| -------------- | ---------------- | ------ | --------------------- |
+| 成長ルールID   | growth_rule_id   | ID     | PK                    |
+| 版ID           | revision_id      | ID     | FK → master_revisions |
+| 成長パターン名 | growth_rule_name | 文字列 | パターン名            |
+| 出典ID         | source_id        | ID     | 任意、FK → sources    |
 
 成長率や区間が同じキャラは同じルールを参照できる。UQ(growth_rule_id, revision_id)。
 
@@ -56,12 +56,12 @@ UQ(calculation_spec_id, revision_id)。未検証の式は実行しない。
 | 論理名           | 物理名                 | 型     | 制約・用途                                |
 | ---------------- | ---------------------- | ------ | ----------------------------------------- |
 | 成長ルールID     | growth_rule_id         | ID     | PKの一部、FK → growth_rules               |
-| ステータス種別   | stat_kind              | 文字列 | PKの一部、hp / attack                     |
+| ステータス種別   | stat_type              | 文字列 | PKの一部、hp / attack                     |
 | レベル開始       | level_from             | 整数   | PKの一部、2以上。到達レベルの下限（含む） |
 | レベル終了       | level_to               | 整数   | level_from以上、上限（含む）              |
 | 増加率（基準点） | increment_basis_points | 整数   | 0以上、基礎値に対する加算率。10000=100%   |
 
-同じルール・stat_kindの区間重複と対応レベル内の欠落を禁止。Lv1の倍率は100%。倍率=10000+Lv2から対象レベルまでの増加率の累積。20%なら2000だが全キャラ固定にはしない。特殊な成長がこの方式で表せなければ別方式として仕様追加する。
+同じルール・stat_typeの区間重複と対応レベル内の欠落を禁止。Lv1の倍率は100%。倍率=10000+Lv2から対象レベルまでの増加率の累積。20%なら2000だが全キャラ固定にはしない。特殊な成長がこの方式で表せなければ別方式として仕様追加する。
 
 ### character_level_rules — キャラの成長とレベル制約
 
@@ -102,7 +102,7 @@ FK(calculation_spec_id, revision_id) → calculation_specs。verifiedは計算�
 | 攻撃ID       | attack_id      | ID     | PK                                    |
 | 形態ID       | form_id        | ID     | 形態                                  |
 | 版ID         | revision_id    | ID     | データ版                              |
-| 攻撃順序     | sequence       | 整数   | 1以上、攻撃段番号                     |
+| 攻撃順序     | attack_order   | 整数   | 1以上、攻撃段番号                     |
 | 基礎攻撃力   | base_damage    | 整数   | 任意、補正前威力、0以上               |
 | 攻撃発生時点 | trigger_frames | 整数   | 任意、攻撃動作開始から発生まで、0以上 |
 | 攻撃対象種別 | target_mode    | 文字列 | single / area                         |
@@ -110,7 +110,7 @@ FK(calculation_spec_id, revision_id) → calculation_specs。verifiedは計算�
 | 攻撃範囲終了 | range_end      | 小数   | 任意、攻撃が届く範囲の終点            |
 | 出典ID       | source_id      | ID     | 任意、FK → sources                    |
 
-FK(form_id, revision_id) → form_stats。UQ(form_id, revision_id, sequence)、UQ(attack_id, form_id, revision_id)。範囲が両方設定済みならstart<=end。NULLは未確認。通常攻撃も確認後に範囲を設定し、感知射程と混同しない。
+FK(form_id, revision_id) → form_stats。UQ(form_id, revision_id, attack_order)、UQ(attack_id, form_id, revision_id)。範囲が両方設定済みならrange_start<=range_end。NULLは未確認。通常攻撃も確認後に範囲を設定し、感知射程と混同しない。
 
 ## DPSと表示値
 

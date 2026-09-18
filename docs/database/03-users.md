@@ -8,7 +8,7 @@
 | -------------------- | --------------------------- | ------ | ------------------------------------------ |
 | ユーザーID           | user_id                     | ID     | PK                                         |
 | 認証主体             | auth_subject                | 文字列 | UQ、認証基盤のユーザー識別子               |
-| 表示名               | display_name                | 文字列 | 表示名                                     |
+| 表示名               | user_name                   | 文字列 | 表示名                                     |
 | コレクション公開範囲 | collection_visibility       | 文字列 | private / unlisted / public、初期値private |
 | 共有トークンハッシュ | collection_share_token_hash | 文字列 | 任意、UQ、限定公開トークンのハッシュ       |
 
@@ -20,7 +20,7 @@
 | -------------- | ------------------ | ------ | ---------------------------- |
 | ユーザーID     | user_id            | ID     | PKの一部、FK → users         |
 | キャラクターID | character_id       | ID     | PKの一部、FK → characters    |
-| 通常レベル     | level              | 整数   | 任意、設定済みなら1以上      |
+| 通常レベル     | character_level    | 整数   | 任意、設定済みなら1以上      |
 | ＋値           | plus_level         | 整数   | 任意、設定済みなら0以上      |
 | 取得経路       | acquisition_source | 文字列 | manual / screenshot / import |
 
@@ -39,14 +39,14 @@ FK: `(character_id, form_id)` → character_forms（参照先に同列組のUQ�
 
 ### formations — 編成
 
-| 論理名               | 物理名           | 型     | 制約・用途                                 |
-| -------------------- | ---------------- | ------ | ------------------------------------------ |
-| 編成ID               | formation_id     | ID     | PK                                         |
-| ユーザーID           | user_id          | ID     | FK → users                                 |
-| 編成名               | name             | 文字列 | 編成名                                     |
-| 公開範囲             | visibility       | 文字列 | private / unlisted / public、初期値private |
-| 共有トークンハッシュ | share_token_hash | 文字列 | 任意、UQ                                   |
-| メモ                 | notes            | 文字列 | 任意                                       |
+| 論理名               | 物理名               | 型     | 制約・用途                                 |
+| -------------------- | -------------------- | ------ | ------------------------------------------ |
+| 編成ID               | formation_id         | ID     | PK                                         |
+| ユーザーID           | user_id              | ID     | FK → users                                 |
+| 編成名               | formation_name       | 文字列 | 編成名                                     |
+| 公開範囲             | formation_visibility | 文字列 | private / unlisted / public、初期値private |
+| 共有トークンハッシュ | share_token_hash     | 文字列 | 任意、UQ                                   |
+| メモ                 | formation_notes      | 文字列 | 任意                                       |
 
 ### formation_slots — 編成枠
 
@@ -62,14 +62,14 @@ FK: `(character_id, form_id)` → character_forms。所持・解放済みであ�
 
 ### owned_talents — 解放・育成した本能
 
-| 論理名         | 物理名       | 型   | 制約・用途                    |
-| -------------- | ------------ | ---- | ----------------------------- |
-| ユーザーID     | user_id      | ID   | PKの一部                      |
-| キャラクターID | character_id | ID   | 所持と対象キャラの照合用      |
-| 本能ID         | talent_id    | ID   | PKの一部、FK → talent_options |
-| 本能レベル     | level        | 整数 | 0以上、0は未解放              |
+| 論理名         | 物理名       | 型   | 制約・用途               |
+| -------------- | ------------ | ---- | ------------------------ |
+| ユーザーID     | user_id      | ID   | PKの一部                 |
+| キャラクターID | character_id | ID   | 所持と対象キャラの照合用 |
+| 本能ID         | talent_id    | ID   | PKの一部、FK → talents   |
+| 本能レベル     | talent_level | 整数 | 0以上、0は未解放         |
 
-FK(user_id, character_id) → owned_characters。FK(character_id, talent_id) → talent_options。行なしは未設定、0は確認済み未解放。選択中の版の上限と解放条件を検証する。
+FK(user_id, character_id) → owned_characters。FK(character_id, talent_id) → talents。行なしは未設定、0は確認済み未解放。選択中の版の上限と解放条件を検証する。
 
 ### equipped_orbs — 装着中の本能玉
 
@@ -84,10 +84,10 @@ FK(user_id, character_id) → owned_characters。利用形態・版に対して�
 
 ### user_modifier_states — お宝・施設などの育成状態
 
-| 論理名       | 物理名      | 型   | 制約・用途                                   |
-| ------------ | ----------- | ---- | -------------------------------------------- |
-| ユーザーID   | user_id     | ID   | PKの一部、FK → users                         |
-| 補正項目ID   | modifier_id | ID   | PKの一部、FK → modifier_definitions          |
-| 育成状態JSON | state       | JSON | レベル・達成率など。定義のstate_schemaで検証 |
+| 論理名     | 物理名         | 型   | 制約・用途                                            |
+| ---------- | -------------- | ---- | ----------------------------------------------------- |
+| ユーザーID | user_id        | ID   | PKの一部、FK → users                                  |
+| 補正項目ID | modifier_id    | ID   | PKの一部、FK → modifier_definitions                   |
+| 育成状態   | modifier_state | JSON | レベル・達成率など。定義のmodifier_state_schemaで検証 |
 
 未登録は不明とする。明示的な0や未解放と区別する。
