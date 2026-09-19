@@ -23,14 +23,14 @@ CSVの列名は現行形式を維持する。上表のnameは移行元CSVの列�
 
 - 現在のキャラ・形態IDを維持し、参照切れや重複を検査する。
 - 画像はファイル読み込み、寸法、ハッシュを確認する。
-- 略称は確認できたものだけ追加し、全キャラ必須にしない。
+- 略称は確認できた代表略称をcharacters.character_short_name（系列全体）/ character_forms.form_short_name（特定形態）へ各最大1つだけ登録する。存在しない・未確認ならNULLとし、正式名称から自動補完しない。複数の別名・検索語は取り込まない。
 - 計算に使う基礎値は未収集。攻撃力や体力を推測して埋めない。
 - 出典・取得日・許諾状態を引き継ぐ。
 - 先にキャラ・画像領域を移行し、計算マスターやユーザー機能は段階的に追加する。
 
 ## 共通区分の移行方針
 
-- キャラクターの移行前にcategory_groupsを登録し、[共通区分定義](01-master.md#category_groups--共通区分グループ)の対応（rarity = `001`、limited = `002`、collaboration = `003`）を検証する。category_valuesの掲載値は設計例として確認後に登録する。
+- キャラクターの移行前にcategory_groupsを登録し、[共通区分マスタデータ](category-master-data.md#category_groups--共通区分グループマスタ)の対応（rarity = `001`、limited = `002`、collaboration = `003`）を検証する。category_valuesの掲載値は設計例として確認後に登録する。
 - category_valuesはPK(group_id, value_id)、FK(group_id) → category_groups.group_id、UQ(group_id, value_code)を検証する。group_id / value_idは先頭ゼロを保持したCHAR(3)とする。
 - 旧レア区分のデータが別途存在する場合は、コード・名称・表示順を確認し、レア区分グループのvalue_code / value_name / display_orderへ対応付ける。旧IDをそのまま流用せず、確認済み対応表でcharacters.rarity_idを同グループのvalue_idへ変換する。旧専用マスターは移行先に作らない。
 - 現行characters.csvには3区分の情報がないため、characters.rarity_id / limited_id / collaboration_idは未確認ならNULLとする。名前や入手経路から推測したり、「通常」を自動設定したりしない。

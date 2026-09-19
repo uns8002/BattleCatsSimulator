@@ -24,6 +24,8 @@ VS Codeでこのファイルを開き、**⌘＋Shift＋V** でプレビュー�
 | [敵・ステージ](database/07-stages.md)        | 将来の推薦・攻略実績向け拡張案                   |
 | [CSV移行対応](database/08-migration.md)      | 現行データからの移行先                           |
 
+共通区分のマスタデータは[共通区分マスタデータ](database/category-master-data.md)に分けて記載しています。
+
 ## 全体の関係
 
 ```mermaid
@@ -33,9 +35,7 @@ erDiagram
     category_values |o..o{ characters : limited_id_logical
     category_values |o..o{ characters : collaboration_id_logical
     characters ||--o{ acquisition_methods : acquisition
-    characters ||--o{ character_aliases : aliases
     characters ||--o{ character_forms : forms
-    character_forms ||--o{ form_aliases : aliases
     character_forms ||--o{ form_descriptions : descriptions
     image_assets |o--o{ character_forms : image_id
     image_assets |o--o{ abilities : image_id
@@ -58,15 +58,19 @@ erDiagram
     combo_members ||--o{ combo_member_forms : allowed_forms
 ```
 
-図は主要部分のみ。category_groups → category_valuesはgroup_idのFK。category_values → charactersの3本の破線は通常のFKを表さず、カラムごとに固定したグループ内のvalue_idを参照する論理関係を表します（rarity_id: rarity / 001、limited_id: limited / 002、collaboration_id: collaboration / 003）。各区分は未確認ならNULL可です。各マスターのimage_idはNULL可で、1対象につき画像は最大1枚（画像側の記号は0または1）です。認識候補は形態を直接参照し、形態のimage_idを通して表示と共通の画像に対応します。
+図は主要部分のみ。代表略称はcharacters / character_formsの属性として直接保持し、独立したテーブル・リレーションは設けません。category_groups → category_valuesはgroup_idのFK。category_values → charactersの3本の破線は通常のFKを表さず、カラムごとに固定したグループ内のvalue_idを参照する論理関係を表します（rarity_id: rarity / 001、limited_id: limited / 002、collaboration_id: collaboration / 003）。各区分は未確認ならNULL可です。各マスターのimage_idはNULL可で、1対象につき画像は最大1枚（画像側の記号は0または1）です。認識候補は形態を直接参照し、形態のimage_idを通して表示と共通の画像に対応します。
 
 ## 今回反映した内容
+
+略称管理を簡素化し、系列全体の代表略称をcharacters.character_short_name、特定形態の代表略称をcharacter_forms.form_short_nameに直接保持します。略称用の別テーブルは設けません。両カラムは任意の文字列で、各最大1つ、存在しない・未確認ならNULLとし、同じ値も許可します。今回の変更は略称管理と関連記述のみで、その他のテーブル構造は変更していません。
+
+## 前回反映した内容
 
 共通区分マスタcategory_groups / category_valuesを導入し、charactersのレア区分の参照先を変更、限定区分・コラボ区分を追加しました。characters / character_formsの有効フラグを削除しました。分類と入手経路を分離し、その他のテーブル構造は変更していません。
 
 ## これまでに反映した内容
 
-1. character_aliasesとform_aliasesを分離。表示用の代表略称はis_preferredで指定し、short_nameを重複保存しない。
+1. 代表略称をcharacters.character_short_name（系列全体）/ character_forms.form_short_name（特定形態）に各最大1つ直接保持。存在しない・未確認ならNULLとし、複数の別名・検索語は管理しない。
 2. 画像ファイルをimage_assetsに集約し、各マスターから任意のimage_idで直接参照。1対象につき最大1画像とし、形態の表示・照合画像を共通化。認識候補はform_idで形態を参照。
 3. 本能の適用形態をtalent_form_applicationsで明示。
 4. にゃんコンボ・解説・入手・進化条件を具体化。
@@ -82,10 +86,8 @@ erDiagram
 | ------------------- | ------------------------------------------------------ |
 | `category_groups` | 共通区分グループ（レア・限定・コラボ） |
 | `category_values` | グループごとの共通区分値 |
-| `characters`        | キャラクター                                           |
-| `character_aliases` | 略称・別名                                             |
-| `character_forms`   | 形態                                                   |
-| `form_aliases`      | 形態の略称・別名                                       |
+| `characters`        | キャラクター（正式名称・系列全体の代表略称）             |
+| `character_forms`   | 形態（正式名称・特定形態の代表略称）                     |
 | `form_descriptions` | 形態の解説                                             |
 | `sources`           | 出典                                                   |
 | `image_assets`      | システム全体の共通画像ファイルマスター（用途分類なし） |

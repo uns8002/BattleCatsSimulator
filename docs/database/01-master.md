@@ -10,13 +10,7 @@
 | 区分グループ名 | group_name | 文字列 | NOT NULL、表示名 |
 | 区分グループコード | group_code | 文字列 | NOT NULL、UQ、参照カラム名の接頭辞 |
 
-共通区分定義として管理する対応は以下のとおり。group_idを利用箇所ごとにハードコードせず、この対応に基づき参照する。
-
-| group_id | group_name | group_code |
-| -------- | ---------- | ---------- |
-| `001` | レア区分 | rarity |
-| `002` | 限定区分 | limited |
-| `003` | コラボ区分 | collaboration |
+group_codeとgroup_idの対応は[共通区分グループマスタデータ](category-master-data.md#category_groups--共通区分グループマスタ)で管理する。
 
 ### category_values — 共通区分値
 
@@ -32,30 +26,15 @@ PK: `(group_id, value_id)`。FK: `(group_id)` → `category_groups.group_id`。U
 value_id単独は一意ではなく、異なるグループで同じ値を使用できる。
 両テーブルにも共通ルールのcreated_at / updated_at（UTC日時、必須）を適用する。
 
-以下は現時点の設計例であり、確定した実データではない。既存定義には区分値の列挙がなく、既存CSVにも区分情報はないため、各キャラクターへの割り当ては確認後に行う。
-
-| group_id | value_id | value_name | value_code | display_order |
-| -------- | -------- | ---------- | ---------- | ------------- |
-| `001` | `001` | 基本 | basic | 1 |
-| `001` | `002` | EX | ex | 2 |
-| `001` | `003` | レア | rare | 3 |
-| `001` | `004` | 激レア | super_rare | 4 |
-| `001` | `005` | 超激レア | uber_rare | 5 |
-| `001` | `006` | 伝説レア | legend_rare | 6 |
-| `002` | `001` | 通常 | normal | 1 |
-| `002` | `002` | 超ネコ祭限定 | uberfest | 2 |
-| `002` | `003` | 極ネコ祭限定 | epicfest | 3 |
-| `002` | `004` | 季節限定 | seasonal | 4 |
-| `002` | `005` | コラボ限定 | collaboration | 5 |
-| `003` | `001` | 通常 | normal | 1 |
-| `003` | `002` | コラボ | collaboration | 2 |
+マスタデータの設計例は[共通区分値マスタデータ](category-master-data.md#category_values--共通区分値マスタ)を参照する。
 
 ### characters — キャラクター
 
 | 論理名 | 物理名 | 型 | 制約・用途 |
 | ------ | ------ | -- | ---------- |
 | キャラクターID | character_id | ID | PK、形態共通 |
-| キャラクター名 | character_name | 文字列 | 代表名。名前で一意性を判定しない |
+| キャラクター名 | character_name | 文字列 | キャラクター系列の正式名称。名前で一意性を判定しない |
+| キャラクター略称 | character_short_name | 文字列 | 任意、キャラクター系列を代表する略称 |
 | レア区分ID | rarity_id | CHAR(3) | 任意、group_code = rarity（group_id = `001`）のvalue_id。通常のFKなし |
 | 限定区分ID | limited_id | CHAR(3) | 任意、group_code = limited（group_id = `002`）のvalue_id。通常のFKなし |
 | コラボ区分ID | collaboration_id | CHAR(3) | 任意、group_code = collaboration（group_id = `003`）のvalue_id。通常のFKなし |
@@ -68,17 +47,6 @@ value_id単独は一意ではなく、異なるグループで同じ値を使用
 
 リリース済みキャラクター自体を無効化する要件はなく、現在の入手可否を有効・無効フラグで管理しない。将来の論理削除はマスターデータ全体の共通方針として別途検討する。
 
-### character_aliases — 略称・別名
-
-| 論理名           | 物理名          | 型     | 制約・用途                      |
-| ---------------- | --------------- | ------ | ------------------------------- |
-| 略称ID           | alias_id        | ID     | PK                              |
-| キャラクターID   | character_id    | ID     | FK → characters                 |
-| キャラクター別名 | character_alias | 文字列 | 形態を限定しない検索用別名      |
-| 代表略称フラグ   | is_preferred    | 真偽   | 表示用の代表略称か。初期値false |
-
-UQ: `(character_id, character_alias)`。同じ略称を複数キャラが持つことは許可。
-
 ### character_forms — 形態
 
 | 論理名         | 物理名       | 型     | 制約・用途                                           |
@@ -87,6 +55,7 @@ UQ: `(character_id, character_alias)`。同じ略称を複数キャラが持つ�
 | キャラクターID | character_id | ID     | FK → characters                                      |
 | 形態番号       | form_number  | 整数   | 1以上。将来の形態追加を考慮し上限4を固定しない       |
 | 形態名         | form_name    | 文字列 | 形態の正式名                                         |
+| 形態略称       | form_short_name | 文字列 | 任意、その形態を代表する略称 |
 | 画像ID         | image_id     | ID     | 任意、FK → image_assets.image_id、その形態を表す画像 |
 
 UQ: `(character_id, form_number)` および `(character_id, form_id)`。所有・レベルはこのテーブルに持たせない。
@@ -95,17 +64,23 @@ UQ: `(character_id, form_number)` および `(character_id, form_id)`。所有�
 
 現在入手不可・期間限定・コラボ終了を形態の無効化として扱わず、有効・無効フラグは持たない。将来の論理削除はマスターデータ全体の共通方針として別途検討する。
 
-### form_aliases — 形態の略称・別名
+#### 代表略称と検索
 
-| 論理名         | 物理名       | 型     | 制約・用途                      |
-| -------------- | ------------ | ------ | ------------------------------- |
-| 略称ID         | alias_id     | ID     | PK                              |
-| 形態ID         | form_id      | ID     | FK → character_forms            |
-| 形態別名       | form_alias   | 文字列 | 特定形態を指す略称・検索用別名  |
-| 代表略称フラグ | is_preferred | 真偽   | 表示用の代表略称か。初期値false |
+- `characters.character_short_name` は、キャラクター系列全体を一般的に呼ぶ際の代表略称を最大1つ保持する。
+- `character_forms.form_short_name` は、特定形態を代表する略称を最大1つ保持する。
+- 両カラムとも略称が存在しない、または未確認の場合はNULLとする。正式名称はそれぞれ `characters.character_name` / `character_forms.form_name` に保持し、略称への複製は必須としない。代表略称がNULLなら正式名称を表示する。
+- キャラクター略称と形態略称が同じ値になることを許可する。略称にUQは設定せず、異なるキャラクター・形態間で同じ略称を持つことも許可する。
+- 複数の別名・検索語を管理する用途には使用しない。複数略称の必要性が明確になった時点で別名管理の設計を再検討し、現時点では専用・汎用の別名テーブルやJSONカラム等を追加しない。
 
-UQ: (form_id, form_alias)。character_aliasesと同様に複数登録可。代表略称未登録なら正式名を表示する。characters / character_formsにshort_nameを重複保存しない。
-正式名はcharacter_forms.form_nameに保存し、略称として必ず複製する必要はない。
+概念例：`characters.character_name = ネコエステ`、`characters.character_short_name = エステ` の系列に、以下の形態を登録できる。
+
+| 形態 | form_name | form_short_name |
+| ---- | --------- | --------------- |
+| 第1形態 | ネコエステ | エステ |
+| 第2形態 | ネコジェンヌ | ジェンヌ |
+| 第3形態 | ネコパーフェクト | パフェ |
+
+将来の検索では、必要に応じて `characters.character_name` / `characters.character_short_name` / `character_forms.form_name` / `character_forms.form_short_name` を対象にできる。形態名・形態略称で一致した場合も、`character_forms.character_id` を通じて対象キャラクターを特定する。
 
 ### form_descriptions — 形態の解説
 
