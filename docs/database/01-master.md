@@ -2,23 +2,71 @@
 
 [共通ルール](00-common.md) / [全体一覧](../database-design.md)
 
-### rarities — レア度
+### category_groups — 共通区分グループ
 
-| 論理名       | 物理名       | 型     | 制約・用途     |
-| ------------ | ------------ | ------ | -------------- |
-| レア度ID     | rarity_id    | ID     | PK             |
-| レア度コード | rarity_code  | 文字列 | UQ、内部コード |
-| レア度名     | rarity_name  | 文字列 | 表示名         |
-| 表示順       | rarity_order | 整数   | 表示順         |
+| 論理名 | 物理名 | 型 | 制約・用途 |
+| ------ | ------ | -- | ---------- |
+| 区分グループID | group_id | CHAR(3) | PK、固定3桁の数字文字列（例 `001`） |
+| 区分グループ名 | group_name | 文字列 | NOT NULL、表示名 |
+| 区分グループコード | group_code | 文字列 | NOT NULL、UQ、参照カラム名の接頭辞 |
+
+共通区分定義として管理する対応は以下のとおり。group_idを利用箇所ごとにハードコードせず、この対応に基づき参照する。
+
+| group_id | group_name | group_code |
+| -------- | ---------- | ---------- |
+| `001` | レア区分 | rarity |
+| `002` | 限定区分 | limited |
+| `003` | コラボ区分 | collaboration |
+
+### category_values — 共通区分値
+
+| 論理名 | 物理名 | 型 | 制約・用途 |
+| ------ | ------ | -- | ---------- |
+| 区分グループID | group_id | CHAR(3) | NOT NULL、複合PK、FK → category_groups.group_id |
+| 区分値ID | value_id | CHAR(3) | NOT NULL、複合PK、固定3桁の数字文字列（例 `001`） |
+| 区分値名 | value_name | 文字列 | NOT NULL、表示名 |
+| 区分値コード | value_code | 文字列 | NOT NULL、グループ内で一意な内部コード |
+| 表示順 | display_order | 整数 | NOT NULL、グループ内の表示順 |
+
+PK: `(group_id, value_id)`。FK: `(group_id)` → `category_groups.group_id`。UQ: `(group_id, value_code)`。
+value_id単独は一意ではなく、異なるグループで同じ値を使用できる。
+両テーブルにも共通ルールのcreated_at / updated_at（UTC日時、必須）を適用する。
+
+以下は現時点の設計例であり、確定した実データではない。既存定義には区分値の列挙がなく、既存CSVにも区分情報はないため、各キャラクターへの割り当ては確認後に行う。
+
+| group_id | value_id | value_name | value_code | display_order |
+| -------- | -------- | ---------- | ---------- | ------------- |
+| `001` | `001` | 基本 | basic | 1 |
+| `001` | `002` | EX | ex | 2 |
+| `001` | `003` | レア | rare | 3 |
+| `001` | `004` | 激レア | super_rare | 4 |
+| `001` | `005` | 超激レア | uber_rare | 5 |
+| `001` | `006` | 伝説レア | legend_rare | 6 |
+| `002` | `001` | 通常 | normal | 1 |
+| `002` | `002` | 超ネコ祭限定 | uberfest | 2 |
+| `002` | `003` | 極ネコ祭限定 | epicfest | 3 |
+| `002` | `004` | 季節限定 | seasonal | 4 |
+| `002` | `005` | コラボ限定 | collaboration | 5 |
+| `003` | `001` | 通常 | normal | 1 |
+| `003` | `002` | コラボ | collaboration | 2 |
 
 ### characters — キャラクター
 
-| 論理名         | 物理名         | 型     | 制約・用途                       |
-| -------------- | -------------- | ------ | -------------------------------- |
-| キャラクターID | character_id   | ID     | PK、形態共通                     |
+| 論理名 | 物理名 | 型 | 制約・用途 |
+| ------ | ------ | -- | ---------- |
+| キャラクターID | character_id | ID | PK、形態共通 |
 | キャラクター名 | character_name | 文字列 | 代表名。名前で一意性を判定しない |
-| レア度ID       | rarity_id      | ID     | 任意、FK → rarities              |
-| 有効フラグ     | is_active      | 真偽   | 廃止・非表示管理、初期値true     |
+| レア区分ID | rarity_id | CHAR(3) | 任意、group_code = rarity（group_id = `001`）のvalue_id。通常のFKなし |
+| 限定区分ID | limited_id | CHAR(3) | 任意、group_code = limited（group_id = `002`）のvalue_id。通常のFKなし |
+| コラボ区分ID | collaboration_id | CHAR(3) | 任意、group_code = collaboration（group_id = `003`）のvalue_id。通常のFKなし |
+
+利用側にはgroup_idを保存せず、各カラムが参照するグループを固定する。category_valuesへの通常の複合FKもvalue_id単独へのFKも設定しない。参照・検証は[共通区分参照ルール](00-common.md#共通区分参照)に従う。
+既存のレア区分のNULL許容と未確認値の扱いを維持し、追加する2区分も未確認ならNULLとする。「通常」と未確認を混同せず、通常の値を初期値として補わない。
+
+限定区分とコラボ区分は別概念で、それぞれ1キャラクターにつき1値（未確認ならNULL）を持つ。複数値が必要かどうかは実データで判明した時点で拡張を検討する。
+分類と具体的な入手方法は分離し、charactersに対してacquisition_methodsが1:Nとなる既存設計を維持する。例えば限定区分が「コラボ限定」、コラボ区分が「コラボ」のキャラクターに、コラボガチャ・イベントステージ・ログイン報酬など複数の入手経路を登録できる。第2・第3形態などの解放条件はevolution_rulesで管理する。これら2テーブルの詳細構造は変更しない。
+
+リリース済みキャラクター自体を無効化する要件はなく、現在の入手可否を有効・無効フラグで管理しない。将来の論理削除はマスターデータ全体の共通方針として別途検討する。
 
 ### character_aliases — 略称・別名
 
@@ -40,11 +88,12 @@ UQ: `(character_id, character_alias)`。同じ略称を複数キャラが持つ�
 | 形態番号       | form_number  | 整数   | 1以上。将来の形態追加を考慮し上限4を固定しない       |
 | 形態名         | form_name    | 文字列 | 形態の正式名                                         |
 | 画像ID         | image_id     | ID     | 任意、FK → image_assets.image_id、その形態を表す画像 |
-| 有効フラグ     | is_active    | 真偽   | 初期値true                                           |
 
 UQ: `(character_id, form_number)` および `(character_id, form_id)`。所有・レベルはこのテーブルに持たせない。
 
 1形態につき画像は最大1枚。通常の画面表示・一覧表示・画像認識と照合には同じ画像を使用する。画像未収集の形態も登録できるようimage_idはNULL可とする。
+
+現在入手不可・期間限定・コラボ終了を形態の無効化として扱わず、有効・無効フラグは持たない。将来の論理削除はマスターデータ全体の共通方針として別途検討する。
 
 ### form_aliases — 形態の略称・別名
 

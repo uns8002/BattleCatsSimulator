@@ -23,8 +23,31 @@
 - acquisition_methodsはacquisition、evolution_rulesはevolution、modifier_definitionsはmodifier、battle_recordsはbattle_recordを識別対象とする。認識の実行パラメータはrecognition_parameters、攻略結果はbattle_resultのように、属性の対象に応じて明確な語を用いる。
 - 本能の識別情報はtalentsで管理し、talent_id / talent_code / talent_name / talent_typeに統一する。版別・所持・関連テーブルも同じtalentの語彙を使用する。
 - 関連・版別テーブルは対象エンティティの語彙とFK名を引き継ぐ。orb_typesの識別情報はorb_type、ランク・効果・装着制約はorbを使用する。別名の値はcharacter_alias / form_alias、別名自身のIDはalias_idとする。
-- すでに対象が明確なID・FK、base_hp等の性能値、form_number / slot_number、created_at等の日時、is_active等のフラグ、storage_key等の共通メタデータは不要に冗長化しない。count_modeやtarget_modeのように解釈・動作モードを表す語は維持する。
+- すでに対象が明確なID・FK、base_hp等の性能値、form_number / slot_number、created_at等の日時、is_preferred等のフラグ、storage_key等の共通メタデータは不要に冗長化しない。count_modeやtarget_modeのように解釈・動作モードを表す語は維持する。
 - 物理名の変更時はPK・FK・UQ・検証条件・ER図・本文・移行先の参照名も更新する。CSV列名やJSON内の列挙値はDBの物理カラム名と区別する。
+
+## 共通区分参照
+
+- 小規模かつ固定的な区分値は、個別マスタを作成せずcategory_groups / category_valuesで管理する。今回の対象はレア区分・限定区分・コラボ区分のみとし、その他の既存マスターの移行は別途判断する。
+- 共通区分を参照するカラムの物理名は `<category_groups.group_code>_id` とし、対応するcategory_values.value_idをCHAR(3)で格納する。rarity_idはrarity、limited_idはlimited、collaboration_idはcollaborationに対応する。
+- group_id / value_idは `001` のような固定3桁の数字文字列であり、通常の内部IDとは区別する。先頭ゼロを保持する。
+- 利用側にはgroup_idを保存せず、参照グループはカラム定義で固定する。[共通区分定義](01-master.md#category_groups--共通区分グループ)でgroup_codeとgroup_idの対応を一元管理し、各所にgroup_idをハードコードしない。
+- category_valuesのPKは(group_id, value_id)であり、value_id単独は一意でない。利用側から通常の複合FKやvalue_id単独へのFKは設定しない。これは利用側にgroup_idを持たせず、区分カラムをCHAR(3)に統一するための意図的な設計である。
+- 非NULLの区分値は、登録・更新・移行時にアプリで固定グループ内の存在を検証する。区分値の削除・識別子変更時も利用側の参照切れを検証する。DBの通常のFKではこの整合性を保証しない。
+
+限定区分の参照例（説明用SQL。DDLやマイグレーションの作成は今回の対象外）：
+
+```sql
+SELECT characters.character_id, limited.value_name
+FROM characters
+LEFT JOIN category_groups limited_group
+  ON limited_group.group_code = 'limited'
+LEFT JOIN category_values limited
+  ON limited.group_id = limited_group.group_id
+ AND limited.value_id = characters.limited_id;
+```
+
+この参照は共通区分定義の `limited → 002` を使うことに相当する。レア区分・コラボ区分も各カラムに対応するgroup_codeで解決する。
 
 ## 画像管理方針
 
