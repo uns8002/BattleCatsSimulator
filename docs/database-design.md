@@ -51,8 +51,16 @@ erDiagram
     characters ||--o{ character_level_rules : growth
     growth_rules ||--o{ growth_rule_segments : segments
     growth_rules ||--o{ character_level_rules : assigned
-    talents ||--o{ talent_form_applications : applies
-    character_forms ||--o{ talent_form_applications : receives
+    talents ||--o{ character_talents : talent_id
+    characters ||--o{ character_talents : character_id
+    character_talents ||--o{ character_talent_versions : versions
+    character_talent_versions ||--o{ character_talent_levels : levels
+    character_talent_versions ||--o{ character_talent_form_applications : applies
+    form_stats ||--o{ character_talent_form_applications : receives
+    orb_types ||--o{ orbs : orb_type_id
+    attributes ||--o{ orbs : attribute_id
+    orbs ||--o{ orb_versions : versions
+    master_revisions ||--o{ orb_versions : revision_id
     combos ||--o{ combo_versions : versions
     combo_versions ||--o{ combo_members : members
     combo_members ||--o{ combo_member_forms : allowed_forms
