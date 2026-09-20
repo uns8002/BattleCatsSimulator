@@ -80,7 +80,7 @@ erDiagram
 
 1. 代表略称をcharacters.character_short_name（系列全体）/ character_forms.form_short_name（特定形態）に各最大1つ直接保持。存在しない・未確認ならNULLとし、複数の別名・検索語は管理しない。
 2. 画像ファイルをimage_assetsに集約し、各マスターから任意のimage_idで直接参照。1対象につき最大1画像とし、形態の表示・照合画像を共通化。認識候補はform_idで形態を参照。
-3. 本能の適用形態をtalent_form_applicationsで明示。
+3. 本能の適用形態をcharacter_talent_form_applicationsで明示。
 4. にゃんコンボ・解説・入手・進化条件を具体化。
 5. ステータスは補正前基礎値・レベル帯ごとの成長率・補正ルールを保存。最終体力・攻撃力・DPSは計算。
 6. お宝・施設などのユーザー状態を保存し、未設定を最大値と仮定しない。
