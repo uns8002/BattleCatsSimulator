@@ -22,7 +22,7 @@
 - entityにはテーブル名の修飾語を機械的にすべて含めない。character_formsはform、image_assetsはimage、master_revisionsはrevision、recognition_runs / inputs / detections / candidatesはrun / input / detection / candidate、stage_mapsはmap、stage_variantsはvariant、stage_spawnsはspawnを識別対象とする。
 - acquisition_methodsはacquisition、evolution_rulesはevolution、modifier_definitionsはmodifier、battle_recordsはbattle_recordを識別対象とする。認識の実行パラメータはrecognition_parameters、攻略結果はbattle_resultのように、属性の対象に応じて明確な語を用いる。
 - 本能種類の識別情報はtalentsで管理し、talent_id / talent_code / talent_name / talent_typeを使用する。キャラクターに設定された本能はcharacter_talentsで管理し、キャラクター本能そのものの識別にはcharacter_talent_idを使用する。character_talent_versions / character_talent_levels / character_talent_form_applicationsなど、キャラクターに設定された本能を参照するテーブルではcharacter_talent_idを使用する。
-- 関連・版別テーブルは対象エンティティの語彙とFK名を引き継ぐ。orb_typesの識別情報はorb_type、ランク・効果・装着制約はorbを使用する。代表略称はcharacter_short_name / form_short_nameとする。
+- 関連・版別テーブルは対象エンティティの語彙とFK名を引き継ぐ。orbsの識別情報はorb_id / orb_code / orb_name、orb_variantsの識別にはorb_variant_idを使用する。orb_variant_versionsはorb_variant_idを引き継ぐ。ランク・効果・装着制約は引き続きorb_rank / orb_effect_parameters / orb_constraintsを使用する。代表略称はcharacter_short_name / form_short_nameとする。
 - すでに対象が明確なID・FK、base_hp等の性能値、form_number / slot_number、created_at等の日時、storage_key等の共通メタデータは不要に冗長化しない。count_modeやtarget_modeのように解釈・動作モードを表す語は維持する。
 - 物理名の変更時はPK・FK・UQ・検証条件・ER図・本文・移行先の参照名も更新する。CSV列名やJSON内の列挙値はDBの物理カラム名と区別する。
 
@@ -52,7 +52,7 @@ LEFT JOIN category_values limited
 ## 画像管理方針
 
 - image_assetsはシステム全体で共通の画像ファイルマスターとし、用途分類は持たせない。画像の意味は参照元の専用テーブルで決まる。
-- character_forms・abilities・talents・orb_types・materialsは、任意のimage_idでimage_assets.image_idを直接参照する。1形態・1能力／特性・1本能・1本能玉種別・1素材につき最大1画像とし、画像中間テーブルは作らない。
+- character_forms・abilities・talents・orbs・materialsは、任意のimage_idでimage_assets.image_idを直接参照する。1形態・1能力／特性・1本能・1本能玉・1素材につき最大1画像とし、画像中間テーブルは作らない。
 - キャラクター形態の通常表示・一覧表示・画像認識と照合には同じ画像を使用する。
 - サムネイル専用画像やその管理用テーブル・カラムは持たない。元画像は小さい想定で、一覧等でも同じファイルの表示サイズだけを変更する。
 - 特定用途で複数画像や別種類の画像が必要になった場合は、用途が明確になった時点で専用設計を追加する。未所持枠・空枠・その他UI用の専用テーブルも現時点では作らない。

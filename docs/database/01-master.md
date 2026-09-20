@@ -115,7 +115,7 @@ UQ: (form_id, revision_id, description_type)。ゲーム内説明と独自の解
 
 ### image_assets — 共通画像ファイルマスター
 
-システム全体で使用する画像ファイルのメタデータを管理する。用途分類は持たず、画像が何を表すかは、そのimage_idを参照する専用テーブルで決まる。character_forms・abilities・talents・orb_types・materialsはimage_idを直接保持する。
+システム全体で使用する画像ファイルのメタデータを管理する。用途分類は持たず、画像が何を表すかは、そのimage_idを参照する専用テーブルで決まる。character_forms・abilities・talents・orbs・materialsはimage_idを直接保持する。
 
 | 論理名         | 物理名           | 型     | 制約・用途                                                     |
 | -------------- | ---------------- | ------ | -------------------------------------------------------------- |

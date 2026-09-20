@@ -4,7 +4,7 @@
 
 効果は検証済みの効果コードとパラメータで保存する。以下のJSONにはschema_versionを含め、倍率、確率、持続フレーム、対象条件、重複グループ等を型検証する。
 
-### attributes — 対象属性
+### attributes — 属性
 
 | 論理名     | 物理名               | 型     | 制約・用途                                                  |
 | ---------- | -------------------- | ------ | ----------------------------------------------------------- |
@@ -17,7 +17,7 @@
 通常属性と特殊な対象分類を同一マスタで管理する。赤い敵・浮いてる敵・黒い敵・メタルな敵・天使・エイリアン・ゾンビ・悪魔・超獣・超生命体・超賢者等を含め、現時点では通常属性と特殊分類を別テーブルに分離しない。
 
 
-### abilities — 効果の種類
+### abilities — 特性・能力
 
 | 論理名         | 物理名                   | 型     | 制約・用途                                                        |
 | -------------- | ------------------------ | ------ | ----------------------------------------------------------------- |
@@ -51,7 +51,7 @@ form_abilities.ability_parameters：
 
 上記の数値は説明用。確率等の単位・値形式とJSON内部の最終キー名はJSONスキーマ設計時に統一する。
 
-### form_abilities — 形態の特性
+### form_abilities — 形態特性・能力
 
 | 論理名         | 物理名             | 型   | 制約・用途                           |
 | -------------- | ------------------ | ---- | ------------------------------------ |
@@ -67,7 +67,7 @@ FK(form_id, revision_id) → form_stats。attack_orderがNULLの場合は特定�
 
 UQ(form_id, revision_id, ability_id, attack_order)。attack_orderがNULLの場合のUNIQUE制約の具体的な実装方法は、DB製品決定後に検討する。
 
-### form_ability_targets — 特性の対象属性
+### form_ability_targets — 形態特性・能力対象属性
 
 | 論理名     | 物理名          | 型  | 制約・用途                    |
 | ---------- | --------------- | --- | ----------------------------- |
@@ -76,7 +76,7 @@ UQ(form_id, revision_id, ability_id, attack_order)。attack_orderがNULLの場�
 
 対象行が0件の意味はform_abilities.ability_parameters.target_modeでnone / all等を明記し、全属性と対象不明を混同しない。
 
-### talents — 本能の種類
+### talents — 本能
 
 | 論理名     | 物理名      | 型     | 制約・用途                                                  |
 | ---------- | ----------- | ------ | ----------------------------------------------------------- |
@@ -89,7 +89,7 @@ UQ(form_id, revision_id, ability_id, attack_order)。attack_orderがNULLの場�
 「本能とは何か」を定義する純粋な本能マスタ。どのキャラクターが持つかはcharacter_talentsで管理し、ここには形態依存の適用条件を置かない。
 
 
-### character_talents — キャラクターに存在する本能
+### character_talents — キャラクター本能
 
 | 論理名             | 物理名              | 型  | 制約・用途      |
 | ------------------ | ------------------- | --- | --------------- |
@@ -100,7 +100,7 @@ UQ(form_id, revision_id, ability_id, attack_order)。attack_orderがNULLの場�
 UQ(character_id, talent_id)。例えばT001が「攻撃力アップ」であれば、CT001 / C001 / T001とCT002 / C002 / T001のように、複数のキャラクターが同じ本能種類を持てる。
 
 
-### character_talent_versions — キャラクター本能の版別仕様
+### character_talent_versions — キャラクター本能版
 
 | 論理名             | 物理名                    | 型   | 制約・用途                       |
 | ------------------ | ------------------------- | ---- | -------------------------------- |
@@ -113,7 +113,7 @@ UQ(character_id, talent_id)。例えばT001が「攻撃力アップ」であれ�
 PK(character_talent_id, revision_id)。本能種類そのものではなく、そのキャラクターに設定された本能の版別仕様を管理する。
 
 
-### character_talent_levels — キャラクター本能の各レベルの効果
+### character_talent_levels — キャラクター本能レベル
 
 | 論理名             | 物理名              | 型   | 制約・用途                             |
 | ------------------ | ------------------- | ---- | -------------------------------------- |
@@ -126,7 +126,7 @@ PK(character_talent_id, revision_id)。本能種類そのものではなく、�
 PK(character_talent_id, revision_id, talent_level)。FK(character_talent_id, revision_id) → character_talent_versions。talent_level<=max_level。効果JSON内の能力IDを検証。
 
 
-### character_talent_form_applications — キャラクター本能が適用される形態
+### character_talent_form_applications — キャラクター本能形態適用
 
 | 論理名             | 物理名              | 型  | 制約・用途                  |
 | ------------------ | ------------------- | --- | --------------------------- |
@@ -140,40 +140,40 @@ PK(character_talent_id, revision_id, form_id)。FK(character_talent_id, revision
 どのキャラクターのどの本能が、どの形態で有効かを管理する。character_idはcharacter_talentsから取得できるため重複保持しない。character_talents.character_idとcharacter_forms.character_idが一致することを登録・更新時にアプリで検証する。形態が変わっただけで全本能を無条件に適用しない。
 
 
-### orb_types — 本能玉の種類
+### orbs — 本能玉
 
 | 論理名       | 物理名        | 型     | 制約・用途                                                    |
 | ------------ | ------------- | ------ | ------------------------------------------------------------- |
-| 本能玉種別ID | orb_type_id   | ID     | PK                                                            |
-| 本能玉コード | orb_type_code | 文字列 | UQ                                                            |
-| 本能玉種別名 | orb_type_name | 文字列 | 表示名                                                        |
+| 本能玉ID | orb_id   | ID     | PK                                                            |
+| 本能玉コード | orb_code | 文字列 | UQ                                                            |
+| 本能玉名 | orb_name | 文字列 | 表示名                                                        |
 | 画像ID       | image_id      | ID     | 任意、FK → image_assets.image_id、本能玉を表す画像（最大1枚） |
 
-「本能玉の種類とは何か」だけを管理するマスタ。対象属性とランクはorbsで管理する。
+本能玉の基本マスタ。対象属性とランクはorb_variantsで管理する。
 
 
-### orbs — 実際の本能玉
+### orb_variants — 本能玉バリエーション
 
 | 論理名       | 物理名       | 型     | 制約・用途          |
 | ------------ | ------------ | ------ | ------------------- |
-| 本能玉ID     | orb_id       | ID     | PK                  |
-| 本能玉種別ID | orb_type_id  | ID     | FK → orb_types      |
+| 本能玉バリエーションID     | orb_variant_id       | ID     | PK                  |
+| 本能玉ID | orb_id  | ID     | FK → orbs      |
 | 属性ID       | attribute_id | ID     | FK → attributes     |
 | 本能玉ランク | orb_rank     | 文字列 | S / A / B / C / D等 |
 
-UQ(orb_type_id, attribute_id, orb_rank)。種類・対象属性・ランクまで含めた実際の本能玉を管理する。例えばOT001が「ダメージアップ」であれば、O001＝OT001 / 赤 / S、O002＝OT001 / 赤 / A、O003＝OT001 / 黒 / Sをそれぞれ別の本能玉として管理する。
+UQ(orb_id, attribute_id, orb_rank)。本能玉・対象属性・ランクによって決まる具体的なバリエーションを管理する。例えばOT001が「ダメージアップ」であれば、O001＝OT001 / 赤 / S、O002＝OT001 / 赤 / A、O003＝OT001 / 黒 / Sをそれぞれ別の本能玉バリエーションとして管理する。
 
 
-### orb_versions — 本能玉の版別効果
+### orb_variant_versions — 本能玉バリエーション版
 
 | 論理名         | 物理名                | 型   | 制約・用途                      |
 | -------------- | --------------------- | ---- | ------------------------------- |
-| 本能玉ID       | orb_id                | ID   | PKの一部、FK → orbs             |
+| 本能玉バリエーションID       | orb_variant_id                | ID   | PKの一部、FK → orb_variants             |
 | 版ID           | revision_id           | ID   | PKの一部、FK → master_revisions |
 | 効果パラメータ | orb_effect_parameters | JSON | 効果量等を保存する              |
 | 出典ID         | source_id             | ID   | 任意、FK → sources              |
 
-PK(orb_id, revision_id)。対象属性はJSONには保存せず、orbs.attribute_idで管理する。
+PK(orb_variant_id, revision_id)。対象属性はJSONには保存せず、orb_variants.attribute_idで管理する。
 
 
 ### form_orb_slots — 形態の装着枠
@@ -187,7 +187,7 @@ PK(orb_id, revision_id)。対象属性はJSONには保存せず、orbs.attribute
 
 FK(form_id, revision_id) → form_stats。装着単位は要仕様確認。
 
-関連テーブルの参照変更について、owned_talents（03-users.md）はtalent_id直接参照からcharacter_talent_id基準への変更が必要。版別の上限・解放条件はcharacter_talent_versionsを参照する。実際の本能玉を指定する参照はorb_type_idからorb_id（orbs）へ変更し、版別効果はorb_versionsを参照する必要がある。本能玉の種類だけを指定する参照はorb_type_idを使用する。これらの未レビューの関連テーブルとform_orb_slotsの構造は今回変更せず、参照変更の詳細は別途検討する。
+関連テーブルの参照変更について、owned_talents（03-users.md）はtalent_id直接参照からcharacter_talent_id基準への変更が必要。版別の上限・解放条件はcharacter_talent_versionsを参照する。具体的な本能玉バリエーションの参照先はorb_variants.orb_variant_id、版別効果の参照先はorb_variant_versions、本能玉の基本マスタの参照先はorbs.orb_idとなる。equipped_orbs（03-users.md）は未レビュー・要参照変更であり、具体的な本能玉バリエーションを参照するための変更はレビュー待ちとする。これらの未レビューの関連テーブルとform_orb_slotsの構造は今回変更せず、参照変更の詳細は別途検討する。
 
 ### combos — にゃんコンボ
 

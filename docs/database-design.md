@@ -40,7 +40,7 @@ erDiagram
     image_assets |o--o{ character_forms : image_id
     image_assets |o--o{ abilities : image_id
     image_assets |o--o{ talents : image_id
-    image_assets |o--o{ orb_types : image_id
+    image_assets |o--o{ orbs : image_id
     image_assets |o--o{ materials : image_id
     character_forms ||--o{ recognition_candidates : form_id
     recognition_detections ||--o{ recognition_candidates : candidates
@@ -57,10 +57,10 @@ erDiagram
     character_talent_versions ||--o{ character_talent_levels : levels
     character_talent_versions ||--o{ character_talent_form_applications : applies
     form_stats ||--o{ character_talent_form_applications : receives
-    orb_types ||--o{ orbs : orb_type_id
-    attributes ||--o{ orbs : attribute_id
-    orbs ||--o{ orb_versions : versions
-    master_revisions ||--o{ orb_versions : revision_id
+    orbs ||--o{ orb_variants : orb_id
+    attributes ||--o{ orb_variants : attribute_id
+    orb_variants ||--o{ orb_variant_versions : versions
+    master_revisions ||--o{ orb_variant_versions : revision_id
     combos ||--o{ combo_versions : versions
     combo_versions ||--o{ combo_members : members
     combo_members ||--o{ combo_member_forms : allowed_forms
@@ -138,18 +138,18 @@ erDiagram
 
 | テーブル                   | 用途                     |
 | -------------------------- | ------------------------ |
-| `attributes`               | 対象属性                 |
-| `abilities`                | 効果の種類               |
-| `form_abilities`           | 形態の特性               |
-| `form_ability_targets`     | 特性の対象属性           |
-| `talents`                  | 本能の種類               |
-| `character_talents`        | キャラクターに存在する本能 |
-| `character_talent_versions` | キャラクター本能の版別仕様 |
-| `character_talent_levels`  | キャラクター本能の各レベルの効果 |
-| `character_talent_form_applications` | キャラクター本能が適用される形態 |
-| `orb_types`                | 本能玉の種類             |
-| `orbs`                     | 実際の本能玉             |
-| `orb_versions`             | 本能玉の版別効果         |
+| `attributes`               | 属性 |
+| `abilities`                | 特性・能力 |
+| `form_abilities`           | 形態特性・能力 |
+| `form_ability_targets`     | 形態特性・能力対象属性 |
+| `talents`                  | 本能 |
+| `character_talents`        | キャラクター本能 |
+| `character_talent_versions` | キャラクター本能版 |
+| `character_talent_levels`  | キャラクター本能レベル |
+| `character_talent_form_applications` | キャラクター本能形態適用 |
+| `orbs`                | 本能玉 |
+| `orb_variants`                     | 本能玉バリエーション |
+| `orb_variant_versions`             | 本能玉バリエーション版 |
 | `form_orb_slots`           | 形態の装着枠             |
 | `combos`                   | にゃんコンボ             |
 | `combo_versions`           | コンボの効果と解放条件   |

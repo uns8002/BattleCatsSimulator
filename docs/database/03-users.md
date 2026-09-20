@@ -73,6 +73,8 @@ FK(user_id, character_id) → owned_characters。FK(character_id, talent_id) →
 
 ### equipped_orbs — 装着中の本能玉
 
+未レビュー・要参照変更：以下のカラム・FK定義は旧参照を意図的に維持している。具体的な本能玉の参照先は現在orb_variants.orb_variant_idだが、このテーブルの参照先変更はレビュー待ちであり、今回の名称変更では構造を変更しない。
+
 | 論理名         | 物理名       | 型   | 制約・用途      |
 | -------------- | ------------ | ---- | --------------- |
 | ユーザーID     | user_id      | ID   | PKの一部        |
