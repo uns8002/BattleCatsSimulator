@@ -21,7 +21,7 @@
 - JSON等は対象を明示し、効果=effects、パラメータ=parameters、条件=conditions、制約=constraints、状態データ=state、結果=result、公開範囲=visibility、補足=notesを用いる。出撃制限はstage_restrictions、幅・高さはimage_width / image_heightなど対象を付ける。
 - entityにはテーブル名の修飾語を機械的にすべて含めない。character_formsはform、image_assetsはimage、master_revisionsはrevision、recognition_runs / inputs / detections / candidatesはrun / input / detection / candidate、stage_mapsはmap、stage_variantsはvariant、stage_spawnsはspawnを識別対象とする。
 - acquisition_methodsはacquisition、evolution_rulesはevolution、modifier_definitionsはmodifier、battle_recordsはbattle_recordを識別対象とする。認識の実行パラメータはrecognition_parameters、攻略結果はbattle_resultのように、属性の対象に応じて明確な語を用いる。
-- 本能の識別情報はtalentsで管理し、talent_id / talent_code / talent_name / talent_typeに統一する。版別・所持・関連テーブルも同じtalentの語彙を使用する。
+- 本能種類の識別情報はtalentsで管理し、talent_id / talent_code / talent_name / talent_typeを使用する。キャラクターに設定された本能はcharacter_talentsで管理し、キャラクター本能そのものの識別にはcharacter_talent_idを使用する。character_talent_versions / character_talent_levels / character_talent_form_applicationsなど、キャラクターに設定された本能を参照するテーブルではcharacter_talent_idを使用する。
 - 関連・版別テーブルは対象エンティティの語彙とFK名を引き継ぐ。orb_typesの識別情報はorb_type、ランク・効果・装着制約はorbを使用する。代表略称はcharacter_short_name / form_short_nameとする。
 - すでに対象が明確なID・FK、base_hp等の性能値、form_number / slot_number、created_at等の日時、storage_key等の共通メタデータは不要に冗長化しない。count_modeやtarget_modeのように解釈・動作モードを表す語は維持する。
 - 物理名の変更時はPK・FK・UQ・検証条件・ER図・本文・移行先の参照名も更新する。CSV列名やJSON内の列挙値はDBの物理カラム名と区別する。
