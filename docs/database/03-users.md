@@ -2,7 +2,7 @@
 
 [共通ルール](00-common.md) / [全体一覧](../database-design.md)
 
-### users — アカウント
+### users — ユーザー
 
 | 論理名               | 物理名                      | 型     | 制約・用途                                 |
 | -------------------- | --------------------------- | ------ | ------------------------------------------ |
@@ -14,7 +14,7 @@
 
 認証方式は未決定。パスワード平文は保存しない。限定公開トークンは推測困難な値を発行し、失効・再発行を可能にする。
 
-### owned_characters — 所持とレベル
+### owned_characters — 所持キャラクター
 
 | 論理名         | 物理名             | 型     | 制約・用途                   |
 | -------------- | ------------------ | ------ | ---------------------------- |
@@ -60,7 +60,7 @@ FK: `(character_id, form_id)` → character_forms（参照先に同列組のUQ�
 UQ: `(formation_id, character_id)`。
 FK: `(character_id, form_id)` → character_forms。所持・解放済みであることは編成所有者と合わせてアプリで検証。未所持込みの仮編成を許すかは将来の仕様判断。
 
-### owned_talents — 解放・育成した本能
+### owned_talents — 所持本能
 
 | 論理名         | 物理名       | 型   | 制約・用途               |
 | -------------- | ------------ | ---- | ------------------------ |
@@ -71,7 +71,7 @@ FK: `(character_id, form_id)` → character_forms。所持・解放済みであ�
 
 FK(user_id, character_id) → owned_characters。FK(character_id, talent_id) → talents。行なしは未設定、0は確認済み未解放。選択中の版の上限と解放条件を検証する。
 
-### equipped_orbs — 装着中の本能玉
+### equipped_orbs — 装着本能玉
 
 未レビュー・要参照変更：以下のカラム・FK定義は旧参照を意図的に維持している。具体的な本能玉の参照先は現在orb_variants.orb_variant_idだが、このテーブルの参照先変更はレビュー待ちであり、今回の名称変更では構造を変更しない。
 
@@ -84,7 +84,7 @@ FK(user_id, character_id) → owned_characters。FK(character_id, talent_id) →
 
 FK(user_id, character_id) → owned_characters。利用形態・版に対して装着可能かアプリで確認する。
 
-### user_modifier_states — お宝・施設などの育成状態
+### user_modifier_states — ユーザー補正状態
 
 | 論理名     | 物理名         | 型   | 制約・用途                                            |
 | ---------- | -------------- | ---- | ----------------------------------------------------- |

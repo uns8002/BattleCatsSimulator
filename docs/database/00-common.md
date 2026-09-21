@@ -31,7 +31,7 @@
 - 小規模かつ固定的な区分値は、個別マスタを作成せずcategory_groups / category_valuesで管理する。今回の対象はレア区分・限定区分・コラボ区分のみとし、その他の既存マスターの移行は別途判断する。
 - 共通区分を参照するカラムの物理名は `<category_groups.group_code>_id` とし、対応するcategory_values.value_idをCHAR(3)で格納する。rarity_idはrarity、limited_idはlimited、collaboration_idはcollaborationに対応する。
 - group_id / value_idは `001` のような固定3桁の数字文字列であり、通常の内部IDとは区別する。先頭ゼロを保持する。
-- 利用側にはgroup_idを保存せず、参照グループはカラム定義で固定する。[共通区分マスタデータ](category-master-data.md#category_groups--共通区分グループマスタ)でgroup_codeとgroup_idの対応を一元管理し、各所にgroup_idをハードコードしない。
+- 利用側にはgroup_idを保存せず、参照グループはカラム定義で固定する。[共通区分マスタデータ](category-master-data.md#category_groups--区分グループマスタ)でgroup_codeとgroup_idの対応を一元管理し、各所にgroup_idをハードコードしない。
 - category_valuesのPKは(group_id, value_id)であり、value_id単独は一意でない。利用側から通常の複合FKやvalue_id単独へのFKは設定しない。これは利用側にgroup_idを持たせず、区分カラムをCHAR(3)に統一するための意図的な設計である。
 - 非NULLの区分値は、登録・更新・移行時にアプリで固定グループ内の存在を検証する。区分値の削除・識別子変更時も利用側の参照切れを検証する。DBの通常のFKではこの整合性を保証しない。
 

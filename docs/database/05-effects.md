@@ -176,7 +176,7 @@ UQ(orb_id, attribute_id, orb_rank)。本能玉・対象属性・ランクによ�
 PK(orb_variant_id, revision_id)。対象属性はJSONには保存せず、orb_variants.attribute_idで管理する。
 
 
-### form_orb_slots — 形態の装着枠
+### form_orb_slots — 形態本能玉枠
 
 | 論理名       | 物理名          | 型   | 制約・用途         |
 | ------------ | --------------- | ---- | ------------------ |
@@ -196,7 +196,7 @@ FK(form_id, revision_id) → form_stats。装着単位は要仕様確認。
 | にゃんコンボID | combo_id   | ID     | PK         |
 | にゃんコンボ名 | combo_name | 文字列 | 正式名     |
 
-### combo_versions — コンボの効果と解放条件
+### combo_versions — にゃんコンボ版
 
 | 論理名             | 物理名                    | 型   | 制約・用途                      |
 | ------------------ | ------------------------- | ---- | ------------------------------- |
@@ -207,7 +207,7 @@ FK(form_id, revision_id) → form_stats。装着単位は要仕様確認。
 | 発動位置条件       | placement_conditions      | JSON | 発動対象となる編成位置等        |
 | 出典ID             | source_id                 | ID   | 任意、FK → sources              |
 
-### combo_members — コンボに必要なキャラ
+### combo_members — にゃんコンボメンバー
 
 | 論理名         | 物理名       | 型  | 制約・用途                |
 | -------------- | ------------ | --- | ------------------------- |
@@ -217,7 +217,7 @@ FK(form_id, revision_id) → form_stats。装着単位は要仕様確認。
 
 FK(combo_id, revision_id) → combo_versions。全メンバーが必要（AND）。
 
-### combo_member_forms — メンバーとして認める形態
+### combo_member_forms — にゃんコンボメンバー形態
 
 | 論理名         | 物理名       | 型  | 制約・用途       |
 | -------------- | ------------ | --- | ---------------- |
@@ -228,7 +228,7 @@ FK(combo_id, revision_id) → combo_versions。全メンバーが必要（AND）
 
 FK(combo_id, revision_id, character_id) → combo_members。FK(character_id, form_id) → character_forms。同じメンバー内の形態はOR。最低形態番号で推測せず、有効な形態を列挙する。各メンバーに1件以上必要。
 
-### modifier_definitions — お宝・施設などの補正項目
+### modifier_definitions — 補正項目
 
 | 論理名       | 物理名                | 型     | 制約・用途                     |
 | ------------ | --------------------- | ------ | ------------------------------ |
@@ -238,7 +238,7 @@ FK(combo_id, revision_id, character_id) → combo_members。FK(character_id, for
 | 補正種別     | modifier_type         | 文字列 | treasure / facility / other    |
 | 状態スキーマ | modifier_state_schema | JSON   | 達成率や施設レベル等の入力定義 |
 
-### modifier_versions — 版別の補正効果
+### modifier_versions — 補正項目版
 
 | 論理名     | 物理名           | 型   | 制約・用途                               |
 | ---------- | ---------------- | ---- | ---------------------------------------- |

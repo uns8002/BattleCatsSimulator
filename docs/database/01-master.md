@@ -2,7 +2,7 @@
 
 [共通ルール](00-common.md) / [全体一覧](../database-design.md)
 
-### category_groups — 共通区分グループ
+### category_groups — 区分グループ
 
 | 論理名 | 物理名 | 型 | 制約・用途 |
 | ------ | ------ | -- | ---------- |
@@ -10,9 +10,9 @@
 | 区分グループ名 | group_name | 文字列 | NOT NULL、表示名 |
 | 区分グループコード | group_code | 文字列 | NOT NULL、UQ、参照カラム名の接頭辞 |
 
-group_codeとgroup_idの対応は[共通区分グループマスタデータ](category-master-data.md#category_groups--共通区分グループマスタ)で管理する。
+group_codeとgroup_idの対応は[区分グループマスタデータ](category-master-data.md#category_groups--区分グループマスタ)で管理する。
 
-### category_values — 共通区分値
+### category_values — 区分値
 
 | 論理名 | 物理名 | 型 | 制約・用途 |
 | ------ | ------ | -- | ---------- |
@@ -26,7 +26,7 @@ PK: `(group_id, value_id)`。FK: `(group_id)` → `category_groups.group_id`。U
 value_id単独は一意ではなく、異なるグループで同じ値を使用できる。
 両テーブルにも共通ルールのcreated_at / updated_at（UTC日時、必須）を適用する。
 
-マスタデータの設計例は[共通区分値マスタデータ](category-master-data.md#category_values--共通区分値マスタ)を参照する。
+マスタデータの設計例は[区分値マスタデータ](category-master-data.md#category_values--区分値マスタ)を参照する。
 
 ### characters — キャラクター
 
@@ -82,7 +82,7 @@ UQ: `(character_id, form_number)` および `(character_id, form_id)`。所有�
 
 将来の検索では、必要に応じて `characters.character_name` / `characters.character_short_name` / `character_forms.form_name` / `character_forms.form_short_name` を対象にできる。形態名・形態略称で一致した場合も、`character_forms.character_id` を通じて対象キャラクターを特定する。
 
-### form_descriptions — 形態の解説
+### form_descriptions — 形態解説
 
 | 論理名   | 物理名           | 型     | 制約・用途            |
 | -------- | ---------------- | ------ | --------------------- |
@@ -113,7 +113,7 @@ UQ: (form_id, revision_id, description_type)。ゲーム内説明と独自の解
 
 出典情報を保持しても権利許諾が得られたことにはならない。URLの一致だけで取得履歴を上書きしない。
 
-### image_assets — 共通画像ファイルマスター
+### image_assets — 画像
 
 システム全体で使用する画像ファイルのメタデータを管理する。用途分類は持たず、画像が何を表すかは、そのimage_idを参照する専用テーブルで決まる。character_forms・abilities・talents・orbs・materialsはimage_idを直接保持する。
 
@@ -129,7 +129,7 @@ UQ: (form_id, revision_id, description_type)。ゲーム内説明と独自の解
 | 出典ID         | source_id        | ID     | 任意、FK → sources                                             |
 | 元画像URL      | source_image_url | 文字列 | 任意、取得元の画像URL                                          |
 
-### master_revisions — マスターの版
+### master_revisions — 版
 
 | 論理名               | 物理名               | 型     | 制約・用途                               |
 | -------------------- | -------------------- | ------ | ---------------------------------------- |

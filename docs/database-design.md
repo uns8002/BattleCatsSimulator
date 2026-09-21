@@ -92,47 +92,47 @@ erDiagram
 
 | テーブル            | 用途                                                   |
 | ------------------- | ------------------------------------------------------ |
-| `category_groups` | 共通区分グループ（レア・限定・コラボ） |
-| `category_values` | グループごとの共通区分値 |
+| `category_groups` | 区分グループ（レア・限定・コラボ）   |
+| `category_values` | グループごとの区分値   |
 | `characters`        | キャラクター（正式名称・系列全体の代表略称）             |
 | `character_forms`   | 形態（正式名称・特定形態の代表略称）                     |
-| `form_descriptions` | 形態の解説                                             |
+| `form_descriptions` | 形態解説                                              |
 | `sources`           | 出典                                                   |
-| `image_assets`      | システム全体の共通画像ファイルマスター（用途分類なし） |
-| `master_revisions`  | マスターの版                                           |
+| `image_assets`      | 画像（システム全体で共通、用途分類なし）        |
+| `master_revisions`  | 版                                                |
 
 ### 画像取り込み・照合履歴
 
 | テーブル                 | 用途                       |
 | ------------------------ | -------------------------- |
-| `recognition_runs`       | 取り込み単位               |
-| `recognition_inputs`     | 入力スクショ               |
-| `recognition_detections` | 切り出し枠と判定           |
-| `recognition_candidates` | 形態を直接参照する候補順位 |
+| `recognition_runs`       | 実行                   |
+| `recognition_inputs`     | 入力                   |
+| `recognition_detections` | 検出                 |
+| `recognition_candidates` | 形態を直接参照する候補   |
 
 ### ユーザー・所持・編成
 
 | テーブル               | 用途                     |
 | ---------------------- | ------------------------ |
-| `users`                | アカウント               |
-| `owned_characters`     | 所持とレベル             |
+| `users`                | ユーザー                |
+| `owned_characters`     | 所持キャラクター           |
 | `owned_forms`          | 解放済み形態             |
 | `formations`           | 編成                     |
 | `formation_slots`      | 編成枠                   |
-| `owned_talents`        | 解放・育成した本能       |
-| `equipped_orbs`        | 装着中の本能玉           |
-| `user_modifier_states` | お宝・施設などの育成状態 |
+| `owned_talents`        | 所持本能            |
+| `equipped_orbs`        | 装着本能玉             |
+| `user_modifier_states` | ユーザー補正状態     |
 
 ### ステータス計算の元データ
 
 | テーブル                | 用途                     |
 | ----------------------- | ------------------------ |
-| `calculation_specs`     | 計算の基準・順序         |
-| `growth_rules`          | 成長パターン             |
-| `growth_rule_segments`  | レベル帯ごとの増加率     |
-| `character_level_rules` | キャラの成長とレベル制約 |
-| `form_stats`            | 形態の基礎性能           |
-| `form_attacks`          | 各段の基礎攻撃データ     |
+| `calculation_specs`     | 計算基準             |
+| `growth_rules`          | 成長ルール              |
+| `growth_rule_segments`  | 成長ルール区間        |
+| `character_level_rules` | キャラクターレベルルール |
+| `form_stats`            | 形態ステータス           |
+| `form_attacks`          | 形態攻撃           |
 
 ### 特性・本能・本能玉・コンボ・補正
 
@@ -150,33 +150,33 @@ erDiagram
 | `orbs`                | 本能玉 |
 | `orb_variants`                     | 本能玉バリエーション |
 | `orb_variant_versions`             | 本能玉バリエーション版 |
-| `form_orb_slots`           | 形態の装着枠             |
+| `form_orb_slots`           | 形態本能玉枠             |
 | `combos`                   | にゃんコンボ             |
-| `combo_versions`           | コンボの効果と解放条件   |
-| `combo_members`            | コンボに必要なキャラ     |
-| `combo_member_forms`       | メンバーとして認める形態 |
-| `modifier_definitions`     | お宝・施設などの補正項目 |
-| `modifier_versions`        | 版別の補正効果           |
+| `combo_versions`           | にゃんコンボ版       |
+| `combo_members`            | にゃんコンボメンバー     |
+| `combo_member_forms`       | にゃんコンボメンバー形態 |
+| `modifier_definitions`     | 補正項目         |
+| `modifier_versions`        | 補正項目版             |
 
 ### 入手・解放・進化条件
 
 | テーブル              | 用途                   |
 | --------------------- | ---------------------- |
-| `condition_groups`    | 条件の集合             |
-| `condition_items`     | 個別条件               |
-| `materials`           | 進化素材・アイテム     |
-| `acquisition_methods` | キャラ入手経路         |
-| `evolution_rules`     | 形態の進化・解放ルート |
+| `condition_groups`    | 条件グループ            |
+| `condition_items`     | 条件項目               |
+| `materials`           | 素材            |
+| `acquisition_methods` | 入手経路            |
+| `evolution_rules`     | 進化ルール       |
 
 ### 敵・ステージ・攻略実績（拡張案）
 
 | テーブル           | 用途               |
 | ------------------ | ------------------ |
-| `enemies`          | 敵キャラ           |
-| `enemy_stats`      | 敵の基礎値         |
-| `enemy_attributes` | 敵属性             |
+| `enemies`          | 敵キャラクター        |
+| `enemy_stats`      | 敵キャラクターステータス  |
+| `enemy_attributes` | 敵キャラクター属性       |
 | `stage_maps`       | マップ             |
 | `stages`           | ステージ           |
-| `stage_variants`   | 難易度・版別の条件 |
-| `stage_spawns`     | 敵出現設定         |
+| `stage_variants`   | ステージバリエーション |
+| `stage_spawns`     | 出現設定          |
 | `battle_records`   | 攻略実績           |
