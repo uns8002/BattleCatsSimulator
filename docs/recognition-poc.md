@@ -15,14 +15,16 @@
 
 この検証の出力は `output/IMG_2467_20260915_230458_483503/` です。追加の目視確認用として `contact_sheet.png` も保存しました（通常CLIの出力には含みません）。
 
-## セットアップ（macOS / Python 3.12推奨）
+## セットアップ（macOS / Python 3.11基準）
 
 プロジェクトのルートで実行します。
 
 ```bash
-python3 -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r backend/requirements.txt
+cd backend
+python -m pip install -e ".[dev]"
+cd ..
 ```
 
 VS Codeでは「Python: Select Interpreter」から `.venv/bin/python` を選択してください。GUI表示は不要なので `opencv-python-headless` を使用します。

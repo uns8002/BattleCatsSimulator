@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nyanko-simulator-backend"
+version = "0.1.0"
+description = "NyankoSimulator Flask backend and image recognition"
+requires-python = ">=3.11"
+dependencies = [
+    "Flask>=3.1,<4",
+    "numpy>=1.26,<3",
+    "opencv-python-headless>=4.10,<5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8,<10",
+    "python-dotenv>=1,<2",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app", "app.*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
