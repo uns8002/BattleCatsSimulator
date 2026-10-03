@@ -1,7 +1,7 @@
 # NyankoSimulator
 
 にゃんこ大戦争のキャラクター・所持情報の管理と編成シミュレーションを目指すプロジェクトです。
-現在は、図鑑スクリーンショットからの枠切り出しと、少数マスターによる画像照合PoCが動作します。FlaskのApplication FactoryとDB非依存の `GET /api/health` を提供します。DB・業務API・フロントエンドは未実装です。
+現在は、図鑑スクリーンショットからの枠切り出しと、少数マスターによる画像照合PoCが動作します。FlaskのApplication FactoryとDB非依存の `GET /api/health` を提供します。MariaDB接続・ORM・migrationの基盤を備えています。業務モデル・業務API・フロントエンドは未実装です。
 
 ## 現在の構成
 
@@ -10,12 +10,16 @@ NyankoSimulator/
 ├── backend/
 │   ├── app/
 │   │   ├── __init__.py        # create_app(test_config=None)
+│   │   ├── config.py         # DB環境変数・URL生成
+│   │   ├── extensions.py     # SQLAlchemy・Migrate
+│   │   ├── commands.py       # check-db
 │   │   ├── routes/            # Blueprint登録・health API
 │   │   └── recognition/
 │   │       ├── __init__.py
 │   │       ├── __main__.py    # 切り出しCLI・画像と座標JSONの保存
 │   │       ├── detection.py   # 枠検出・座標変換
 │   │       └── matching.py    # 照合・判定・レポート生成・照合CLI
+│   ├── migrations/          # 標準Alembic環境（revisionなし）
 │   ├── tests/                # Factory・health API・recognition/の既存8テスト
 │   ├── pyproject.toml        # パッケージ・依存関係・pytest設定
 │   ├── requirements.txt      # 通常インストールの入口
@@ -69,8 +73,9 @@ python -m unittest discover -s tests/recognition -v
 セットアップ後、`backend/` から実行します。
 
 ```bash
-# 任意: ローカル設定が必要な場合のみ作成
+# ローカルDB設定を用意（作成後に5つのDB_*を記入）
 cp .env.example .env
+# .envを編集してから起動
 flask --app app run --debug
 ```
 
@@ -91,14 +96,16 @@ HTTP 200、JSON `{"status":"ok"}` を返します。DBや外部サービスの�
 python -m pytest
 ```
 
-Factory・health APIの4件と既存認識unittestの8件を合わせた12件を実行します。既存unittestは書き換えていません。上記の認識テスト単独コマンドも利用できます。
+Factory・health API・DB設定・管理CLIと既存認識unittestの8件を実行します。通常テストは明示的なSQLiteインメモリ設定を使い、SSHトンネルやMariaDBを必要としません。integrationは明示指定時のみ実行します。既存unittestは書き換えていません。上記の認識テスト単独コマンドも利用できます。
 
 ## 環境変数
 
-独自の `APP_ENV` 切替は導入していません。既定ではDEBUG・TESTINGとも無効で、開発時は `--debug`、テスト時は `create_app({"TESTING": True})` を使用します。将来設定が増えたらFactoryのBlueprint登録前に設定読込を追加できます。
+独自の `APP_ENV` 切替は導入していません。既定ではDEBUG・TESTINGとも無効で、開発時は `--debug`、テスト時は `create_app({"TESTING": True, "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"})` を使用します。Factoryは全環境でDB・migration拡張を初期化します。
 
 開発依存のpython-dotenvにより、Flask CLIは `.env` を読み込みます。OS環境変数は `.env` より優先されます。Factory自体とpytest・認識CLIは `.env` を読み込みません。本番ではcPanelのEnvironment variablesを使う予定で、Passenger設定は今回追加していません。
-実際の `.env` はGit管理外です。`.env.example` に秘密情報の実値を記載しないでください。`DB_HOST`・`DB_PORT`・`DB_NAME`・`DB_USER`・`DB_PASSWORD` は次工程用のコメントのみで、現在は読み込み・検証・接続を行いません。
+実際の `.env` はGit管理外です。`.env.example` に秘密情報の実値を記載しないでください。`SQLALCHEMY_DATABASE_URI` をアプリ設定で明示しない場合、`DB_HOST`・`DB_PORT`・`DB_NAME`・`DB_USER`・`DB_PASSWORD` は必須です。設定不足は起動時エラーですが、実際のDB接続はFactoryでは実行しません。
+
+`flask --app app check-db` で読み取り専用の疎通確認ができます。接続・integration・migration運用は [DB基盤の手順](docs/backend-database.md) を参照してください。認識CLIはDB設定なしで引き続き実行できます。
 
 ## 今後の開発配置
 
@@ -109,11 +116,10 @@ Factory・health APIの4件と既存認識unittestの8件を合わせた12件を
 | --- | --- |
 | `backend/app/models/` | 既存DB設計に基づくSQLAlchemyモデル |
 | `backend/app/services/` | 所持管理・編成計算・一括登録・認証連携・公開などの処理 |
-| `backend/migrations/` | Alembic導入時のマイグレーション |
 | `frontend/` | React・TypeScriptの独立したフロントエンド |
 | `scripts/` | 開発・データ整備用スクリプト |
 
-`backend/` は独立したPythonプロジェクトです。`pyproject.toml` に実行依存（Flask・NumPy・OpenCV）、開発依存（pytest・python-dotenv）、Python対応範囲（3.11以上）、pytest設定を集約しています。認識用の依存範囲は従来のままです。
+`backend/` は独立したPythonプロジェクトです。`pyproject.toml` に実行依存（Flask・NumPy・OpenCV・SQLAlchemy・Flask-SQLAlchemy・Alembic・Flask-Migrate・PyMySQL）、開発依存（pytest・python-dotenv）、Python対応範囲（3.11以上）、pytest設定を集約しています。認識用の依存範囲は従来のままです。
 開発時はeditable installを使い、通常インストールでは `backend/` から `python -m pip install -r requirements.txt` を実行します。`requirements.txt` の `.` は作業ディレクトリのプロジェクトを指すため、必ず `backend/` で実行してください。依存関係は二重管理しません。
 
 カラフルボックス/cPanelで `.` によるインストールに互換性上の問題が判明した場合は、デプロイ工程でインストール方法を見直します。現在の依存指定はバージョン範囲でありロックファイルではありません。本番のバージョン固定とPassengerのWSGI起動設定は後続工程です。
