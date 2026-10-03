@@ -1,9 +1,45 @@
+# Python environments and bytecode
 .venv/
+venv/
 __pycache__/
 *.py[cod]
+
+# Python tests, analysis and packaging
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.egg-info/
+/backend/build/
+/backend/dist/
+
+# Local environment variables (keep templates trackable)
+.env
+.env.*
+!.env.example
+
+# macOS and IDE/editor files
 .DS_Store
+._*
 .vscode/
-images/*
-!images/.gitkeep
-output/*
-!output/.gitkeep
+.idea/
+*.swp
+*.swo
+*~
+
+# Future frontend dependencies and generated assets
+node_modules/
+/frontend/dist/
+/frontend/coverage/
+*.tsbuildinfo
+
+# Local PoC inputs and generated results
+/images/*
+!/images/.gitkeep
+/output/*
+!/output/.gitkeep

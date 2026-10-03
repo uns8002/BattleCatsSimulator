@@ -8,10 +8,12 @@
 
 CSVはUTF-8です。`icon_path` はこの `data/` ディレクトリからの相対パスです。
 `poc_` で始まるIDはこのプロジェクト独自の仮IDで、ゲームの公式IDやGame8の記事IDではありません。
-現在は13キャラ、各第一形態のみです。登録キャラ名は `characters.csv` を参照してください。他形態は未登録です。照合は `PYTHONPATH=src python -m nyanko_poc.matching 切り出しフォルダ` で実行できます。
+現在は13キャラ、各第一形態のみです。登録キャラ名は `characters.csv` を参照してください。他形態は未登録です。照合は `backend/` から `python -m app.recognition.matching ../output/切り出しフォルダ --master ../data/forms.csv --output ../output` で実行できます。
 
 画像は寸法や色の条件が異なります。照合時のサイズ統一・枠除去などは元画像を残して別途行います。
 図鑑の表示形態とマスターの形態が違う場合の識別精度は未検証です。
 
 `usage_permission=unconfirmed` は外部の利用許諾を確認していないことを表します。
 今回の取得はユーザー指定のローカルPoC用で、公開サービス利用・再配布の許可を示すものではありません。
+
+この配置は既存PoCとの互換性維持のためのものです。本番の恒久的なデータ配置ではなく、将来はMariaDBや画像ストレージへの移行を検討します。

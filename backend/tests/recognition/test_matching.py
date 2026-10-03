@@ -9,7 +9,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from nyanko_poc.matching import classify, compare, load_master, normalize, rank, similarity
+from app.recognition.matching import classify, compare, load_master, normalize, rank, similarity
 
 
 class MatchingTests(unittest.TestCase):
@@ -60,7 +60,7 @@ class MatchingTests(unittest.TestCase):
             candidates = [dict(form_id='0', character_id='0', name=name, score=score)
                           for name, score in [('りゅういち', .992), ('くにおくん', .899)]]
             console = io.StringIO()
-            with patch('nyanko_poc.matching.rank', return_value=candidates), redirect_stdout(console):
+            with patch('app.recognition.matching.rank', return_value=candidates), redirect_stdout(console):
                 result = compare([root/'icon.png'], masters, root/'multiple')
             self.assertEqual(result[0]['status'], '複数候補')
             self.assertIn('第2候補: くにおくん (0.899)', console.getvalue())

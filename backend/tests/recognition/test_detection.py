@@ -5,7 +5,7 @@ import unittest
 import cv2
 import numpy as np
 
-from nyanko_poc.detection import detect_frames
+from app.recognition.detection import detect_frames
 
 
 def grid_image(scale=1.0):

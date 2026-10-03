@@ -1,128 +1,82 @@
-# NyankoSimulator — 図鑑の枠切り出しPoC
+# NyankoSimulator
 
-にゃんこ図鑑のスクリーンショット1枚を入力し、繰り返し配置された矩形枠の候補をOpenCVで検出します。Webサービス・所持判定は未実装です。少数マスターとの画像比較は末尾の手順で実行できます。
+にゃんこ大戦争のキャラクター・所持情報の管理と編成シミュレーションを目指すプロジェクトです。
+現在は、図鑑スクリーンショットからの枠切り出しと、少数マスターによる画像照合PoCが動作します。Web API・DB・フロントエンドは未実装です。
 
-**提供された図鑑スクリーンショット1枚で24枠の検出・切り出しを確認済みです。** 検出数は所持キャラ数を意味しません。未所持枠やUIが混ざる可能性があり、別の実画像でも確認が必要です。
+## 現在の構成
 
-### 実画像の検証結果（2026-09-15）
+```text
+NyankoSimulator/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   └── recognition/
+│   │       ├── __init__.py
+│   │       ├── __main__.py    # 切り出しCLI・画像と座標JSONの保存
+│   │       ├── detection.py   # 枠検出・座標変換
+│   │       └── matching.py    # 照合・判定・レポート生成・照合CLI
+│   ├── tests/recognition/     # 画像認識の既存unittest（8件）
+│   └── requirements.txt      # 現在のPython依存（NumPy・OpenCV）
+├── data/                     # PoC用CSV・13件のマスター画像・出典
+├── images/                   # ローカル入力画像（内容はGit管理外）
+├── output/                   # 実行結果（内容はGit管理外）
+├── docs/
+│   ├── recognition-poc.md    # PoC実行方法・制約・検証記録
+│   ├── database-design.md    # DB論理設計の入口
+│   └── database/             # 分野別設計書・CSV移行対応
+├── .gitignore
+└── README.md
+```
 
-- 入力: `images/IMG_2467.jpeg`（1280×591）
-- 目視での期待数: 6列×4行 = 24枠
-- 結果: 24枠を検出、24枚のPNG・確認画像・座標JSONを保存
-- 確認画像と全切り出しの一覧を目視確認し、この画像では検出漏れ・余分なUIの検出なし
-- 検出コードや閾値の変更なしで動作
-- 同じ画像の0.6倍・1.5倍・2倍リサイズでも24枠を検出（別機種の実画像検証ではありません）
+画像認識は今後も正式機能として利用するため、`backend/app/recognition/` に配置しています。現時点ではFlaskに依存せず、CLIおよびPython関数として利用できます。
+`data/`・`images/`・`output/` は既存PoCとの互換性のため現位置を維持しています。本番の恒久的な配置ではなく、将来はMariaDBや画像ストレージへの移行を検討します。
 
-この検証の出力は `output/IMG_2467_20260915_230458_483503/` です。追加の目視確認用として `contact_sheet.png` も保存しました（通常CLIの出力には含みません）。
+## セットアップと実行
 
-## セットアップ（macOS / Python 3.12推奨）
-
-プロジェクトのルートで実行します。
+リポジトリルートで仮想環境を用意します（Python 3.12推奨）。
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
+python -m pip install -r backend/requirements.txt
+cd backend
 ```
 
-VS Codeでは「Python: Select Interpreter」から `.venv/bin/python` を選択してください。GUI表示は不要なので `opencv-python-headless` を使用します。
-
-## 実行
-
-PNG/JPEGの元スクリーンショットを `images/` に配置します。日本語ファイル名・空白を含む場合は引用符で囲んでください。
+以降は `backend/` から実行します。`PYTHONPATH` の指定は不要です。
 
 ```bash
-source .venv/bin/activate
-PYTHONPATH=src python -m nyanko_poc "images/図鑑.png"
+# 枠の切り出し（入力画像は各自で配置）
+python -m app.recognition "../images/図鑑.png" --output ../output
+
+# 切り出し結果を照合（フォルダ名は実際の保存先に置き換える）
+python -m app.recognition.matching "../output/図鑑_実行日時" \
+  --master ../data/forms.csv --output ../output
+
+# 既存8テスト
+python -m unittest discover -s tests/recognition -v
 ```
 
-出力は `output/入力名_実行日時/` に作成されます。
+相対パスは作業ディレクトリ基準です。CLIの既定値は従来どおり `data/forms.csv` と `output/` のため、`backend/` からは上記のように `--master`・`--output` を指定してください。
+ルートから実行したい場合は `PYTHONPATH=backend python -m app.recognition ...` も利用できます。この場合、入力は `images/...`、既定のマスターと出力はルートの `data/`・`output/` になります。
 
-- `character_001.png` 以降: 上から行ごとに左→右へ番号を付けた切り出し画像
-- `annotated.png`: 元画像に検出枠と番号を描いた確認用画像
-- `detections.json`: 入力情報・検出数・元画像座標系での検出矩形と切り出し矩形
+詳細は [画像認識PoCの手順](docs/recognition-poc.md)、データの説明は [data/README.md](data/README.md) を参照してください。
 
-コンソールにも画像サイズ、検出数、保存先を表示します。終了コードは成功 `0`、読込・保存エラー `1`、検出なし `2` です。検出なしでも確認画像とJSONを保存します。
+## 今後の開発配置
 
-枠線を除きたい場合は各辺から切り詰める割合を指定できます。初期値は0です。
+予定技術はバックエンドがPython・Flask・SQLAlchemy・Alembic・MariaDB、フロントエンドがReact・TypeScriptです。UIコンポーネントライブラリは未選定です。
+次のディレクトリは実装が必要になった段階で追加します。
 
-```bash
-PYTHONPATH=src python -m nyanko_poc "images/図鑑.png" --inset 0.04 --min-group 3
-```
+| 追加予定の場所 | 役割 |
+| --- | --- |
+| `backend/app/models/` | 既存DB設計に基づくSQLAlchemyモデル |
+| `backend/app/routes/` | Flask APIの入口 |
+| `backend/app/services/` | 所持管理・編成計算・一括登録・認証連携・公開などの処理 |
+| `backend/migrations/` | Alembic導入時のマイグレーション |
+| `frontend/` | React・TypeScriptの独立したフロントエンド |
+| `scripts/` | 開発・データ整備用スクリプト |
 
-## 検出方法と制約
+`backend/` は独立したPythonプロジェクトの境界とし、将来の依存管理・pytest設定・ビルド設定をここに集約します。今回は `pyproject.toml` を導入していません。パッケージ化・本番デプロイ時に導入し、開発時のeditable installや本番環境へのパッケージインストールを整備する方針です。恒常的な `PYTHONPATH` 設定は前提にしません。
 
-1. 長辺を最大1600pxへ縮小して処理量と画像処理の強さを揃える。
-2. グレースケール化・ぼかし・2通りのCannyエッジ検出で枠の輪郭を抽出。
-3. 小さな途切れを閉じ、矩形に近い凸輪郭を抽出。
-4. 内外の枠線の重複を除き、サイズと行/列の揃い方から主要な枠群を選択。
-5. 検出座標を元画像サイズへ戻し、元解像度で切り出す。
+`python -m` は通常、作業ディレクトリをモジュール検索パスに追加するため、現在は `backend/` から実行できます（[Python公式ドキュメント](https://docs.python.org/3/using/cmdline.html#cmdoption-m)）。パッケージとしてのFlaskアプリ構成については [Flask公式ドキュメント](https://flask.palletsprojects.com/en/stable/patterns/packages/) も参照してください。
 
-絶対座標、列数、iPhone機種は固定しません。ただし枠の縦横比（0.6〜1.65）、画像短辺に対するサイズ（4〜42%）、サイズ類似度などの仮の条件があります。実画像を受け取り次第見直す対象です。認識モデルやOCRは使いません。
-
-背景装飾が多い、枠線が不明瞭、カード同士が接触、画面端で枠が欠ける場合は検出漏れが起き得ます。同サイズのUIが並ぶと誤検出する可能性があります。枠がない場所を推測で補完せず、画面端に接する候補は除外します。切り出し範囲は矩形枠で、キャラクターだけの背景除去は行いません。
-
-## 検証
-
-```bash
-PYTHONPATH=src python -m unittest discover -s tests -v
-```
-
-合成画像で15枠、複数解像度、位置・順序、枠内の図形による重複、空画像の検出なしを確認します。ゲーム実画像の精度評価とは別です。実画像では `annotated.png` の枠位置・番号と切り出し画像を目視比較し、過検出・検出漏れ・端の欠けを確認してください。
-
-## 構成
-
-```text
-images/                   入力（Git対象外）
-output/                   実行ごとの結果（Git対象外）
-src/nyanko_poc/
-  detection.py            枠検出と座標変換
-  __main__.py             CLI、画像入出力、確認画像とJSON
-tests/test_detection.py   合成画像による回帰検証
-requirements.txt
-```
-
-枠検出を関数として分離しているので、将来の複数画像処理やWeb APIから呼び出せます。画像をまたぐキャラクター重複排除は今後の範囲です。入力画像と出力結果は外部へ送信しません。
-
-## マスターとの画像比較
-
-切り出し済みの画像フォルダを指定します（プロジェクトのルートから実行）。
-
-```bash
-source .venv/bin/activate
-PYTHONPATH=src python -m nyanko_poc.matching output/IMG_2467_20260915_230458_483503
-```
-
-画像1枚でも指定できます。
-
-```bash
-PYTHONPATH=src python -m nyanko_poc.matching "output/IMG_2467_20260915_230458_483503/character_001.png"
-```
-
-マスターは `data/forms.csv`。`--master` で変更できます。フォルダ入力では `character_*.png` のみを比較し、確認画像を対象外にします。スクリーンショット全体を直接比較せず、先に既存の切り出しCLIを実行してください。
-
-`output/matching_実行日時/` に以下を保存します。
-
-- `comparison.html`: 入力と上位3候補を並べた確認画面。ブラウザで開けます。画像は埋め込み済みでネット接続不要。
-- `matches.json`: 画像ごとの候補ID・名前・スコア・1位と2位の差
-- `matches.csv`: 表計算ソフト向けの候補一覧（UTF-8 BOM付き）
-
-処理は、各辺8%の枠除去→グレースケール→96×72pxへの統一→ぼかし→最大3pxの位置ずれを許容した相関比較です。元画像は変更しません。スコアは-1〜1の類似度で、確率ではありません。
-
-判定基準は `--threshold 0.8 --review-threshold 0.6 --margin 0.1` です。0.6は初期の仮基準で、実画像の正解データで調整する対象です。
-
-- **一致候補**: 1位が0.8以上で、2位との差が0.1以上（マスター1件の場合はスコアのみで判定）。
-- **複数候補**: 1位が0.8以上で、2位との差が0.1未満。コンソールに第1・第2候補とスコア差を表示。
-- **要確認**: 1位が0.6以上0.8未満。
-- **不明**: 1位が0.6未満。コンソールはキャラ名を候補として出さず、最高スコアと「該当候補なし」を表示。
-
-低スコア同士の接戦は複数候補にしません。`--review-threshold` は0以上、`--threshold` 以下で指定します。
-
-HTML・JSON・CSVにも同じステータスを保存します。上位3候補の保存は維持します。一致候補にも「要確認」を付ける以前の表示は廃止しました。類似度は確率ではなく、所持データへの登録は行いません。異なる形態や構図は別のマスター画像が必要です。枠を既に大きく除去した入力では追加の8%除去が精度に影響する可能性があります。
-
-実画像24枚と現状の3件のマスターを比較したところ、すべて「不明・要確認」でした。これは照合処理の実行確認であり、実画像での正解率は未評価です。既知キャラを含む別撮影画像で閾値を検証する必要があります。テストでは合成画像の縮小・JPEG圧縮後の候補順位、単色画像、不正マスター、レポート保存を確認します。
-
-
-## DB設計
-
-将来のDB化に向けた論理設計は [テーブル定義書](docs/database-design.md) に記載しています。キャラ・形態・画像・出典の詳細、既存CSVとの対応、および所持・編成・ステージ管理の拡張案を含みます。DB製品は未選定で、実際のDB作成・移行はまだ行っていません。
+DB設計は [テーブル定義書](docs/database-design.md) にあります。既存設計書の「DB製品未選定」は作成時点の記録です。現在の予定はMariaDBですが、今回の構成整理では設計書・CSVの内容を変更していません。
