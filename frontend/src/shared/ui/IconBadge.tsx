@@ -1,6 +1,14 @@
 import { useRef } from 'react';
 import { AssetImage } from './AssetImage';
-export function IconBadge({ imageKey, label }: { imageKey: string | null; label: string }) {
+export function IconBadge({
+  imageKey,
+  label,
+  showLabel = true,
+}: {
+  imageKey: string | null;
+  label: string;
+  showLabel?: boolean;
+}) {
   const dialog = useRef<HTMLDialogElement>(null);
   return (
     <span className="icon-with-label">
@@ -12,7 +20,7 @@ export function IconBadge({ imageKey, label }: { imageKey: string | null; label:
       >
         <AssetImage imageKey={imageKey} name={label} />
       </button>
-      <span>{label}</span>
+      {showLabel && <span>{label}</span>}
       <dialog
         ref={dialog}
         aria-label={label}

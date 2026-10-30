@@ -7,7 +7,12 @@ export function CharacterAbilities({ form }: { form: Form }) {
       <div className="badges">
         {form.abilities?.length ? (
           form.abilities.map((a) => (
-            <IconBadge key={a.form_ability_id} imageKey={a.image_url} label={a.ability_name} />
+            <IconBadge
+              showLabel={false}
+              key={a.form_ability_id}
+              imageKey={a.image_url}
+              label={a.ability_name}
+            />
           ))
         ) : (
           <p className="muted">{form.abilities === null ? '未提供' : '登録なし'}</p>

@@ -10,6 +10,7 @@ export function CharacterTargetsAndEffects({ form }: { form: Form }) {
           {form.effect_targets?.length ? (
             form.effect_targets.map((t) => (
               <IconBadge
+                showLabel={false}
                 key={t.form_effect_target_id}
                 imageKey={t.image_url}
                 label={t.effect_target_name}
@@ -25,7 +26,12 @@ export function CharacterTargetsAndEffects({ form }: { form: Form }) {
         <div className="badges">
           {form.effects?.length ? (
             form.effects.map((e) => (
-              <IconBadge key={e.form_effect_id} imageKey={e.image_url} label={e.effect_name} />
+              <IconBadge
+                showLabel={false}
+                key={e.form_effect_id}
+                imageKey={e.image_url}
+                label={e.effect_name}
+              />
             ))
           ) : (
             <span className="muted">{form.effects === null ? '未提供' : '登録なし'}</span>
