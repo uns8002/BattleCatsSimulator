@@ -1,0 +1,469 @@
+{
+  "character_id": 138,
+  "character_name": "かさじぞう",
+  "character_short_name": null,
+  "rarity_name": "超激レア",
+  "limited_name": null,
+  "collaboration_name": null,
+  "forms": [
+    {
+      "form_id": 393,
+      "form_number": 1,
+      "form_name": "かさじぞう",
+      "hp": 900,
+      "attack_power": 400,
+      "knockbacks": 3,
+      "movement_speed": 14,
+      "attack_range": 320,
+      "attack_frequency_frames": 98,
+      "attack_startup_frames": 19,
+      "respawn_frames": 396,
+      "production_cost": 750,
+      "image_url": null,
+      "description_body": "雪降る中、依頼内容を書いたカサをかぶせると\nその依頼を叶えてくれる謎の組織「かさじぞう」\n天使と黒い敵に超ダメージを与える(範囲攻撃)",
+      "game_version_name": "2.7.0",
+      "effect_targets": [
+        {
+          "form_effect_target_id": 1,
+          "effect_target_id": 3,
+          "effect_target_name": "黒い敵",
+          "image_url": "effect_targets/et_sc_3.png"
+        },
+        {
+          "form_effect_target_id": 2,
+          "effect_target_id": 5,
+          "effect_target_name": "天使",
+          "image_url": "effect_targets/et_sc_5.png"
+        }
+      ],
+      "effects": [
+        {
+          "form_effect_id": 1,
+          "effect_id": 8,
+          "effect_name": "超ダメージ",
+          "image_url": "effects/ef_cl_8.png",
+          "attack_order": null,
+          "parameter_values": null
+        }
+      ],
+      "abilities": [
+        {
+          "form_ability_id": 1,
+          "ability_id": 23,
+          "ability_name": "範囲攻撃",
+          "image_url": "effects/ab_cl_23.png",
+          "parameter_values": null
+        }
+      ],
+      "talents": {
+        "effect_targets": [],
+        "effects": [],
+        "abilities": []
+      }
+    },
+    {
+      "form_id": 394,
+      "form_number": 2,
+      "form_name": "地蔵要塞カムイ",
+      "hp": 5800,
+      "attack_power": 4800,
+      "knockbacks": 2,
+      "movement_speed": 4,
+      "attack_range": 450,
+      "attack_frequency_frames": 501,
+      "attack_startup_frames": 102,
+      "respawn_frames": 4816,
+      "production_cost": 5925,
+      "image_url": null,
+      "description_body": "ついに「かさじぞう」の本体中枢が動き始める\n絶対的な存在感は連邦政府をも震え上がらせる\n天使と黒い敵に超ダメージを与える(範囲攻撃)",
+      "game_version_name": "2.7.0",
+      "effect_targets": [
+        {
+          "form_effect_target_id": 3,
+          "effect_target_id": 3,
+          "effect_target_name": "黒い敵",
+          "image_url": "effect_targets/et_sc_3.png"
+        },
+        {
+          "form_effect_target_id": 4,
+          "effect_target_id": 5,
+          "effect_target_name": "天使",
+          "image_url": "effect_targets/et_sc_5.png"
+        }
+      ],
+      "effects": [
+        {
+          "form_effect_id": 2,
+          "effect_id": 8,
+          "effect_name": "超ダメージ",
+          "image_url": "effects/ef_cl_8.png",
+          "attack_order": null,
+          "parameter_values": null
+        }
+      ],
+      "abilities": [
+        {
+          "form_ability_id": 2,
+          "ability_id": 23,
+          "ability_name": "範囲攻撃",
+          "image_url": "effects/ab_cl_23.png",
+          "parameter_values": null
+        }
+      ],
+      "talents": {
+        "effect_targets": [],
+        "effects": [],
+        "abilities": []
+      }
+    },
+    {
+      "form_id": 395,
+      "form_number": 3,
+      "form_name": "地蔵要塞ゼロカムイ",
+      "hp": 6800,
+      "attack_power": 4800,
+      "knockbacks": 2,
+      "movement_speed": 4,
+      "attack_range": 485,
+      "attack_frequency_frames": 401,
+      "attack_startup_frames": 46,
+      "respawn_frames": 4816,
+      "production_cost": 5925,
+      "image_url": null,
+      "description_body": "吹雪を抜け、輝く黄金ボディをあらわにした\n「かさじぞう」は連邦政府殲滅に向け動き出す\n天使と黒い敵に超ダメージを与える(範囲攻撃)",
+      "game_version_name": "13.4.0",
+      "effect_targets": [
+        {
+          "form_effect_target_id": 5,
+          "effect_target_id": 3,
+          "effect_target_name": "黒い敵",
+          "image_url": "effect_targets/et_sc_3.png"
+        },
+        {
+          "form_effect_target_id": 6,
+          "effect_target_id": 5,
+          "effect_target_name": "天使",
+          "image_url": "effect_targets/et_sc_5.png"
+        }
+      ],
+      "effects": [
+        {
+          "form_effect_id": 3,
+          "effect_id": 8,
+          "effect_name": "超ダメージ",
+          "image_url": "effects/ef_cl_8.png",
+          "attack_order": null,
+          "parameter_values": null
+        }
+      ],
+      "abilities": [
+        {
+          "form_ability_id": 3,
+          "ability_id": 23,
+          "ability_name": "範囲攻撃",
+          "image_url": "effects/ab_cl_23.png",
+          "parameter_values": null
+        }
+      ],
+      "talents": {
+        "effect_targets": [],
+        "effects": [],
+        "abilities": [
+          {
+            "form_ability_talent_id": 1,
+            "ability_id": 37,
+            "ability_name": "古代の呪い無効",
+            "image_url": "effects/ab_cl_37.png",
+            "talent_type_name": "本能",
+            "max_level": 1,
+            "np_costs": [
+              100
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add"
+            }
+          },
+          {
+            "form_ability_talent_id": 2,
+            "ability_id": 38,
+            "ability_name": "毒撃ダメージ無効",
+            "image_url": "effects/ab_cl_38.png",
+            "talent_type_name": "本能",
+            "max_level": 1,
+            "np_costs": [
+              100
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add"
+            }
+          },
+          {
+            "form_ability_talent_id": 3,
+            "ability_id": 45,
+            "ability_name": "烈波ダメージ耐性",
+            "image_url": "effects/ab_cl_45.png",
+            "talent_type_name": "本能",
+            "max_level": 10,
+            "np_costs": [
+              15,
+              15,
+              15,
+              15,
+              15,
+              20,
+              20,
+              20,
+              20,
+              20
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add",
+              "surge_damage_reduction_percent": {
+                "base": 0,
+                "step": 5
+              }
+            }
+          },
+          {
+            "form_ability_talent_id": 4,
+            "ability_id": 51,
+            "ability_name": "基本体力アップ",
+            "image_url": "effects/ab_cl_51.png",
+            "talent_type_name": "本能",
+            "max_level": 10,
+            "np_costs": [
+              15,
+              15,
+              15,
+              15,
+              15,
+              20,
+              20,
+              20,
+              20,
+              20
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add",
+              "defense_buff_percent": {
+                "base": 0,
+                "step": 2
+              }
+            }
+          },
+          {
+            "form_ability_talent_id": 5,
+            "ability_id": 52,
+            "ability_name": "基本攻撃力アップ",
+            "image_url": "effects/ab_cl_52.png",
+            "talent_type_name": "本能",
+            "max_level": 10,
+            "np_costs": [
+              15,
+              15,
+              15,
+              15,
+              15,
+              20,
+              20,
+              20,
+              20,
+              20
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add",
+              "attack_buff_percent": {
+                "base": 0,
+                "step": 2
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "form_id": 396,
+      "form_number": 4,
+      "form_name": "ウルトラかさじぞう",
+      "hp": 1100,
+      "attack_power": 400,
+      "knockbacks": 3,
+      "movement_speed": 19,
+      "attack_range": 320,
+      "attack_frequency_frames": 98,
+      "attack_startup_frames": 19,
+      "respawn_frames": 396,
+      "production_cost": 750,
+      "image_url": null,
+      "description_body": "連邦政府殲滅の任務を終え帰還した「かさじぞう」\n雪が降り積もる中、今日も新たな依頼を待ち続ける\n天使と黒い敵に超ダメージを与え、必ず生き残る(全方位)",
+      "game_version_name": "15.0.0",
+      "effect_targets": [
+        {
+          "form_effect_target_id": 7,
+          "effect_target_id": 3,
+          "effect_target_name": "黒い敵",
+          "image_url": "effect_targets/et_sc_3.png"
+        },
+        {
+          "form_effect_target_id": 8,
+          "effect_target_id": 5,
+          "effect_target_name": "天使",
+          "image_url": "effect_targets/et_sc_5.png"
+        }
+      ],
+      "effects": [
+        {
+          "form_effect_id": 4,
+          "effect_id": 8,
+          "effect_name": "超ダメージ",
+          "image_url": "effects/ef_cl_8.png",
+          "attack_order": null,
+          "parameter_values": null
+        }
+      ],
+      "abilities": [
+        {
+          "form_ability_id": 4,
+          "ability_id": 2,
+          "ability_name": "生き残る",
+          "image_url": "effects/ab_cl_2.png",
+          "parameter_values": {
+            "activation_rate_percent": 100
+          }
+        },
+        {
+          "form_ability_id": 5,
+          "ability_id": 25,
+          "ability_name": "全方位攻撃",
+          "image_url": "effects/ab_cl_25.png",
+          "parameter_values": null
+        }
+      ],
+      "talents": {
+        "effect_targets": [],
+        "effects": [],
+        "abilities": [
+          {
+            "form_ability_talent_id": 6,
+            "ability_id": 37,
+            "ability_name": "古代の呪い無効",
+            "image_url": "effects/ab_cl_37.png",
+            "talent_type_name": "本能",
+            "max_level": 1,
+            "np_costs": [
+              100
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add"
+            }
+          },
+          {
+            "form_ability_talent_id": 7,
+            "ability_id": 38,
+            "ability_name": "毒撃ダメージ無効",
+            "image_url": "effects/ab_cl_38.png",
+            "talent_type_name": "本能",
+            "max_level": 1,
+            "np_costs": [
+              100
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add"
+            }
+          },
+          {
+            "form_ability_talent_id": 8,
+            "ability_id": 45,
+            "ability_name": "烈波ダメージ耐性",
+            "image_url": "effects/ab_cl_45.png",
+            "talent_type_name": "本能",
+            "max_level": 10,
+            "np_costs": [
+              15,
+              15,
+              15,
+              15,
+              15,
+              20,
+              20,
+              20,
+              20,
+              20
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add",
+              "surge_damage_reduction_percent": {
+                "base": 0,
+                "step": 5
+              }
+            }
+          },
+          {
+            "form_ability_talent_id": 9,
+            "ability_id": 51,
+            "ability_name": "基本体力アップ",
+            "image_url": "effects/ab_cl_51.png",
+            "talent_type_name": "本能",
+            "max_level": 10,
+            "np_costs": [
+              15,
+              15,
+              15,
+              15,
+              15,
+              20,
+              20,
+              20,
+              20,
+              20
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add",
+              "defense_buff_percent": {
+                "base": 0,
+                "step": 2
+              }
+            }
+          },
+          {
+            "form_ability_talent_id": 10,
+            "ability_id": 52,
+            "ability_name": "基本攻撃力アップ",
+            "image_url": "effects/ab_cl_52.png",
+            "talent_type_name": "本能",
+            "max_level": 10,
+            "np_costs": [
+              15,
+              15,
+              15,
+              15,
+              15,
+              20,
+              20,
+              20,
+              20,
+              20
+            ],
+            "attack_order": null,
+            "parameter_values": {
+              "action": "add",
+              "attack_buff_percent": {
+                "base": 0,
+                "step": 2
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

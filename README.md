@@ -125,3 +125,68 @@ Factory・health API・DB設定・管理CLIと既存認識unittestの8件を実�
 カラフルボックス/cPanelで `.` によるインストールに互換性上の問題が判明した場合は、デプロイ工程でインストール方法を見直します。現在の依存指定はバージョン範囲でありロックファイルではありません。本番のバージョン固定とPassengerのWSGI起動設定は後続工程です。
 
 DB設計は [テーブル定義書](docs/database-design.md) にあります。既存設計書の「DB製品未選定」は作成時点の記録です。現在の予定はMariaDBですが、今回の構成整理では設計書・CSVの内容を変更していません。
+
+## フロントエンド（キャラクター詳細）
+
+`frontend/` はReact・TypeScript・Viteを使用しています。
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+`http://127.0.0.1:5173/characters/138` を開いてください。提供された `src/features/characters/fixtures/kasajizou_character_detail_display_v2.json` をローカルのレスポンスとして読み込みます。バックエンド・DB・SSHトンネルは不要です。本番ビルドでも同じJSONを表示します。以前のダミーデータ・仮計算は削除しました。
+
+データの流れは `features/characters/api/characters.ts`（取得）→ `features/characters/state/CharacterProvider.tsx`（取得状態管理）→ 画面です。JSONのプロパティ名を保持した型は `features/characters/api/characterDto.ts` に定義しています。正式APIへ切り替える際は取得先を変更します。
+
+体力・攻撃力はLv1基準値のまま表示します。レベルや本能の選択は保持しますが、成長・補正計算とDPSは未対応です。NPだけはJSONの費用表から集計します。詳細は [画面実装の記録](docs/character-detail-ui.md) を参照してください。
+
+画像はルートの `images/` を管理元とし、Viteが `src/shared/images/imagePaths.json` の対応表にあるファイルだけを `/images/...` から直接配信します。`frontend/public/` へのコピーは不要です。本番デプロイでは対応表と同じURLで画像を配信する設定が必要です（画像はビルドに含めません）。
+
+### テスト・ビルド
+
+```bash
+cd frontend
+npm test
+npm run build
+npm run test:e2e -- --workers=1
+```
+
+E2EはChromeを使用し、開発5183・プレビュー5184のサーバーを自動起動・終了します。この2ポートを空け、先にビルドしてください。通常の開発サーバー5173は別途起動できます。
+
+### コード整形
+
+```bash
+cd frontend
+npm run format
+npm run format:check
+```
+
+Prettierのルールは `.prettierrc.json`（2スペース・行幅目安100文字）に定義しています。生成物・ロックファイル・提供JSON原本は整形対象外です。VS Codeではルートを開き、推奨拡張 `esbenp.prettier-vscode` を使用すると保存時に整形します。Pythonには適用しません。
+
+### 実装とテストの配置
+
+`frontend/src/` はアプリ本体です。テストコードはすべて `frontend/tests/` にまとめています。
+
+```text
+frontend/
+├── src/            # アプリ本体
+└── tests/
+    ├── unit/       # 関数・データ取得のテスト（npm test）
+    └── e2e/        # ブラウザ操作テスト（npm run test:e2e）
+```
+
+単体テストの型チェックも従来どおりビルド時に実行します。
+
+### フロントエンド内の配置ルール
+
+- `src/app/`：ルーティングとアプリ全体の組み立て。起動だけを `main.tsx` に置きます。
+- `src/shared/layout/`：サイト共通のヘッダー・フッター・レイアウト。
+- `src/shared/ui/`：画面を問わず使える画像・アイコン表示部品。
+- `src/shared/images/`：画像キーと配信URLの対応。
+- `src/features/characters/`：キャラクター機能。`pages/` に一覧・詳細画面、`components/` に詳細画面のカード類、`api/` に取得処理・DTO・検証、`state/` に取得状態管理、`model/` に表示・NP集計、`fixtures/` に提供JSONを配置します。
+- `src/features/settings/pages/`：設定画面。
+- `tests/`：テスト専用。アプリ本体には置きません。
+
+画面固有の処理はその機能の配下に置きます。`shared/` から `features/` は参照しません。キャラクター一覧へのリンクを固定したパンくずは共通部品ではなく `features/characters/components/CharacterBreadcrumbs.tsx` に配置しています。

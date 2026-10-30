@@ -1,0 +1,81 @@
+import type { CharacterFormDto as Form } from '../api/characterDto';
+import type { CharacterSettings } from '../model/state';
+import { talentEntries, talentProgress } from '../model/characterDisplay';
+import { IconBadge } from '../../../shared/ui/IconBadge';
+export function CharacterTalents({
+  form,
+  settings,
+  onChange,
+}: {
+  form: Form;
+  settings: CharacterSettings;
+  onChange: (s: CharacterSettings) => void;
+}) {
+  const entries = talentEntries(form);
+  const progress = entries.map((t) => talentProgress(t.dto, settings.talents[t.key]));
+  const total = progress.some((p) => p.used === null)
+    ? null
+    : progress.reduce((sum, p) => sum + (p.used ?? 0), 0);
+  return (
+    <section className="card">
+      <div className="section-heading">
+        <h2>本能・超本能</h2>
+        {entries.length > 0 && <span data-testid="total-np">使用NP {total ?? '未提供'}</span>}
+      </div>
+      {!entries.length && (
+        <p className="muted">
+          {form.talents === null
+            ? '本能データ未提供'
+            : 'この形態の本能・超本能は登録されていません。'}
+        </p>
+      )}
+      {entries.map((entry, index) => {
+        const t = entry.dto;
+        const p = progress[index];
+        const change = (value: number) =>
+          onChange({ ...settings, talents: { ...settings.talents, [entry.key]: value } });
+        return (
+          <div className="talent-row" key={entry.key}>
+            <div className="section-heading">
+              <h3>
+                <IconBadge imageKey={t.image_url} label={entry.name} />
+              </h3>
+              <span>
+                Lv{p.level}/{t.max_level ?? '未提供'}
+              </span>
+            </div>
+            <p className="muted">
+              {t.talent_type_name ?? '区分未提供'} · {entry.category}
+            </p>
+            <div className="talent-controls">
+              <div className="stepper">
+                <button
+                  aria-label={entry.name + 'を下げる'}
+                  disabled={p.level === 0}
+                  onClick={() => change(p.level - 1)}
+                >
+                  −
+                </button>
+                <output aria-label={entry.name + 'のレベル'}>{p.level}</output>
+                <button
+                  aria-label={entry.name + 'を上げる'}
+                  disabled={t.max_level === null || p.atMax}
+                  onClick={() => change(p.level + 1)}
+                >
+                  ＋
+                </button>
+              </div>
+              <span>
+                {p.atMax ? '最大レベル' : p.next === null ? '次のNP：未提供' : `次 ${p.next}NP`}
+              </span>
+            </div>
+            <div className="section-heading">
+              <span className="talent">補正計算は未対応</span>
+              <span>使用 {p.used ?? '未提供'}NP</span>
+            </div>
+          </div>
+        );
+      })}
+    </section>
+  );
+}
