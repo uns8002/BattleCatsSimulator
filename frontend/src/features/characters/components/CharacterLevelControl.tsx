@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { validLevel } from '../model/state';
+import { MAX_BASIC_LEVEL } from '../model/baseStats';
 export function CharacterLevelControl({
   level,
   onChange,
@@ -31,7 +32,17 @@ export function CharacterLevelControl({
           aria-label="キャラクターレベル"
           inputMode="numeric"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            const parsed = Number(value);
+            if (value.trim() && Number.isSafeInteger(parsed) && parsed >= 1) {
+              const next = validLevel(value, level);
+              setInput(String(next));
+              onChange(next);
+            } else {
+              setInput(value);
+            }
+          }}
           onBlur={commit}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -42,7 +53,7 @@ export function CharacterLevelControl({
         />
         <button
           aria-label="レベルを上げる"
-          disabled={level >= Number.MAX_SAFE_INTEGER}
+          disabled={level >= MAX_BASIC_LEVEL}
           onClick={() => onChange(level + 1)}
         >
           ＋

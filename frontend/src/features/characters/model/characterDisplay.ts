@@ -1,16 +1,23 @@
 import type { CharacterFormDto, TalentDto } from '../api/characterDto';
 import { framesLabel } from './state';
+import { calculateBaseStats } from './baseStats';
+import { supportsSimpleDps } from './dps';
 
 const numberLabel = (value: number | null) =>
   value === null ? '未提供' : value.toLocaleString('ja-JP');
 const timeLabel = (value: number | null) => (value === null ? '未提供' : framesLabel(value));
 
-// 選択レベルや本能を基礎値へ掛けない。正式な計算処理は後続工程。
-export function statValues(form: CharacterFormDto): string[] {
+// JSONの基準値は変更せず、計算結果だけを表示に使用する。
+export function statValues(
+  form: CharacterFormDto,
+  level = 1,
+  simpleDpsSupported = supportsSimpleDps(form.form_id),
+): string[] {
+  const stats = calculateBaseStats(form, level, simpleDpsSupported);
   return [
-    numberLabel(form.hp),
-    numberLabel(form.attack_power),
-    '未対応',
+    stats.supported ? numberLabel(stats.hp) : '未対応',
+    stats.supported ? numberLabel(stats.attackPower) : '未対応',
+    stats.dps === null ? '未対応' : numberLabel(stats.dps),
     numberLabel(form.attack_range),
     '未提供',
     numberLabel(form.movement_speed),

@@ -68,7 +68,7 @@ export function CharacterDetailPage({
       <CharacterCombos />
       <CharacterGachas />
       <p className="data-note">
-        ※提供JSONの値を表示しています。体力・攻撃力はLv1基準です。成長・補正計算、DPSは未対応です。
+        ※体力・攻撃力は提供JSONのLv1基準値から暫定計算しています。Lv61以上・本能等の補正は未対応です。
       </p>
       <dialog
         ref={dialog}

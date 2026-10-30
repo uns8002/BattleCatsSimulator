@@ -16,7 +16,7 @@ const fixture = (() => {
 })();
 
 describe('JSON表示・NP集計', () => {
-  it('Lv1基準値だけを表示しDPS・攻撃範囲を捏造しない', () => {
+  it('Lv1の単発DPSを表示し攻撃範囲は補完しない', () => {
     expect(fixture.forms.map((form) => statValues(form)[0])).toEqual([
       '900',
       '5,800',
@@ -26,7 +26,7 @@ describe('JSON表示・NP集計', () => {
     expect(statValues(fixture.forms[3])).toEqual([
       '1,100',
       '400',
-      '未対応',
+      '122',
       '320',
       '未提供',
       '19',
