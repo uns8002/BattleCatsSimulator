@@ -1,10 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { defineConfig } from 'vite';
+import imagePaths from './src/shared/images/imagePaths.json' with { type: 'json' };
 
 // Only explicitly published assets are served; PoC input screenshots stay private.
-const imagePaths = JSON.parse(
-  await readFile(new URL('./src/shared/images/imagePaths.json', import.meta.url), 'utf8'),
-);
+// Static import lets Vite track this file and reload the server when mappings change.
 const imageFiles = new Map(
   Object.values(imagePaths).map((path) => [
     '/images/' + path,

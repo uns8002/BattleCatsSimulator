@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { isCharacterDto } from '../../src/features/characters/api/validateCharacter';
-import rawFixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v2.json';
+import rawFixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v3.json';
 import type { CharacterFormDto } from '../../src/features/characters/api/characterDto';
 import {
   statValues,

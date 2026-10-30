@@ -1,4 +1,4 @@
-import fixtureUrl from '../fixtures/kasajizou_character_detail_display_v2.json?url';
+import fixtureUrl from '../fixtures/kasajizou_character_detail_display_v3.json?url';
 import type { CharacterDetailDto } from './characterDto';
 import { isCharacterDto } from './validateCharacter';
 export { isCharacterDto } from './validateCharacter';

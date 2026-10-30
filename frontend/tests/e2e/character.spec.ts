@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import type { CharacterDetailDto } from '../../src/features/characters/api/characterDto';
-import fixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v2.json' with { type: 'json' };
+import fixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v3.json' with { type: 'json' };
 
 for (const width of [390, 1280]) {
   test(`JSON detail and controls ${width}px`, async ({ page }) => {
@@ -99,7 +99,7 @@ test('array order, null fields and missing images are handled without invented v
     errors.push(e.message);
     console.log('PAGE ERROR', e.message);
   });
-  await page.route('**/kasajizou_character_detail_display_v2.json*', (route) =>
+  await page.route('**/kasajizou_character_detail_display_v3.json*', (route) =>
     route.request().resourceType() === 'fetch'
       ? route.fulfill({ json: response })
       : route.continue(),

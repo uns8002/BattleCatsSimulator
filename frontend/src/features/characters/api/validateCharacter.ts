@@ -74,6 +74,20 @@ export function isCharacterDto(v: unknown): v is CharacterDetailDto {
         'production_cost',
       ].every((k) => nullableNumber(f[k])) &&
       ['image_url', 'description_body', 'game_version_name'].every((k) => nullableText(f[k])) &&
+      nullableNumber(f.required_level) &&
+      (f.required_stage_id === null || id(f.required_stage_id)) &&
+      list(
+        f.materials,
+        (m) =>
+          object(m) &&
+          id(m.form_material_id) &&
+          id(m.material_id) &&
+          text(m.material_code) &&
+          text(m.material_name) &&
+          text(m.material_type) &&
+          nullableText(m.image_url) &&
+          number(m.required_quantity),
+      ) &&
       list(f.effect_targets, (item) => entry(item, 'effect_target')) &&
       list(f.effects, (item) => entry(item, 'effect')) &&
       list(f.abilities, (item) => entry(item, 'ability')) &&

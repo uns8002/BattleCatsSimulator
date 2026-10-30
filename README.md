@@ -136,7 +136,7 @@ npm install
 npm run dev
 ```
 
-`http://127.0.0.1:5173/characters/138` を開いてください。提供された `src/features/characters/fixtures/kasajizou_character_detail_display_v2.json` をローカルのレスポンスとして読み込みます。バックエンド・DB・SSHトンネルは不要です。本番ビルドでも同じJSONを表示します。以前のダミーデータ・仮計算は削除しました。
+`http://127.0.0.1:5173/characters/138` を開いてください。提供された `src/features/characters/fixtures/kasajizou_character_detail_display_v3.json` をローカルのレスポンスとして読み込みます。バックエンド・DB・SSHトンネルは不要です。本番ビルドでも同じJSONを表示します。以前のダミーデータ・仮計算は削除しました。
 
 データの流れは `features/characters/api/characters.ts`（取得）→ `features/characters/state/CharacterProvider.tsx`（取得状態管理）→ 画面です。JSONのプロパティ名を保持した型は `features/characters/api/characterDto.ts` に定義しています。正式APIへ切り替える際は取得先を変更します。
 

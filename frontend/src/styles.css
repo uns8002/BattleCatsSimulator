@@ -768,3 +768,31 @@ h3 {
 .talent-row .section-heading > span {
   flex-shrink: 0;
 }
+
+.evolution-materials {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 100%;
+}
+.evolution-material {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+}
+.evolution-material-image {
+  display: inline-flex;
+  align-items: center;
+}
+.evolution-material-image img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.evolution-material-image .image-placeholder {
+  width: auto;
+  height: auto;
+  font-size: 13px;
+}

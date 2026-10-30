@@ -59,7 +59,10 @@
         "effect_targets": [],
         "effects": [],
         "abilities": []
-      }
+      },
+      "required_level": 0,
+      "required_stage_id": null,
+      "materials": []
     },
     {
       "form_id": 394,
@@ -114,7 +117,10 @@
         "effect_targets": [],
         "effects": [],
         "abilities": []
-      }
+      },
+      "required_level": 10,
+      "required_stage_id": null,
+      "materials": []
     },
     {
       "form_id": 395,
@@ -284,7 +290,56 @@
             }
           }
         ]
-      }
+      },
+      "required_level": 30,
+      "required_stage_id": null,
+      "materials": [
+        {
+          "form_material_id": 1,
+          "material_id": 10,
+          "material_code": "purple_catfruit",
+          "material_name": "紫マタタビ",
+          "material_type": "001",
+          "image_url": "materials/mt_df_10.png",
+          "required_quantity": 7
+        },
+        {
+          "form_material_id": 2,
+          "material_id": 11,
+          "material_code": "red_catfruit",
+          "material_name": "赤マタタビ",
+          "material_type": "001",
+          "image_url": "materials/mt_df_11.png",
+          "required_quantity": 3
+        },
+        {
+          "form_material_id": 3,
+          "material_id": 13,
+          "material_code": "green_catfruit",
+          "material_name": "緑マタタビ",
+          "material_type": "001",
+          "image_url": "materials/mt_df_13.png",
+          "required_quantity": 2
+        },
+        {
+          "form_material_id": 4,
+          "material_id": 14,
+          "material_code": "yellow_catfruit",
+          "material_name": "黄マタタビ",
+          "material_type": "001",
+          "image_url": "materials/mt_df_14.png",
+          "required_quantity": 7
+        },
+        {
+          "form_material_id": 5,
+          "material_id": 15,
+          "material_code": "epic_catfruit",
+          "material_name": "虹マタタビ",
+          "material_type": "001",
+          "image_url": "materials/mt_df_15.png",
+          "required_quantity": 4
+        }
+      ]
     },
     {
       "form_id": 396,
@@ -463,7 +518,47 @@
             }
           }
         ]
-      }
+      },
+      "required_level": 60,
+      "required_stage_id": null,
+      "materials": [
+        {
+          "form_material_id": 6,
+          "material_id": 18,
+          "material_code": "gold_catfruit",
+          "material_name": "金マタタビ",
+          "material_type": "001",
+          "image_url": "materials/mt_df_18.png",
+          "required_quantity": 1
+        },
+        {
+          "form_material_id": 7,
+          "material_id": 20,
+          "material_code": "red_behemoth_stone",
+          "material_name": "紅獣石",
+          "material_type": "002",
+          "image_url": "materials/bs_df_2.png",
+          "required_quantity": 5
+        },
+        {
+          "form_material_id": 8,
+          "material_id": 19,
+          "material_code": "purple_behemoth_stone",
+          "material_name": "紫獣石",
+          "material_type": "002",
+          "image_url": "materials/bs_df_1.png",
+          "required_quantity": 5
+        },
+        {
+          "form_material_id": 9,
+          "material_id": 28,
+          "material_code": "green_behemoth_gem",
+          "material_name": "翠獣結晶",
+          "material_type": "002",
+          "image_url": "materials/bs_df_10.png",
+          "required_quantity": 2
+        }
+      ]
     }
   ]
 }

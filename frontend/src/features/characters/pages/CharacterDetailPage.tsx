@@ -55,7 +55,7 @@ export function CharacterDetailPage({
           selected={form.form_id}
           onChange={setSelectedId}
         />
-        <EvolutionRequirements />
+        <EvolutionRequirements form={form} />
         <CharacterLevelControl
           level={settings.level}
           onChange={(level) => onChange({ ...settings, level })}

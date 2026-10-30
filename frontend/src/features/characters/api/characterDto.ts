@@ -47,7 +47,19 @@ export interface AbilityTalentDto extends TalentDto {
   ability_id: number;
   ability_name: string;
 }
+export interface FormMaterialDto {
+  form_material_id: number;
+  material_id: number;
+  material_code: string;
+  material_name: string;
+  material_type: string;
+  image_url: string | null;
+  required_quantity: number;
+}
 export interface CharacterFormDto {
+  required_level: number | null;
+  required_stage_id: number | null;
+  materials: FormMaterialDto[] | null;
   form_id: number;
   form_number: number;
   form_name: string;

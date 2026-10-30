@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getCharacter, isCharacterDto } from '../../src/features/characters/api/characters';
-import fixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v2.json';
+import fixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v3.json';
 
 afterEach(() => vi.unstubAllGlobals());
 describe('provided response contract', () => {
