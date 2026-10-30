@@ -1,6 +1,7 @@
 import type { CharacterFormDto as Form } from '../api/characterDto';
 import type { CharacterSettings } from '../model/state';
 import { talentEntries, talentProgress } from '../model/characterDisplay';
+import { parseTalentModifiers } from '../model/talentModifiers';
 import { IconBadge } from '../../../shared/ui/IconBadge';
 export function CharacterTalents({
   form,
@@ -32,6 +33,22 @@ export function CharacterTalents({
       {entries.map((entry, index) => {
         const t = entry.dto;
         const p = progress[index];
+        const parsed = parseTalentModifiers(t, p.level);
+        const corrections = [
+          parsed.percentages.hp !== 0
+            ? `体力 ${parsed.percentages.hp > 0 ? '+' : ''}${parsed.percentages.hp}%`
+            : '',
+          parsed.percentages.attackPower !== 0
+            ? `攻撃力 ${parsed.percentages.attackPower > 0 ? '+' : ''}${parsed.percentages.attackPower}%`
+            : '',
+        ].filter(Boolean);
+        const correctionLabel = corrections.length
+          ? corrections.join(' / ')
+          : parsed.unsupportedParameters.length || parsed.invalidParameters.length
+            ? '補正計算は未対応'
+            : Object.keys(t.parameter_values ?? {}).some((key) => key !== 'action')
+              ? '補正なし'
+              : '戦闘処理は未対応';
         const change = (value: number) =>
           onChange({ ...settings, talents: { ...settings.talents, [entry.key]: value } });
         return (
@@ -70,7 +87,7 @@ export function CharacterTalents({
               </span>
             </div>
             <div className="section-heading">
-              <span className="talent">補正計算は未対応</span>
+              <span className="talent">{correctionLabel}</span>
               <span>使用 {p.used ?? '未提供'}NP</span>
             </div>
           </div>

@@ -43,7 +43,7 @@ for (const width of [390, 1280]) {
     await expect(page.getByTestId('stat-2').locator('strong')).toHaveText('1,567');
     await page.getByRole('button', { name: '基本体力アップを上げる', exact: true }).click();
     await expect(page.getByTestId('total-np')).toContainText('15');
-    await expect(page.getByTestId('stat-0').locator('strong')).toHaveText('14,080');
+    await expect(page.getByTestId('stat-0').locator('strong')).toHaveText('14,361.6');
     await page.getByRole('button', { name: '古代の呪い無効を上げる', exact: true }).click();
     await expect(page.getByTestId('total-np')).toContainText('115');
     await expect(

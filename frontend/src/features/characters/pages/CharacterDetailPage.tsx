@@ -61,14 +61,14 @@ export function CharacterDetailPage({
           onChange={(level) => onChange({ ...settings, level })}
         />
       </section>
-      <CharacterStats form={form} level={settings.level} />
+      <CharacterStats form={form} level={settings.level} talentLevels={settings.talents} />
       <CharacterTargetsAndEffects form={form} />
       <CharacterAbilities form={form} />
       <CharacterTalents form={form} settings={settings} onChange={onChange} />
       <CharacterCombos />
       <CharacterGachas />
       <p className="data-note">
-        ※体力・攻撃力は提供JSONのLv1基準値から暫定計算しています。Lv61以上・本能等の補正は未対応です。
+        ※体力・攻撃力は提供JSONのLv1基準値から暫定計算しています。本能の体力・攻撃力補正を反映しています。成長式・補正の適用順・端数処理は暫定です。
       </p>
       <dialog
         ref={dialog}

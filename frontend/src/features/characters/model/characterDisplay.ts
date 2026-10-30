@@ -1,7 +1,8 @@
 import type { CharacterFormDto, TalentDto } from '../api/characterDto';
 import { framesLabel } from './state';
 import { calculateBaseStats } from './baseStats';
-import { supportsSimpleDps } from './dps';
+import { supportsSimpleDps, calculateSimpleDps } from './dps';
+import { parseTalentModifiers, applyTalentModifiers } from './talentModifiers';
 
 const numberLabel = (value: number | null) =>
   value === null ? '未提供' : value.toLocaleString('ja-JP');
@@ -12,12 +13,20 @@ export function statValues(
   form: CharacterFormDto,
   level = 1,
   simpleDpsSupported = supportsSimpleDps(form.form_id),
+  talentLevels: Record<string, number> = {},
 ): string[] {
-  const stats = calculateBaseStats(form, level, simpleDpsSupported);
+  const base = calculateBaseStats(form, level);
+  const modifiers = talentEntries(form).map(
+    (entry) => parseTalentModifiers(entry.dto, talentLevels[entry.key] ?? 0).percentages,
+  );
+  const stats = applyTalentModifiers(base, modifiers);
+  const dps = simpleDpsSupported
+    ? calculateSimpleDps(stats.attackPower, form.attack_frequency_frames)
+    : null;
   return [
-    stats.supported ? numberLabel(stats.hp) : '未対応',
-    stats.supported ? numberLabel(stats.attackPower) : '未対応',
-    stats.dps === null ? '未対応' : numberLabel(stats.dps),
+    base.supported ? numberLabel(stats.hp) : '未対応',
+    base.supported ? numberLabel(stats.attackPower) : '未対応',
+    dps === null ? '未対応' : numberLabel(dps),
     numberLabel(form.attack_range),
     '未提供',
     numberLabel(form.movement_speed),

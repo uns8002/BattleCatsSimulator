@@ -1,14 +1,22 @@
 import type { CharacterFormDto as Form } from '../api/characterDto';
 import { statValues } from '../model/characterDisplay';
 import { statLabels } from './statLabels';
-export function CharacterStats({ form, level }: { form: Form; level: number }) {
-  const values = statValues(form, level);
+export function CharacterStats({
+  form,
+  level,
+  talentLevels,
+}: {
+  form: Form;
+  level: number;
+  talentLevels: Record<string, number>;
+}) {
+  const values = statValues(form, level, undefined, talentLevels);
   return (
     <section className="card">
       <h2>ステータス</h2>
       <p className="muted">
         Lv{level}
-        の基本値（Lv1〜60の暫定成長式）。成長倍率・端数処理は実ゲームとの一致未検証です。本能・お宝・にゃんコンボ補正は含みません。
+        の基本値（Lv1〜60の暫定成長式）。成長倍率・端数処理は実ゲームとの一致未検証です。対応済みの体力・攻撃力本能を反映しています。お宝・にゃんコンボ補正は含みません。
       </p>
       <div className="stats-grid">
         {statLabels.map((label, i) => (
