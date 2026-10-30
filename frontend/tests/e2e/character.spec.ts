@@ -50,7 +50,8 @@ for (const width of [390, 1280]) {
       page.getByRole('button', { name: '古代の呪い無効を上げる', exact: true }),
     ).toBeDisabled();
     await page.getByRole('button', { name: '第1', exact: true }).click();
-    await expect(page.getByText('この形態の本能・超本能は登録されていません。')).toBeVisible();
+    await expect(page.getByRole('heading', { name: '本能', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: '超本能', exact: true })).toHaveCount(0);
     await page.getByRole('button', { name: '第4', exact: true }).click();
     await expect(page.getByLabel('基本体力アップのレベル')).toHaveText('1');
     await page.getByRole('link', { name: '⚙ お宝設定', exact: true }).click();
@@ -108,7 +109,7 @@ test('array order, null fields and missing images are handled without invented v
   await expect(page.locator('.form-selector button')).toHaveText(['第2', '第1']);
   await expect(page.getByRole('heading', { name: 'かさじぞう', exact: true })).toBeVisible();
   await expect(page.getByTestId('stat-0').locator('strong')).toHaveText('未提供');
-  await expect(page.getByText('本能データ未提供', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '本能', exact: true })).toHaveCount(0);
   await expect(page.getByText('略称：短縮名テスト')).toBeVisible();
   await expect(page.getByText('限定：限定名テスト')).toBeVisible();
   await expect(page.getByText('コラボ：コラボ名テスト')).toBeVisible();

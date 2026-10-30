@@ -1,6 +1,6 @@
 import type { CharacterFormDto as Form } from '../api/characterDto';
 import type { CharacterSettings } from '../model/state';
-import { talentEntries, talentProgress } from '../model/characterDisplay';
+import { talentEntries, talentProgress, type TalentDisplay } from '../model/characterDisplay';
 import { parseTalentModifiers } from '../model/talentModifiers';
 import { IconBadge } from '../../../shared/ui/IconBadge';
 export function CharacterTalents({
@@ -13,6 +13,33 @@ export function CharacterTalents({
   onChange: (s: CharacterSettings) => void;
 }) {
   const entries = talentEntries(form);
+  return (
+    <>
+      {(['本能', '超本能'] as const).map((kind) => (
+        <TalentCard
+          key={kind}
+          kind={kind}
+          entries={entries.filter((entry) => entry.dto.talent_type_name === kind)}
+          settings={settings}
+          onChange={onChange}
+        />
+      ))}
+    </>
+  );
+}
+
+function TalentCard({
+  kind,
+  entries,
+  settings,
+  onChange,
+}: {
+  kind: '本能' | '超本能';
+  entries: TalentDisplay[];
+  settings: CharacterSettings;
+  onChange: (s: CharacterSettings) => void;
+}) {
+  if (entries.length === 0) return null;
   const progress = entries.map((t) => talentProgress(t.dto, settings.talents[t.key]));
   const total = progress.some((p) => p.used === null)
     ? null
@@ -20,16 +47,11 @@ export function CharacterTalents({
   return (
     <section className="card">
       <div className="section-heading">
-        <h2>本能・超本能</h2>
-        {entries.length > 0 && <span data-testid="total-np">使用NP {total ?? '未提供'}</span>}
+        <h2>{kind}</h2>
+        <span data-testid={kind === '本能' ? 'total-np' : 'ultra-total-np'}>
+          使用NP {total ?? '未提供'}
+        </span>
       </div>
-      {!entries.length && (
-        <p className="muted">
-          {form.talents === null
-            ? '本能データ未提供'
-            : 'この形態の本能・超本能は登録されていません。'}
-        </p>
-      )}
       {entries.map((entry, index) => {
         const t = entry.dto;
         const p = progress[index];
