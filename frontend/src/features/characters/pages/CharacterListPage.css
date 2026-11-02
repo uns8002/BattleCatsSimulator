@@ -1,0 +1,124 @@
+.character-list-page {
+  padding-top: 16px;
+}
+.character-list-page h1 {
+  margin-bottom: 14px;
+}
+.character-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--muted);
+}
+.character-search svg {
+  flex-shrink: 0;
+}
+.character-search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  border: 0;
+  background: transparent;
+}
+.character-search input::placeholder {
+  color: var(--muted);
+}
+.character-rarity-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 0 16px;
+}
+.character-rarity-filters button {
+  flex-shrink: 0;
+  border-radius: 24px;
+  font-weight: 700;
+}
+.character-rarity-filters button[aria-pressed='true'] {
+  background: #f5a623;
+  border-color: #f5a623;
+  color: #493526;
+}
+.character-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.character-list-card {
+  display: block;
+  position: relative;
+  padding: 10px 30px 10px 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: #253047;
+}
+.character-list-card:hover {
+  text-decoration: none;
+  border-color: var(--primary);
+}
+.character-list-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.character-list-card-heading strong {
+  font-size: 18px;
+}
+.character-rarity {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 10px;
+  background: #687589;
+  color: white;
+  border-radius: 7px;
+}
+/* 四形態分の列幅を共通にし、二・三形態でも左端と間隔を維持する。 */
+.character-list-forms {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px 8px;
+  max-width: 320px;
+}
+.character-list-image {
+  display: block;
+  aspect-ratio: 1;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--pale);
+  border-radius: 6px;
+}
+.character-list-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.character-list-image .image-placeholder {
+  font-size: 10px;
+  text-align: center;
+}
+.character-list-short-name {
+  min-width: 0;
+  text-align: center;
+  overflow-wrap: anywhere;
+  color: var(--primary);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+.character-list-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28px;
+  color: var(--muted);
+}

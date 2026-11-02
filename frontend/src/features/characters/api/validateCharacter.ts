@@ -74,6 +74,7 @@ export function isCharacterDto(v: unknown): v is CharacterDetailDto {
         'production_cost',
       ].every((k) => nullableNumber(f[k])) &&
       ['image_url', 'description_body', 'game_version_name'].every((k) => nullableText(f[k])) &&
+      (f.form_short_name === undefined || nullableText(f.form_short_name)) &&
       nullableNumber(f.required_level) &&
       (f.required_stage_id === null || id(f.required_stage_id)) &&
       list(

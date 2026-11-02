@@ -63,6 +63,7 @@ export interface CharacterFormDto {
   form_id: number;
   form_number: number;
   form_name: string;
+  form_short_name?: string | null;
   hp: number | null;
   attack_power: number | null;
   knockbacks: number | null;

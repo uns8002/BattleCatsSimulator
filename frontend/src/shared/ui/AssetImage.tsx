@@ -5,10 +5,12 @@ export function AssetImage({
   imageKey,
   name,
   fallbackText = '—',
+  loading,
 }: {
   imageKey: string | null;
   name: string;
   fallbackText?: string;
+  loading?: 'lazy' | 'eager';
 }) {
   const url = resolveImageUrl(imageKey);
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
@@ -24,5 +26,5 @@ export function AssetImage({
       </span>
     );
   }
-  return <img src={url} alt={name} onError={() => setFailedUrl(url)} />;
+  return <img src={url} alt={name} loading={loading} onError={() => setFailedUrl(url)} />;
 }

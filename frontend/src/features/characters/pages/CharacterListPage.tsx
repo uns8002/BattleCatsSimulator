@@ -1,28 +1,93 @@
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { CharacterListCard } from '../components/CharacterListCard';
 import { useCharacterData } from '../state/CharacterProvider';
+import './CharacterListPage.css';
+
+const rarityChoices = ['基本キャラ', 'EX', 'レア', '激レア', '超激レア', '伝説レア'];
+const normalize = (value: string) => value.normalize('NFKC').toLocaleLowerCase('ja').trim();
+
 export function CharacterListPage() {
   const { data, loading, error } = useCharacterData();
+  const [query, setQuery] = useState('');
+  const [rarity, setRarity] = useState('');
+  // 一覧レスポンス導入までは、現在取得できる詳細レスポンスを利用する。
+  const characters = useMemo(() => (data ? [data] : []), [data]);
+  const rarities = [
+    ...new Set([
+      ...rarityChoices,
+      ...characters.flatMap((c) => (c.rarity_name ? [c.rarity_name] : [])),
+    ]),
+  ];
+  const filtered = useMemo(() => {
+    const search = normalize(query);
+    return characters
+      .filter((character) => {
+        const names = [
+          character.character_name,
+          character.character_short_name,
+          ...character.forms.flatMap((form) => [form.form_name, form.form_short_name]),
+        ];
+        return (
+          (!rarity || character.rarity_name === rarity) &&
+          names.some((name) => name != null && normalize(name).includes(search))
+        );
+      })
+      .sort((a, b) => a.character_id - b.character_id);
+  }, [characters, query, rarity]);
+
   return (
-    <section className="card standalone">
-      <h1>キャラクター一覧</h1>
+    <section className="character-list-page" aria-labelledby="character-list-title">
+      <h1 id="character-list-title">キャラクター一覧</h1>
+      <div className="character-search">
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden="true"
+        >
+          <circle cx="10" cy="10" r="7" />
+          <path d="m15 15 6 6" />
+        </svg>
+        <input
+          type="search"
+          aria-label="キャラクター名・形態名・形態略称で検索"
+          placeholder="キャラクター名で検索…"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+      </div>
+      <div className="character-rarity-filters" role="group" aria-label="レアリティ絞り込み">
+        {['', ...rarities].map((value) => (
+          <button
+            key={value}
+            type="button"
+            aria-pressed={rarity === value}
+            onClick={() => setRarity(value)}
+          >
+            {value || 'すべて'}
+          </button>
+        ))}
+      </div>
       {loading ? (
         <p role="status">読み込み中です。</p>
       ) : error ? (
         <p role="alert">{error}</p>
       ) : (
-        data && (
-          <Link className="character-link" to={`/characters/${data.character_id}`}>
-            <span>
-              <small>
-                No.{data.character_id} · {data.rarity_name}
-              </small>
-              <strong>{data.character_name}</strong>
-            </span>
-            <span>›</span>
-          </Link>
-        )
+        <>
+          <ul className="character-list">
+            {filtered.map((character) => (
+              <li key={character.character_id}>
+                <CharacterListCard character={character} />
+              </li>
+            ))}
+          </ul>
+          {filtered.length === 0 && <p role="status">条件に一致するキャラクターはいません。</p>}
+          <p className="data-note">現在取得できるデータのみ表示しています。未提供の画像・略称はその旨を表示します。</p>
+        </>
       )}
-      <p className="muted">現在は詳細表示対象の1件のみです。一覧APIは未実装です。</p>
     </section>
   );
 }

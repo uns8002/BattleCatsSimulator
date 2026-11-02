@@ -38,10 +38,10 @@ export function CharacterDetailPage({
           </div>
           <div className="identity-text">
             <p>
-              No.{character.character_id} · {character.rarity_name ?? 'レアリティ未提供'}
+              No.{character.character_id} {character.rarity_name ?? 'レアリティ未提供'}{' '}
+              {form.game_version_name ? 'Ver' + form.game_version_name : '未提供'}
             </p>
             <h1>{form.form_name}</h1>
-            <p>初登場 {form.game_version_name ? 'Ver' + form.game_version_name : '未提供'}</p>
             {character.character_short_name && <p>略称：{character.character_short_name}</p>}
             {character.limited_name && <p>限定：{character.limited_name}</p>}
             {character.collaboration_name && <p>コラボ：{character.collaboration_name}</p>}
@@ -67,9 +67,6 @@ export function CharacterDetailPage({
       <CharacterTalents form={form} settings={settings} onChange={onChange} />
       <CharacterCombos />
       <CharacterGachas />
-      <p className="data-note">
-        ※体力・攻撃力は提供JSONのLv1基準値から暫定計算しています。本能の体力・攻撃力補正を反映しています。成長式・補正の適用順・端数処理は暫定です。
-      </p>
       <dialog
         ref={dialog}
         aria-labelledby="description-title"
