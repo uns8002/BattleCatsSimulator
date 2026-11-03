@@ -1,4 +1,4 @@
-"""DBを書き換えない管理コマンド。"""
+"""DB管理コマンド。"""
 
 import click
 from flask.cli import with_appcontext

@@ -1,7 +1,7 @@
 # NyankoSimulator
 
-にゃんこ大戦争のキャラクター・所持情報の管理と編成シミュレーションを目指すプロジェクトです。
-現在は、図鑑スクリーンショットからの枠切り出しと、少数マスターによる画像照合PoCが動作します。FlaskのApplication FactoryとDB非依存の `GET /api/health` を提供します。MariaDB接続・ORM・migrationの基盤を備えています。業務モデル・業務API・フロントエンドは未実装です。
+にゃんこ大戦争のキャラクターステータス・編成・ステージ攻略のシミュレーションを目指すWebアプリケーションです。
+現在は、図鑑スクリーンショットからの枠切り出しと、少数マスターによる画像照合PoCが動作します。FlaskのApplication FactoryとDB非依存の `GET /api/health` を提供します。MariaDB接続・ORM・migrationの基盤を備えています。業務モデル・業務APIは未実装です。フロントエンドはJSONデータによるキャラクター一覧・詳細画面を備えています。
 
 ## 現在の構成
 
@@ -24,8 +24,12 @@ NyankoSimulator/
 │   ├── pyproject.toml        # パッケージ・依存関係・pytest設定
 │   ├── requirements.txt      # 通常インストールの入口
 │   └── .env.example          # ローカル環境変数の例
+├── frontend/                 # Web画面（React / TypeScript）
+├── tools/                    # 開発準備・データ整備用。Webアプリには含めない
+│   └── data_collection/
+│       └── character_images.py # 形態画像の取得・DB登録CLI
 ├── data/                     # PoC用CSV・13件のマスター画像・出典
-├── images/                   # ローカル入力画像（内容はGit管理外）
+├── images/                   # 画面用画像・PoC入力画像（内容はGit管理外）
 ├── output/                   # 実行結果（内容はGit管理外）
 ├── docs/
 │   ├── recognition-poc.md    # PoC実行方法・制約・検証記録
@@ -37,6 +41,10 @@ NyankoSimulator/
 
 画像認識は今後も正式機能として利用するため、`backend/app/recognition/` に配置しています。現時点ではFlaskに依存せず、CLIおよびPython関数として利用できます。
 `data/`・`images/`・`output/` は既存PoCとの互換性のため現位置を維持しています。本番の恒久的な配置ではなく、将来はMariaDBや画像ストレージへの移行を検討します。
+
+`backend/`・`frontend/` がWebアプリ本体、`tools/` がその開発に必要なデータ収集・整備ツールです。依存方向はツールからバックエンドの共通設定へ限定し、Webアプリからツールをimportしません。画像認識は正式機能として利用するため、引き続きバックエンド内に置きます。
+
+ツールの実行方法・画像取得の仕様は [tools/README.md](tools/README.md) を参照してください。
 
 ## セットアップと実行
 
