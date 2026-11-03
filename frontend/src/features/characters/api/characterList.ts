@@ -1,17 +1,15 @@
-import listUrl from '../fixtures/character_list.json?url';
-
 export interface CharacterListFormDto {
   form_id: number;
   form_number: number;
   form_name: string;
-  form_short_name: string | null;
+  form_short_name?: string | null;
   image_url: string | null;
 }
 
 export interface CharacterListItemDto {
   character_id: number;
   character_name: string;
-  character_short_name: string | null;
+  character_short_name?: string | null;
   rarity_name: string | null;
   forms: CharacterListFormDto[];
 }
@@ -31,7 +29,8 @@ function isCharacterList(value: unknown): value is CharacterListItemDto[] {
       !id(character.character_id) ||
       characterIds.has(character.character_id as number) ||
       typeof character.character_name !== 'string' ||
-      !nullableText(character.character_short_name) ||
+      (character.character_short_name !== undefined &&
+        !nullableText(character.character_short_name)) ||
       !nullableText(character.rarity_name) ||
       !Array.isArray(character.forms)
     )
@@ -45,7 +44,7 @@ function isCharacterList(value: unknown): value is CharacterListItemDto[] {
         formIds.has(form.form_id as number) ||
         !id(form.form_number) ||
         typeof form.form_name !== 'string' ||
-        !nullableText(form.form_short_name) ||
+        (form.form_short_name !== undefined && !nullableText(form.form_short_name)) ||
         !nullableText(form.image_url)
       )
         return false;
@@ -55,9 +54,16 @@ function isCharacterList(value: unknown): value is CharacterListItemDto[] {
   });
 }
 
-// API導入時は取得先を変更する。画面は一覧用DTOをそのまま受け取る。
-export async function getCharacters(signal?: AbortSignal): Promise<CharacterListItemDto[]> {
-  const response = await fetch(listUrl, { signal });
+// 一覧APIのレスポンスを検証して画面へ渡す。
+export async function getCharacters(
+  signal?: AbortSignal,
+  rarityName = '',
+): Promise<CharacterListItemDto[]> {
+  const params = new URLSearchParams();
+  if (rarityName) params.set('rarity_name', rarityName);
+  const response = await fetch(`/api/characters${params.size ? '?' + params.toString() : ''}`, {
+    signal,
+  });
   if (!response.ok) throw new Error('キャラクター一覧を取得できませんでした。');
   const data: unknown = await response.json();
   if (!isCharacterList(data)) throw new Error('キャラクター一覧JSONの形式が不正です。');

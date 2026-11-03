@@ -25,7 +25,7 @@ DB_PASSWORD=<パスワード>
 
 ```bash
 flask --app app check-db
-flask --app app run --debug
+flask --app app run --debug --port 5001
 ```
 
 `check-db` は `SELECT 1` のみ実行し、接続を返却します。成功時は終了コード0、接続失敗時は非0と一般化したメッセージを返します。資格情報・生のDB例外は表示しません。
@@ -97,3 +97,13 @@ flask --app app db heads
 - 実行ユーザーとDDL権限、適用前バックアップ・復旧手順。MariaDBのDDLが一括ロールバックできる前提にしない。
 
 接続URL・秘密情報・生のDB例外を公開しません。本番と開発の資格情報を分離し、将来は通常アプリ用とmigration用の権限分離を検討します。
+
+## キャラクター一覧API
+
+`GET /api/characters` は `characters`・`category_values`・`forms`・`image_assets` をLEFT JOINし、キャラクターごとの `forms` 配列を返します。キャラクターID・形態番号の昇順です。有効な形態がない場合は `forms: []`、取得対象がない場合は `[]`、画像未登録は `image_url: null` となります。DB取得失敗は詳細を公開せずJSONエラーとHTTP 500を返します。
+
+フロントエンドの一覧はこのAPIを使用します。ローカルではSSHトンネルとFlask（ポート5001）を起動し、Viteも起動してください。Viteの `/api` プロキシがFlaskへ転送します。設定変更後はViteを再起動してください。本番では同じオリジンの `/api` をバックエンドへ振り分ける必要があります。
+
+一覧SQLに略称が含まれないため、既存画面の略称欄は未提供表示となります。画像保存キーは加工せず返し、画面では保存キーをそのまま `/images/{storage_key}` に解決します。公開用5ディレクトリ直下のPNGを対象とし、対応表は使用しません。詳細画面は引き続き既存JSONを使用し、詳細APIは今回の対象外です。
+
+一覧APIは任意の `rarity_name` クエリを受け付けます（例：`/api/characters?rarity_name=超激レア`）。`category_values.value_name` をバインドパラメータで完全一致検索します。未指定・空文字は全件、不一致は空配列です。画面のレアリティボタンもAPIの条件に連動します。名前検索は引き続き画面側で行います。

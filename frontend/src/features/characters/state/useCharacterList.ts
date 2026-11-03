@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getCharacters, type CharacterListItemDto } from '../api/characterList';
 
-export function useCharacterList() {
+export function useCharacterList(rarityName = '') {
   const [state, setState] = useState<{
     characters: CharacterListItemDto[];
     loading: boolean;
@@ -10,7 +10,8 @@ export function useCharacterList() {
 
   useEffect(() => {
     const controller = new AbortController();
-    getCharacters(controller.signal).then(
+    setState({ characters: [], loading: true, error: null });
+    getCharacters(controller.signal, rarityName).then(
       (characters) => {
         if (!controller.signal.aborted) setState({ characters, loading: false, error: null });
       },
@@ -25,6 +26,6 @@ export function useCharacterList() {
       },
     );
     return () => controller.abort();
-  }, []);
+  }, [rarityName]);
   return state;
 }

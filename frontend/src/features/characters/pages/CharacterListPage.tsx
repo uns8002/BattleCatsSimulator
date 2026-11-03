@@ -3,13 +3,13 @@ import { CharacterListCard } from '../components/CharacterListCard';
 import { useCharacterList } from '../state/useCharacterList';
 import './CharacterListPage.css';
 
-const rarityChoices = ['基本キャラ', 'EX', 'レア', '激レア', '超激レア', '伝説レア'];
+const rarityChoices = ['基本', 'EX', 'レア', '激レア', '超激レア', '伝説レア'];
 const normalize = (value: string) => value.normalize('NFKC').toLocaleLowerCase('ja').trim();
 
 export function CharacterListPage() {
-  const { characters, loading, error } = useCharacterList();
   const [query, setQuery] = useState('');
   const [rarity, setRarity] = useState('');
+  const { characters, loading, error } = useCharacterList(rarity);
   const rarities = [
     ...new Set([
       ...rarityChoices,
@@ -25,13 +25,10 @@ export function CharacterListPage() {
           character.character_short_name,
           ...character.forms.flatMap((form) => [form.form_name, form.form_short_name]),
         ];
-        return (
-          (!rarity || character.rarity_name === rarity) &&
-          names.some((name) => name != null && normalize(name).includes(search))
-        );
+        return names.some((name) => name != null && normalize(name).includes(search));
       })
       .sort((a, b) => a.character_id - b.character_id);
-  }, [characters, query, rarity]);
+  }, [characters, query]);
 
   return (
     <section className="character-list-page" aria-labelledby="character-list-title">
@@ -65,7 +62,7 @@ export function CharacterListPage() {
             aria-pressed={rarity === value}
             onClick={() => setRarity(value)}
           >
-            {value || 'すべて'}
+            {value === '基本' ? '基本キャラ' : value || 'すべて'}
           </button>
         ))}
       </div>

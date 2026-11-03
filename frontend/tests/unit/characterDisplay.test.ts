@@ -76,7 +76,7 @@ describe('JSON表示・NP集計', () => {
     expect(talentEntries(form)[0].dto.talent_type_name).toBe('超本能');
   });
   it('保存キーを明示的に解決し、未知画像は代替表示する', () => {
-    expect(resolveImageUrl('effects/ab_cl_23.png')).toBe('/images/abilities/ab_cl_23.png');
+    expect(resolveImageUrl('abilities/ab_cl_23.png')).toBe('/images/abilities/ab_cl_23.png');
     expect(resolveImageUrl('effect_targets/et_sc_3.png')).toBe(
       '/images/effect_targets/et_sc_3.png',
     );

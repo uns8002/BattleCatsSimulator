@@ -51,7 +51,7 @@
           "form_ability_id": 1,
           "ability_id": 23,
           "ability_name": "範囲攻撃",
-          "image_url": "effects/ab_cl_23.png",
+          "image_url": "abilities/ab_cl_23.png",
           "parameter_values": null
         }
       ],
@@ -109,7 +109,7 @@
           "form_ability_id": 2,
           "ability_id": 23,
           "ability_name": "範囲攻撃",
-          "image_url": "effects/ab_cl_23.png",
+          "image_url": "abilities/ab_cl_23.png",
           "parameter_values": null
         }
       ],
@@ -167,7 +167,7 @@
           "form_ability_id": 3,
           "ability_id": 23,
           "ability_name": "範囲攻撃",
-          "image_url": "effects/ab_cl_23.png",
+          "image_url": "abilities/ab_cl_23.png",
           "parameter_values": null
         }
       ],
@@ -179,7 +179,7 @@
             "form_ability_talent_id": 1,
             "ability_id": 37,
             "ability_name": "古代の呪い無効",
-            "image_url": "effects/ab_cl_37.png",
+            "image_url": "abilities/ab_cl_37.png",
             "talent_type_name": "本能",
             "max_level": 1,
             "np_costs": [
@@ -194,7 +194,7 @@
             "form_ability_talent_id": 2,
             "ability_id": 38,
             "ability_name": "毒撃ダメージ無効",
-            "image_url": "effects/ab_cl_38.png",
+            "image_url": "abilities/ab_cl_38.png",
             "talent_type_name": "本能",
             "max_level": 1,
             "np_costs": [
@@ -209,7 +209,7 @@
             "form_ability_talent_id": 3,
             "ability_id": 45,
             "ability_name": "烈波ダメージ耐性",
-            "image_url": "effects/ab_cl_45.png",
+            "image_url": "abilities/ab_cl_45.png",
             "talent_type_name": "本能",
             "max_level": 10,
             "np_costs": [
@@ -237,7 +237,7 @@
             "form_ability_talent_id": 4,
             "ability_id": 51,
             "ability_name": "基本体力アップ",
-            "image_url": "effects/ab_cl_51.png",
+            "image_url": "abilities/ab_cl_51.png",
             "talent_type_name": "本能",
             "max_level": 10,
             "np_costs": [
@@ -265,7 +265,7 @@
             "form_ability_talent_id": 5,
             "ability_id": 52,
             "ability_name": "基本攻撃力アップ",
-            "image_url": "effects/ab_cl_52.png",
+            "image_url": "abilities/ab_cl_52.png",
             "talent_type_name": "本能",
             "max_level": 10,
             "np_costs": [
@@ -386,7 +386,7 @@
           "form_ability_id": 4,
           "ability_id": 2,
           "ability_name": "生き残る",
-          "image_url": "effects/ab_cl_2.png",
+          "image_url": "abilities/ab_cl_2.png",
           "parameter_values": {
             "activation_rate_percent": 100
           }
@@ -395,7 +395,7 @@
           "form_ability_id": 5,
           "ability_id": 25,
           "ability_name": "全方位攻撃",
-          "image_url": "effects/ab_cl_25.png",
+          "image_url": "abilities/ab_cl_25.png",
           "parameter_values": null
         }
       ],
@@ -407,7 +407,7 @@
             "form_ability_talent_id": 6,
             "ability_id": 37,
             "ability_name": "古代の呪い無効",
-            "image_url": "effects/ab_cl_37.png",
+            "image_url": "abilities/ab_cl_37.png",
             "talent_type_name": "本能",
             "max_level": 1,
             "np_costs": [
@@ -422,7 +422,7 @@
             "form_ability_talent_id": 7,
             "ability_id": 38,
             "ability_name": "毒撃ダメージ無効",
-            "image_url": "effects/ab_cl_38.png",
+            "image_url": "abilities/ab_cl_38.png",
             "talent_type_name": "本能",
             "max_level": 1,
             "np_costs": [
@@ -437,7 +437,7 @@
             "form_ability_talent_id": 8,
             "ability_id": 45,
             "ability_name": "烈波ダメージ耐性",
-            "image_url": "effects/ab_cl_45.png",
+            "image_url": "abilities/ab_cl_45.png",
             "talent_type_name": "本能",
             "max_level": 10,
             "np_costs": [
@@ -465,7 +465,7 @@
             "form_ability_talent_id": 9,
             "ability_id": 51,
             "ability_name": "基本体力アップ",
-            "image_url": "effects/ab_cl_51.png",
+            "image_url": "abilities/ab_cl_51.png",
             "talent_type_name": "本能",
             "max_level": 10,
             "np_costs": [
@@ -493,7 +493,7 @@
             "form_ability_talent_id": 10,
             "ability_id": 52,
             "ability_name": "基本攻撃力アップ",
-            "image_url": "effects/ab_cl_52.png",
+            "image_url": "abilities/ab_cl_52.png",
             "talent_type_name": "本能",
             "max_level": 10,
             "np_costs": [

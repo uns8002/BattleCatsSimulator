@@ -18,7 +18,6 @@
 | `features/characters/pages/CharacterDetailPage.tsx` と `features/characters/components/` | 既存カード・形態切替・ステータス・本能の表示 |
 | `features/characters/model/state.ts` | 入力レベルと本能レベルの画面状態 |
 | `features/characters/model/characterDisplay.ts` | 表示値・本能の表示用投影・NP集計。ステータス補正を行わない |
-| `shared/images/imagePaths.json` | JSON保存キーと既存画像の物理パスの対応表 |
 | `shared/images/imageUrl.ts` / `shared/ui/AssetImage.tsx` | URL解決と画像欠損時のプレースホルダー |
 
 DTOに画面の状態を混ぜません。`form_id` と各関連IDはそのまま保持し、本能選択は「形態ID・分類・本能ID」をキーとして画面側に保存します。同名の本能でも異なる形態間で同一設定だとは推測しません。形態・設定画面の往復では保持し、再読み込みで初期化します。
@@ -38,15 +37,9 @@ DTOに画面の状態を混ぜません。`form_id` と各関連IDはそのま�
 
 ## 画像
 
-原本の形態画像は4件とも `image_url: null` なので画像未提供のプレースホルダーです。別キャラクターの画像は流用しません。
+画像はJSONの `image_url` をそのまま `/images/{storage_key}` として参照します。能力画像のキーは実ファイルに合わせて `abilities/ab_cl_*.png` に統一しました。
 
-対象・効果・本能・能力アイコン11種類と、進化素材9種類の保存キーを既存画像へ対応付けています。
-
-- `effect_targets/et_sc_3.png`, `effect_targets/et_sc_5.png` → 同じ相対パス
-- `effects/ef_cl_8.png` → 同じ相対パス
-- `effects/ab_cl_{2,23,25,37,38,45,51,52}.png` → `abilities/ab_cl_{同じ番号}.png`
-
-能力画像は保存キーのディレクトリとローカル配置が異なります。JSONや画像を改名せず、対応表だけで解決しています。`vite.config.js` は対応表のファイルのみを配信し、PoC用スクリーンショットは公開しません。未知のキー・null・読込失敗はプレースホルダーです。画像追加時は対応表も更新してください。
+対応表は不要です。Viteは `allies/`・`abilities/`・`effect_targets/`・`effects/`・`materials/` 直下のPNGのみ配信します。PoC用スクリーンショットは公開しません。null・読込失敗はプレースホルダーになります。画像を追加する際は、公開用ディレクトリに配置し、JSONまたはDBの保存キーをその相対パスに合わせてください。
 
 画像はGit管理外かつ `dist/` に含まれません。別PCでは元画像を用意し、本番では `/images/` の配信設定を行う必要があります。画像が不足する環境ではプレースホルダーになります。
 

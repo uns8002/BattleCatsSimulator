@@ -84,13 +84,13 @@ python -m unittest discover -s tests/recognition -v
 # ローカルDB設定を用意（作成後に5つのDB_*を記入）
 cp .env.example .env
 # .envを編集してから起動
-flask --app app run --debug
+flask --app app run --debug --port 5001
 ```
 
 別のターミナルで確認します。
 
 ```bash
-curl -i http://127.0.0.1:5000/api/health
+curl -i http://127.0.0.1:5001/api/health
 ```
 
 HTTP 200、JSON `{"status":"ok"}` を返します。DBや外部サービスの疎通確認は行いません。
@@ -150,7 +150,7 @@ npm run dev
 
 体力・攻撃力はLv1基準値のまま表示します。レベルや本能の選択は保持しますが、成長・補正計算とDPSは未対応です。NPだけはJSONの費用表から集計します。詳細は [画面実装の記録](docs/character-detail-ui.md) を参照してください。
 
-画像はルートの `images/` を管理元とし、Viteが `src/shared/images/imagePaths.json` の対応表にあるファイルだけを `/images/...` から直接配信します。`frontend/public/` へのコピーは不要です。本番デプロイでは対応表と同じURLで画像を配信する設定が必要です（画像はビルドに含めません）。
+画像はルートの `images/` を管理元とし、保存キーをそのまま `/images/{storage_key}` として参照します。Viteは `allies/`・`abilities/`・`effect_targets/`・`effects/`・`materials/` 直下のPNGのみ配信します。対応表やpublicへのコピーは不要です。本番では同じURLで公開画像を配信してください（画像はビルドに含まれません）。
 
 ### テスト・ビルド
 
