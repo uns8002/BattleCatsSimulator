@@ -1,0 +1,38 @@
+[
+  {
+    "character_id": 138,
+    "character_name": "かさじぞう",
+    "character_short_name": null,
+    "rarity_name": "超激レア",
+    "forms": [
+      {
+        "form_id": 393,
+        "form_number": 1,
+        "form_name": "かさじぞう",
+        "form_short_name": "かさじぞう",
+        "image_url": "allies/af_md_138_1.png"
+      },
+      {
+        "form_id": 394,
+        "form_number": 2,
+        "form_name": "地蔵要塞カムイ",
+        "form_short_name": "カムイ",
+        "image_url": "allies/af_md_138_2.png"
+      },
+      {
+        "form_id": 395,
+        "form_number": 3,
+        "form_name": "地蔵要塞ゼロカムイ",
+        "form_short_name": "ゼロカムイ",
+        "image_url": "allies/af_md_138_3.png"
+      },
+      {
+        "form_id": 396,
+        "form_number": 4,
+        "form_name": "ウルトラかさじぞう",
+        "form_short_name": "かさじぞう",
+        "image_url": "allies/af_md_138_4.png"
+      }
+    ]
+  }
+]

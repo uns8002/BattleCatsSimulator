@@ -1,9 +1,9 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { AssetImage } from '../../../shared/ui/AssetImage';
-import type { CharacterDetailDto } from '../api/characterDto';
+import type { CharacterListItemDto } from '../api/characterList';
 
-export function CharacterListCard({ character }: { character: CharacterDetailDto }) {
+export function CharacterListCard({ character }: { character: CharacterListItemDto }) {
   const forms = [...character.forms].sort((a, b) => a.form_number - b.form_number);
   return (
     <Link

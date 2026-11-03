@@ -1,17 +1,15 @@
 import { useMemo, useState } from 'react';
 import { CharacterListCard } from '../components/CharacterListCard';
-import { useCharacterData } from '../state/CharacterProvider';
+import { useCharacterList } from '../state/useCharacterList';
 import './CharacterListPage.css';
 
 const rarityChoices = ['基本キャラ', 'EX', 'レア', '激レア', '超激レア', '伝説レア'];
 const normalize = (value: string) => value.normalize('NFKC').toLocaleLowerCase('ja').trim();
 
 export function CharacterListPage() {
-  const { data, loading, error } = useCharacterData();
+  const { characters, loading, error } = useCharacterList();
   const [query, setQuery] = useState('');
   const [rarity, setRarity] = useState('');
-  // 一覧レスポンス導入までは、現在取得できる詳細レスポンスを利用する。
-  const characters = useMemo(() => (data ? [data] : []), [data]);
   const rarities = [
     ...new Set([
       ...rarityChoices,
@@ -85,7 +83,9 @@ export function CharacterListPage() {
             ))}
           </ul>
           {filtered.length === 0 && <p role="status">条件に一致するキャラクターはいません。</p>}
-          <p className="data-note">現在取得できるデータのみ表示しています。未提供の画像・略称はその旨を表示します。</p>
+          <p className="data-note">
+            現在取得できるデータのみ表示しています。未提供の画像・略称はその旨を表示します。
+          </p>
         </>
       )}
     </section>
