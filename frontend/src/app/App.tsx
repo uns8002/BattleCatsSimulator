@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation, useParams } from 'react-router-dom';
+import { CharacterProvider } from '../features/characters/state/CharacterProvider';
 import { SiteLayout } from '../shared/layout/SiteLayout';
 import { CharacterDetailPage } from '../features/characters/pages/CharacterDetailPage';
 import { CharacterListPage } from '../features/characters/pages/CharacterListPage';
@@ -21,6 +22,25 @@ function ScrollToTop() {
   }, [pathname]);
   return null;
 }
+function CharacterDetailRoute({
+  settings,
+  onChange,
+}: {
+  settings: CharacterSettings;
+  onChange: (settings: CharacterSettings) => void;
+}) {
+  const { characterId = '' } = useParams();
+  const id = Number(characterId);
+  if (!/^[0-9]+$/.test(characterId) || !Number.isSafeInteger(id) || id < 1 || id > 2147483647) {
+    return <p role="alert">キャラクターIDが不正です。</p>;
+  }
+  return (
+    <CharacterProvider key={id} characterId={id}>
+      <CharacterDetailPage settings={settings} onChange={onChange} />
+    </CharacterProvider>
+  );
+}
+
 export function App() {
   const [settings, setSettings] = useState<CharacterSettings>({
     level: 1,
@@ -32,8 +52,8 @@ export function App() {
       <Routes>
         <Route element={<SiteLayout />}>
           <Route
-            path="/characters/138"
-            element={<CharacterDetailPage settings={settings} onChange={setSettings} />}
+            path="/characters/:characterId"
+            element={<CharacterDetailRoute settings={settings} onChange={setSettings} />}
           />
           <Route path="/characters" element={<CharacterListPage />} />
           <Route
