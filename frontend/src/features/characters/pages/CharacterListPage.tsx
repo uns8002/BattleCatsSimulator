@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { CharacterListCard } from '../components/CharacterListCard';
+import { useCharacterListState } from '../state/CharacterListProvider';
 import { useCharacterList } from '../state/useCharacterList';
 import './CharacterListPage.css';
 
@@ -7,8 +8,7 @@ const rarityChoices = ['基本', 'EX', 'レア', '激レア', '超激レア', '�
 const normalize = (value: string) => value.normalize('NFKC').toLocaleLowerCase('ja').trim();
 
 export function CharacterListPage() {
-  const [query, setQuery] = useState('');
-  const [rarity, setRarity] = useState('');
+  const { query, setQuery, rarity, setRarity } = useCharacterListState();
   const { characters, loading, error } = useCharacterList(rarity);
   const rarities = [
     ...new Set([

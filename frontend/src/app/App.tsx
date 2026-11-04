@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation, useParams } from 'react-router-dom';
+import { CharacterListProvider } from '../features/characters/state/CharacterListProvider';
 import { CharacterProvider } from '../features/characters/state/CharacterProvider';
 import { SiteLayout } from '../shared/layout/SiteLayout';
 import { CharacterDetailPage } from '../features/characters/pages/CharacterDetailPage';
@@ -49,57 +50,59 @@ export function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Routes>
-        <Route element={<SiteLayout />}>
-          <Route
-            path="/characters/:characterId"
-            element={<CharacterDetailRoute settings={settings} onChange={setSettings} />}
-          />
-          <Route path="/characters" element={<CharacterListPage />} />
-          <Route
-            path="/"
-            element={
-              <section className="card standalone">
-                <h1>NyankoSimulator</h1>
-                <p>にゃんこ大戦争 キャラクター育成・編成シミュレーター</p>
-                <Link className="button" to="/characters">
-                  キャラクター一覧を見る
-                </Link>
-              </section>
-            }
-          />
-          <Route path="/settings/treasures" element={<SettingsPage kind="treasures" />} />
-          <Route path="/settings/combos" element={<SettingsPage kind="combos" />} />
-          <Route
-            path="/settings"
-            element={
-              <section className="card standalone">
-                <h1>設定</h1>
-                <div className="settings-links">
-                  <Link className="button" to="/settings/treasures">
-                    お宝設定
+      <CharacterListProvider>
+        <Routes>
+          <Route element={<SiteLayout />}>
+            <Route
+              path="/characters/:characterId"
+              element={<CharacterDetailRoute settings={settings} onChange={setSettings} />}
+            />
+            <Route path="/characters" element={<CharacterListPage />} />
+            <Route
+              path="/"
+              element={
+                <section className="card standalone">
+                  <h1>NyankoSimulator</h1>
+                  <p>にゃんこ大戦争 キャラクター育成・編成シミュレーター</p>
+                  <Link className="button" to="/characters">
+                    キャラクター一覧を見る
                   </Link>
-                  <Link className="button" to="/settings/combos">
-                    にゃんコンボ設定
-                  </Link>
-                </div>
-              </section>
-            }
-          />
-          {[
-            ['owned', '所持キャラ管理'],
-            ['formations', '編成シミュレーター'],
-            ['login', 'ログイン'],
-            ['privacy', 'プライバシーポリシー'],
-            ['contact', 'お問い合わせ'],
-            ['guide', '使い方ガイド'],
-            ['terms', '利用規約'],
-          ].map(([path, title]) => (
-            <Route key={path} path={'/' + path} element={<Pending title={title} />} />
-          ))}
-          <Route path="*" element={<Pending title="ページが見つかりません" />} />
-        </Route>
-      </Routes>
+                </section>
+              }
+            />
+            <Route path="/settings/treasures" element={<SettingsPage kind="treasures" />} />
+            <Route path="/settings/combos" element={<SettingsPage kind="combos" />} />
+            <Route
+              path="/settings"
+              element={
+                <section className="card standalone">
+                  <h1>設定</h1>
+                  <div className="settings-links">
+                    <Link className="button" to="/settings/treasures">
+                      お宝設定
+                    </Link>
+                    <Link className="button" to="/settings/combos">
+                      にゃんコンボ設定
+                    </Link>
+                  </div>
+                </section>
+              }
+            />
+            {[
+              ['owned', '所持キャラ管理'],
+              ['formations', '編成シミュレーター'],
+              ['login', 'ログイン'],
+              ['privacy', 'プライバシーポリシー'],
+              ['contact', 'お問い合わせ'],
+              ['guide', '使い方ガイド'],
+              ['terms', '利用規約'],
+            ].map(([path, title]) => (
+              <Route key={path} path={'/' + path} element={<Pending title={title} />} />
+            ))}
+            <Route path="*" element={<Pending title="ページが見つかりません" />} />
+          </Route>
+        </Routes>
+      </CharacterListProvider>
     </BrowserRouter>
   );
 }
