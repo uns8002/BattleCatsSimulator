@@ -1,14 +1,14 @@
 .character-list-page {
-  padding-top: 16px;
+  padding-top: 10px;
 }
 .character-list-page h1 {
-  margin-bottom: 14px;
+  margin-bottom: 9px;
 }
 .character-search {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 12px;
+  gap: 6px;
+  padding: 0 8px;
   background: white;
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -29,9 +29,9 @@
 }
 .character-rarity-filters {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   overflow-x: auto;
-  padding: 12px 0 16px;
+  padding: 8px 0 10px;
 }
 .character-rarity-filters button {
   flex-shrink: 0;
@@ -48,12 +48,12 @@
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 8px;
+  gap: 5px;
 }
 .character-list-card {
   display: block;
   position: relative;
-  padding: 10px 30px 10px 12px;
+  padding: 6px 20px 6px 8px;
   background: white;
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -66,16 +66,16 @@
 .character-list-card-heading {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 .character-list-card-heading strong {
-  font-size: 18px;
+  font-size: 13px;
 }
 .character-rarity {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
-  padding: 2px 10px;
+  padding: 2px 6px;
   background: #687589;
   color: white;
   border-radius: 7px;
@@ -84,7 +84,7 @@
 .character-list-forms {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 4px 8px;
+  gap: 3px 5px;
   max-width: 320px;
 }
 .character-list-image {
@@ -110,7 +110,7 @@
   text-align: center;
   overflow-wrap: anywhere;
   color: var(--primary);
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1.4;
   font-weight: 700;
 }
@@ -119,6 +119,6 @@
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 28px;
+  font-size: 20px;
   color: var(--muted);
 }
