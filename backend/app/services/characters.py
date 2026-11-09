@@ -8,10 +8,12 @@ CHARACTERS_SQL = text("""
 SELECT
     c.character_id,
     c.character_name,
+    c.character_short_name,
     rarity.value_name AS rarity_name,
     f.form_id,
     f.form_number,
     f.form_name,
+    f.form_short_name,
     ia.storage_key AS image_url
 FROM characters c
 LEFT JOIN category_values rarity
@@ -40,6 +42,7 @@ def get_characters(rarity_name=None):
             character = characters.setdefault(row['character_id'], {
                 'character_id': row['character_id'],
                 'character_name': row['character_name'],
+                'character_short_name': row['character_short_name'],
                 'rarity_name': row['rarity_name'],
                 'forms': [],
             })
@@ -48,6 +51,7 @@ def get_characters(rarity_name=None):
                     'form_id': row['form_id'],
                     'form_number': row['form_number'],
                     'form_name': row['form_name'],
+                    'form_short_name': row['form_short_name'],
                     'image_url': row['image_url'],
                 })
     return list(characters.values())
