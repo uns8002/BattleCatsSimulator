@@ -1,6 +1,6 @@
 # 開発準備・データ整備ツール
 
-このディレクトリは、NyankoSimulatorのWebアプリを作るために使うツールの置き場です。サイト利用者向けのAPI・画面・シミュレーション処理はbackend/・frontend/に置きます。
+このディレクトリは、Battle Cats SimulatorのWebアプリを作るために使うツールの置き場です。サイト利用者向けのAPI・画面・シミュレーション処理はbackend/・frontend/に置きます。
 
 ```text
 tools/

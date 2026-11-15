@@ -62,7 +62,7 @@ export function App() {
               path="/"
               element={
                 <section className="card standalone">
-                  <h1>NyankoSimulator</h1>
+                  <h1>Battle Cats Simulator</h1>
                   <p>にゃんこ大戦争 キャラクター育成・編成シミュレーター</p>
                   <Link className="button" to="/characters">
                     キャラクター一覧を見る

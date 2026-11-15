@@ -3,7 +3,7 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="footer-inner">
-        <strong>NyankoSimulator</strong>
+        <strong>Battle Cats Simulator</strong>
         <p>
           にゃんこ大戦争
           <br className="mobile-break" /> キャラクター育成・編成シミュレーター
@@ -21,7 +21,7 @@ export function SiteFooter() {
           ))}
         </nav>
         <div className="copyright">
-          <p>© 2026 NyankoSimulator</p>
+          <p>© 2026 Battle Cats Simulator</p>
           <small>本サイトは非公式のファンサイトです。</small>
         </div>
       </div>

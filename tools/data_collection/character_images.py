@@ -24,7 +24,7 @@ from dotenv import load_dotenv
 from app.config import database_url_from_env
 
 SOURCE = 'https://battlecats.anypupil.com/catsuni.php?page=all&lang=ja'
-AGENT = 'NyankoSimulatorImageBatch/1.0'
+AGENT = 'BattleCatsSimulatorImageBatch/1.0'
 ROOT = Path(__file__).resolve().parents[2]
 
 

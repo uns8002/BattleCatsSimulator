@@ -1,4 +1,4 @@
-# NyankoSimulator
+# Battle Cats Simulator
 
 にゃんこ大戦争のキャラクターステータス・編成・ステージ攻略のシミュレーションを目指すWebアプリケーションです。
 現在は、図鑑スクリーンショットからの枠切り出しと、少数マスターによる画像照合PoCが動作します。FlaskのApplication FactoryとDB非依存の `GET /api/health` を提供します。MariaDB接続・ORM・migrationの基盤を備えています。業務モデル・業務APIは未実装です。フロントエンドはJSONデータによるキャラクター一覧・詳細画面を備えています。
@@ -6,7 +6,7 @@
 ## 現在の構成
 
 ```text
-NyankoSimulator/
+BattleCatsSimulator/
 ├── backend/
 │   ├── app/
 │   │   ├── __init__.py        # create_app(test_config=None)

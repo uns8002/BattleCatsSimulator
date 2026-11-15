@@ -1,4 +1,4 @@
-# NyankoSimulator テーブル定義書
+# Battle Cats Simulator テーブル定義書
 
 **論理設計 v2 — 2026-09-19更新**
 

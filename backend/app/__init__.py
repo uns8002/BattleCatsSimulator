@@ -1,4 +1,4 @@
-"""NyankoSimulatorのバックエンドパッケージ。"""
+"""Battle Cats Simulatorのバックエンドパッケージ。"""
 
 
 def create_app(test_config=None):

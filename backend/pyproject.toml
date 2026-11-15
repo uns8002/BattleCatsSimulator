@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nyanko-simulator-backend"
+name = "battle-cats-simulator-backend"
 version = "0.1.0"
-description = "NyankoSimulator Flask backend and image recognition"
+description = "Battle Cats Simulator Flask backend and image recognition"
 requires-python = ">=3.11"
 dependencies = [
     "Flask>=3.1,<4",

@@ -27,7 +27,7 @@ export function SiteHeader() {
             🐱
           </span>
           <span>
-            <strong>NyankoSimulator</strong>
+            <strong>Battle Cats Simulator</strong>
             <small>にゃんこ大戦争 シミュレーター</small>
           </span>
         </Link>
