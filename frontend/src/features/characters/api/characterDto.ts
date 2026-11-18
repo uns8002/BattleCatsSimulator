@@ -79,11 +79,6 @@ export interface CharacterFormDto {
   effect_targets: EffectTargetDto[] | null;
   effects: EffectDto[] | null;
   abilities: AbilityDto[] | null;
-  talents: {
-    effect_targets: EffectTargetTalentDto[] | null;
-    effects: EffectTalentDto[] | null;
-    abilities: AbilityTalentDto[] | null;
-  } | null;
 }
 export interface CharacterDetailDto {
   character_id: number;
@@ -92,5 +87,10 @@ export interface CharacterDetailDto {
   rarity_name: string | null;
   limited_name: string | null;
   collaboration_name: string | null;
+  talents: {
+    effect_targets: EffectTargetTalentDto[] | null;
+    effects: EffectTalentDto[] | null;
+    abilities: AbilityTalentDto[] | null;
+  } | null;
   forms: CharacterFormDto[];
 }

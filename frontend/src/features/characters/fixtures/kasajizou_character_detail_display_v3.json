@@ -55,11 +55,6 @@
           "parameter_values": null
         }
       ],
-      "talents": {
-        "effect_targets": [],
-        "effects": [],
-        "abilities": []
-      },
       "required_level": 0,
       "required_stage_id": null,
       "materials": []
@@ -113,11 +108,6 @@
           "parameter_values": null
         }
       ],
-      "talents": {
-        "effect_targets": [],
-        "effects": [],
-        "abilities": []
-      },
       "required_level": 10,
       "required_stage_id": null,
       "materials": []
@@ -171,126 +161,6 @@
           "parameter_values": null
         }
       ],
-      "talents": {
-        "effect_targets": [],
-        "effects": [],
-        "abilities": [
-          {
-            "form_ability_talent_id": 1,
-            "ability_id": 37,
-            "ability_name": "古代の呪い無効",
-            "image_url": "abilities/ab_cl_37.png",
-            "talent_type_name": "本能",
-            "max_level": 1,
-            "np_costs": [
-              100
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add"
-            }
-          },
-          {
-            "form_ability_talent_id": 2,
-            "ability_id": 38,
-            "ability_name": "毒撃ダメージ無効",
-            "image_url": "abilities/ab_cl_38.png",
-            "talent_type_name": "本能",
-            "max_level": 1,
-            "np_costs": [
-              100
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add"
-            }
-          },
-          {
-            "form_ability_talent_id": 3,
-            "ability_id": 45,
-            "ability_name": "烈波ダメージ耐性",
-            "image_url": "abilities/ab_cl_45.png",
-            "talent_type_name": "本能",
-            "max_level": 10,
-            "np_costs": [
-              15,
-              15,
-              15,
-              15,
-              15,
-              20,
-              20,
-              20,
-              20,
-              20
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add",
-              "surge_damage_reduction_percent": {
-                "base": 0,
-                "step": 5
-              }
-            }
-          },
-          {
-            "form_ability_talent_id": 4,
-            "ability_id": 51,
-            "ability_name": "基本体力アップ",
-            "image_url": "abilities/ab_cl_51.png",
-            "talent_type_name": "本能",
-            "max_level": 10,
-            "np_costs": [
-              15,
-              15,
-              15,
-              15,
-              15,
-              20,
-              20,
-              20,
-              20,
-              20
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add",
-              "defense_buff_percent": {
-                "base": 0,
-                "step": 2
-              }
-            }
-          },
-          {
-            "form_ability_talent_id": 5,
-            "ability_id": 52,
-            "ability_name": "基本攻撃力アップ",
-            "image_url": "abilities/ab_cl_52.png",
-            "talent_type_name": "本能",
-            "max_level": 10,
-            "np_costs": [
-              15,
-              15,
-              15,
-              15,
-              15,
-              20,
-              20,
-              20,
-              20,
-              20
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add",
-              "attack_buff_percent": {
-                "base": 0,
-                "step": 2
-              }
-            }
-          }
-        ]
-      },
       "required_level": 30,
       "required_stage_id": null,
       "materials": [
@@ -399,126 +269,6 @@
           "parameter_values": null
         }
       ],
-      "talents": {
-        "effect_targets": [],
-        "effects": [],
-        "abilities": [
-          {
-            "form_ability_talent_id": 6,
-            "ability_id": 37,
-            "ability_name": "古代の呪い無効",
-            "image_url": "abilities/ab_cl_37.png",
-            "talent_type_name": "本能",
-            "max_level": 1,
-            "np_costs": [
-              100
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add"
-            }
-          },
-          {
-            "form_ability_talent_id": 7,
-            "ability_id": 38,
-            "ability_name": "毒撃ダメージ無効",
-            "image_url": "abilities/ab_cl_38.png",
-            "talent_type_name": "本能",
-            "max_level": 1,
-            "np_costs": [
-              100
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add"
-            }
-          },
-          {
-            "form_ability_talent_id": 8,
-            "ability_id": 45,
-            "ability_name": "烈波ダメージ耐性",
-            "image_url": "abilities/ab_cl_45.png",
-            "talent_type_name": "本能",
-            "max_level": 10,
-            "np_costs": [
-              15,
-              15,
-              15,
-              15,
-              15,
-              20,
-              20,
-              20,
-              20,
-              20
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add",
-              "surge_damage_reduction_percent": {
-                "base": 0,
-                "step": 5
-              }
-            }
-          },
-          {
-            "form_ability_talent_id": 9,
-            "ability_id": 51,
-            "ability_name": "基本体力アップ",
-            "image_url": "abilities/ab_cl_51.png",
-            "talent_type_name": "本能",
-            "max_level": 10,
-            "np_costs": [
-              15,
-              15,
-              15,
-              15,
-              15,
-              20,
-              20,
-              20,
-              20,
-              20
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add",
-              "defense_buff_percent": {
-                "base": 0,
-                "step": 2
-              }
-            }
-          },
-          {
-            "form_ability_talent_id": 10,
-            "ability_id": 52,
-            "ability_name": "基本攻撃力アップ",
-            "image_url": "abilities/ab_cl_52.png",
-            "talent_type_name": "本能",
-            "max_level": 10,
-            "np_costs": [
-              15,
-              15,
-              15,
-              15,
-              15,
-              20,
-              20,
-              20,
-              20,
-              20
-            ],
-            "attack_order": null,
-            "parameter_values": {
-              "action": "add",
-              "attack_buff_percent": {
-                "base": 0,
-                "step": 2
-              }
-            }
-          }
-        ]
-      },
       "required_level": 60,
       "required_stage_id": null,
       "materials": [
@@ -560,5 +310,125 @@
         }
       ]
     }
-  ]
+  ],
+  "talents": {
+    "effect_targets": [],
+    "effects": [],
+    "abilities": [
+      {
+        "form_ability_talent_id": 1,
+        "ability_id": 37,
+        "ability_name": "古代の呪い無効",
+        "image_url": "abilities/ab_cl_37.png",
+        "talent_type_name": "本能",
+        "max_level": 1,
+        "np_costs": [
+          100
+        ],
+        "attack_order": null,
+        "parameter_values": {
+          "action": "add"
+        }
+      },
+      {
+        "form_ability_talent_id": 2,
+        "ability_id": 38,
+        "ability_name": "毒撃ダメージ無効",
+        "image_url": "abilities/ab_cl_38.png",
+        "talent_type_name": "本能",
+        "max_level": 1,
+        "np_costs": [
+          100
+        ],
+        "attack_order": null,
+        "parameter_values": {
+          "action": "add"
+        }
+      },
+      {
+        "form_ability_talent_id": 3,
+        "ability_id": 45,
+        "ability_name": "烈波ダメージ耐性",
+        "image_url": "abilities/ab_cl_45.png",
+        "talent_type_name": "本能",
+        "max_level": 10,
+        "np_costs": [
+          15,
+          15,
+          15,
+          15,
+          15,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "attack_order": null,
+        "parameter_values": {
+          "action": "add",
+          "surge_damage_reduction_percent": {
+            "base": 0,
+            "step": 5
+          }
+        }
+      },
+      {
+        "form_ability_talent_id": 4,
+        "ability_id": 51,
+        "ability_name": "基本体力アップ",
+        "image_url": "abilities/ab_cl_51.png",
+        "talent_type_name": "本能",
+        "max_level": 10,
+        "np_costs": [
+          15,
+          15,
+          15,
+          15,
+          15,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "attack_order": null,
+        "parameter_values": {
+          "action": "add",
+          "defense_buff_percent": {
+            "base": 0,
+            "step": 2
+          }
+        }
+      },
+      {
+        "form_ability_talent_id": 5,
+        "ability_id": 52,
+        "ability_name": "基本攻撃力アップ",
+        "image_url": "abilities/ab_cl_52.png",
+        "talent_type_name": "本能",
+        "max_level": 10,
+        "np_costs": [
+          15,
+          15,
+          15,
+          15,
+          15,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "attack_order": null,
+        "parameter_values": {
+          "action": "add",
+          "attack_buff_percent": {
+            "base": 0,
+            "step": 2
+          }
+        }
+      }
+    ]
+  }
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { isCharacterDto } from '../../src/features/characters/api/validateCharacter';
 import rawFixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v3.json';
-import type { CharacterFormDto } from '../../src/features/characters/api/characterDto';
+import type { CharacterDetailDto } from '../../src/features/characters/api/characterDto';
 import {
   statValues,
   talentEntries,
@@ -39,25 +39,27 @@ describe('JSON表示・NP集計', () => {
     expect(statValues({ ...fixture.forms[0], hp: null })[0]).toBe('未提供');
   });
   it('JSONの費用表から累計・次NPを求める', () => {
-    const single = fixture.forms[2].talents!.abilities![0];
+    const single = fixture.talents!.abilities![0];
     expect(talentProgress(single, 1)).toEqual({ level: 1, used: 100, next: null, atMax: true });
-    const multi = fixture.forms[2].talents!.abilities![2];
+    const multi = fixture.talents!.abilities![2];
     expect(talentProgress(multi, 5)).toEqual({ level: 5, used: 75, next: 20, atMax: false });
     expect(talentProgress(multi, 100).used).toBe(175);
     expect(talentProgress({ ...multi, np_costs: null }, 1).used).toBeNull();
     expect(talentProgress({ ...multi, np_costs: [15, null] }, 2).used).toBeNull();
   });
-  it('本能の状態キーは形態IDと本能IDで区別する', () => {
-    expect(talentEntries(fixture.forms[0])).toEqual([]);
-    const third = talentEntries(fixture.forms[2]);
-    const fourth = talentEntries(fixture.forms[3]);
-    expect(third[0].key).not.toEqual(fourth[0].key);
-    expect(third[0].dto).toBe(fixture.forms[2].talents!.abilities![0]);
+  it('本能の状態キーはキャラクター単位で形態に依存しない', () => {
+    const entries = talentEntries(fixture);
+    expect(entries[0].key).toBe(
+      `${fixture.character_id}:ability:${fixture.talents!.abilities![0].form_ability_talent_id}`,
+    );
+    expect(talentEntries({ ...fixture, forms: [fixture.forms[0]] })).toEqual(entries);
+    expect(talentEntries({ ...fixture, character_id: 999 })[0].key).not.toBe(entries[0].key);
+    expect(talentEntries({ ...fixture, talents: null })).toEqual([]);
   });
   it('3分類と超本能を同じ表示処理で扱う（テスト専用データ）', () => {
-    const base = fixture.forms[2].talents!.abilities![0];
-    const form: CharacterFormDto = {
-      ...fixture.forms[0],
+    const base = fixture.talents!.abilities![0];
+    const form: CharacterDetailDto = {
+      ...fixture,
       talents: {
         effect_targets: [
           {

@@ -1,4 +1,4 @@
-import type { CharacterFormDto, TalentDto } from '../api/characterDto';
+import type { CharacterDetailDto, CharacterFormDto, TalentDto } from '../api/characterDto';
 import { framesLabel } from './state';
 import { calculateBaseStats } from './baseStats';
 import { supportsSimpleDps, calculateSimpleDps } from './dps';
@@ -14,9 +14,10 @@ export function statValues(
   level = 1,
   simpleDpsSupported = supportsSimpleDps(form.form_id),
   talentLevels: Record<string, number> = {},
+  entries: TalentDisplay[] = [],
 ): string[] {
   const base = calculateBaseStats(form, level);
-  const modifiers = talentEntries(form).map(
+  const modifiers = entries.map(
     (entry) => parseTalentModifiers(entry.dto, talentLevels[entry.key] ?? 0).percentages,
   );
   const stats = applyTalentModifiers(base, modifiers);
@@ -45,22 +46,22 @@ export interface TalentDisplay {
   dto: TalentDto;
 }
 // 表示用の投影。DTOそのものやparameter_valuesには手を加えない。
-export function talentEntries(form: CharacterFormDto): TalentDisplay[] {
+export function talentEntries(character: CharacterDetailDto): TalentDisplay[] {
   return [
-    ...(form.talents?.effect_targets ?? []).map((dto) => ({
-      key: `${form.form_id}:target:${dto.form_effect_target_talent_id}`,
+    ...(character.talents?.effect_targets ?? []).map((dto) => ({
+      key: `${character.character_id}:target:${dto.form_effect_target_talent_id}`,
       name: dto.effect_target_name,
       category: '効果対象',
       dto,
     })),
-    ...(form.talents?.effects ?? []).map((dto) => ({
-      key: `${form.form_id}:effect:${dto.form_effect_talent_id}`,
+    ...(character.talents?.effects ?? []).map((dto) => ({
+      key: `${character.character_id}:effect:${dto.form_effect_talent_id}`,
       name: dto.effect_name,
       category: '効果',
       dto,
     })),
-    ...(form.talents?.abilities ?? []).map((dto) => ({
-      key: `${form.form_id}:ability:${dto.form_ability_talent_id}`,
+    ...(character.talents?.abilities ?? []).map((dto) => ({
+      key: `${character.character_id}:ability:${dto.form_ability_talent_id}`,
       name: dto.ability_name,
       category: '能力',
       dto,

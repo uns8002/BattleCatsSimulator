@@ -2,6 +2,10 @@ import { test, expect } from '@playwright/test';
 import type { CharacterDetailDto } from '../../src/features/characters/api/characterDto';
 import fixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v3.json' with { type: 'json' };
 
+test.beforeEach(async ({ page }) => {
+  await page.route('**/api/characters/138', (route) => route.fulfill({ json: fixture }));
+});
+
 for (const width of [390, 1280]) {
   test(`JSON detail and controls ${width}px`, async ({ page }) => {
     const errors: string[] = [];
@@ -50,7 +54,9 @@ for (const width of [390, 1280]) {
       page.getByRole('button', { name: '古代の呪い無効を上げる', exact: true }),
     ).toBeDisabled();
     await page.getByRole('button', { name: '第1', exact: true }).click();
-    await expect(page.getByRole('heading', { name: '本能', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: '本能', exact: true })).toBeVisible();
+    await expect(page.getByLabel('基本体力アップのレベル')).toHaveText('1');
+    await expect(page.getByTestId('total-np')).toContainText('115');
     await expect(page.getByRole('heading', { name: '超本能', exact: true })).toHaveCount(0);
     await page.getByRole('button', { name: '第4', exact: true }).click();
     await expect(page.getByLabel('基本体力アップのレベル')).toHaveText('1');
@@ -94,13 +100,13 @@ test('array order, null fields and missing images are handled without invented v
   response.forms = [response.forms[1], response.forms[0]];
   response.forms[1].image_url = 'missing/image.png';
   response.forms[1].hp = null;
-  response.forms[1].talents = null;
+  response.talents = null;
   const errors: string[] = [];
   page.on('pageerror', (e) => {
     errors.push(e.message);
     console.log('PAGE ERROR', e.message);
   });
-  await page.route('**/kasajizou_character_detail_display_v3.json*', (route) =>
+  await page.route('**/api/characters/138', (route) =>
     route.request().resourceType() === 'fetch'
       ? route.fulfill({ json: response })
       : route.continue(),
@@ -118,4 +124,26 @@ test('array order, null fields and missing images are handled without invented v
     'かさじぞう：画像未提供',
   );
   expect(errors).toEqual([]);
+});
+
+test('本能・超本能の表示とレベルは形態切り替えで変わらない', async ({ page }) => {
+  const response: CharacterDetailDto = JSON.parse(JSON.stringify(fixture));
+  response.talents!.abilities![0].talent_type_name = '超本能';
+  await page.route('**/api/characters/138', (route) =>
+    route.request().resourceType() === 'fetch'
+      ? route.fulfill({ json: response })
+      : route.continue(),
+  );
+  await page.goto('/characters/138');
+  await page.getByRole('button', { name: '古代の呪い無効を上げる', exact: true }).click();
+  await page.getByRole('button', { name: '基本体力アップを上げる', exact: true }).click();
+  for (const form of response.forms) {
+    await page.getByRole('button', { name: `第${form.form_number}`, exact: true }).click();
+    await expect(page.getByRole('heading', { name: '本能', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '超本能', exact: true })).toBeVisible();
+    await expect(page.getByLabel('古代の呪い無効のレベル')).toHaveText('1');
+    await expect(page.getByLabel('基本体力アップのレベル')).toHaveText('1');
+    await expect(page.getByTestId('total-np')).toContainText('15');
+    await expect(page.getByTestId('ultra-total-np')).toContainText('100');
+  }
 });

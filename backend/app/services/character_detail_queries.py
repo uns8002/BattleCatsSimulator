@@ -91,53 +91,50 @@ WHERE f.character_id = :character_id
 ORDER BY fm.form_id, fm.form_material_id;
 """),
     7: text("""
-SELECT t.form_id, t.form_effect_target_talent_id AS talent_id, t.effect_target_id,
+SELECT t.character_id, t.form_effect_target_talent_id AS talent_id, t.effect_target_id,
        et.effect_target_code, et.effect_target_name, et.effect_target_short_name,
        ia.storage_key AS image_url, t.talent_type, cv.value_name AS talent_type_name,
        t.np_id, np.max_level, np.lv1, np.lv2, np.lv3, np.lv4, np.lv5,
        np.lv6, np.lv7, np.lv8, np.lv9, np.lv10
 FROM form_effect_target_talents t
-JOIN forms f ON f.form_id = t.form_id
 LEFT JOIN effect_targets et ON et.effect_target_id = t.effect_target_id AND et.is_deleted = 0
 LEFT JOIN image_assets ia ON ia.image_id = et.image_id AND ia.is_deleted = 0
 LEFT JOIN category_values cv ON cv.group_id = '004' AND cv.value_id = t.talent_type AND cv.is_deleted = 0
 LEFT JOIN np ON np.np_id = t.np_id AND np.is_deleted = 0
-WHERE f.character_id = :character_id AND f.is_active = '1' AND f.is_deleted = 0
+WHERE t.character_id = :character_id
   AND t.is_active = '1' AND t.is_deleted = 0
-ORDER BY t.form_id, t.form_effect_target_talent_id;
+ORDER BY t.form_effect_target_talent_id;
 """),
     8: text("""
-SELECT t.form_id, t.form_effect_talent_id AS talent_id, t.effect_id,
+SELECT t.character_id, t.form_effect_talent_id AS talent_id, t.effect_id,
        e.effect_code, e.effect_name, e.effect_short_name, e.parameter_schema,
        ia.storage_key AS image_url, t.attack_order, t.parameter_values,
        t.talent_type, cv.value_name AS talent_type_name, t.np_id,
        np.max_level, np.lv1, np.lv2, np.lv3, np.lv4, np.lv5,
        np.lv6, np.lv7, np.lv8, np.lv9, np.lv10
 FROM form_effect_talents t
-JOIN forms f ON f.form_id = t.form_id
 LEFT JOIN effects e ON e.effect_id = t.effect_id AND e.is_deleted = 0
 LEFT JOIN image_assets ia ON ia.image_id = e.image_id AND ia.is_deleted = 0
 LEFT JOIN category_values cv ON cv.group_id = '004' AND cv.value_id = t.talent_type AND cv.is_deleted = 0
 LEFT JOIN np ON np.np_id = t.np_id AND np.is_deleted = 0
-WHERE f.character_id = :character_id AND f.is_active = '1' AND f.is_deleted = 0
+WHERE t.character_id = :character_id
   AND t.is_active = '1' AND t.is_deleted = 0
-ORDER BY t.form_id, t.form_effect_talent_id;
+ORDER BY t.form_effect_talent_id;
 """),
     9: text("""
-SELECT t.form_id, t.form_ability_talent_id AS talent_id, t.ability_id,
+SELECT t.character_id, t.form_ability_talent_id AS talent_id, t.ability_id,
        a.ability_code, a.ability_name, a.ability_short_name, a.parameter_schema,
        ia.storage_key AS image_url, t.attack_order, t.parameter_values,
        t.talent_type, cv.value_name AS talent_type_name, t.np_id,
        np.max_level, np.lv1, np.lv2, np.lv3, np.lv4, np.lv5,
        np.lv6, np.lv7, np.lv8, np.lv9, np.lv10
 FROM form_ability_talents t
-JOIN forms f ON f.form_id = t.form_id
 LEFT JOIN abilities a ON a.ability_id = t.ability_id AND a.is_deleted = 0
 LEFT JOIN image_assets ia ON ia.image_id = a.image_id AND ia.is_deleted = 0
 LEFT JOIN category_values cv ON cv.group_id = '004' AND cv.value_id = t.talent_type AND cv.is_deleted = 0
 LEFT JOIN np ON np.np_id = t.np_id AND np.is_deleted = 0
-WHERE f.character_id = :character_id AND f.is_active = '1' AND f.is_deleted = 0
+WHERE t.character_id = :character_id
   AND t.is_active = '1' AND t.is_deleted = 0
-ORDER BY t.form_id, t.form_ability_talent_id;
+ORDER BY t.form_ability_talent_id;
 """),
 }

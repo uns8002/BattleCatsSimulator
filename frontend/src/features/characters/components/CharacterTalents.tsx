@@ -1,18 +1,18 @@
-import type { CharacterFormDto as Form } from '../api/characterDto';
+import type { CharacterDetailDto } from '../api/characterDto';
 import type { CharacterSettings } from '../model/state';
 import { talentEntries, talentProgress, type TalentDisplay } from '../model/characterDisplay';
 import { parseTalentModifiers } from '../model/talentModifiers';
 import { IconBadge } from '../../../shared/ui/IconBadge';
 export function CharacterTalents({
-  form,
+  character,
   settings,
   onChange,
 }: {
-  form: Form;
+  character: CharacterDetailDto;
   settings: CharacterSettings;
   onChange: (s: CharacterSettings) => void;
 }) {
-  const entries = talentEntries(form);
+  const entries = talentEntries(character);
   return (
     <>
       {(['本能', '超本能'] as const).map((kind) => (

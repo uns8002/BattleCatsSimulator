@@ -20,7 +20,8 @@ describe('provided response contract', () => {
     expect(
       isCharacterDto({
         ...fixture,
-        forms: [{ ...fixture.forms[0], hp: null, talents: null, abilities: null }],
+        talents: null,
+        forms: [{ ...fixture.forms[0], hp: null, abilities: null }],
       }),
     ).toBe(true);
     expect(isCharacterDto({ ...fixture, forms: [{ ...fixture.forms[0], hp: '900' }] })).toBe(false);

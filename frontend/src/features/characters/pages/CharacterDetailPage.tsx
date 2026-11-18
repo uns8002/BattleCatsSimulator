@@ -61,10 +61,15 @@ export function CharacterDetailPage({
           onChange={(level) => onChange({ ...settings, level })}
         />
       </section>
-      <CharacterStats form={form} level={settings.level} talentLevels={settings.talents} />
+      <CharacterStats
+        character={character}
+        form={form}
+        level={settings.level}
+        talentLevels={settings.talents}
+      />
       <CharacterTargetsAndEffects form={form} />
       <CharacterAbilities form={form} />
-      <CharacterTalents form={form} settings={settings} onChange={onChange} />
+      <CharacterTalents character={character} settings={settings} onChange={onChange} />
       <CharacterCombos />
       <CharacterGachas />
       <dialog

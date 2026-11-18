@@ -53,18 +53,13 @@ def get_character_detail(character_id):
         character = basics[0]
         character['forms'] = fetch_rows(connection, 2, character_id)
         forms = {form['form_id']: form for form in character['forms']}
-        if not forms:
-            return character
         for form in forms.values():
             for key in ('effect_targets', 'effects', 'abilities', 'materials'):
                 form[key] = []
-            form['talents'] = {'effect_targets': [], 'effects': [], 'abilities': []}
+        character['talents'] = {'effect_targets': [], 'effects': [], 'abilities': []}
         for number, key in ((3, 'effect_targets'), (4, 'effects'), (5, 'abilities'),
                             (6, 'materials'), (7, 'effect_targets'), (8, 'effects'), (9, 'abilities')):
             for item in fetch_rows(connection, number, character_id):
-                form_id = item.pop('form_id')
-                if form_id not in forms:
-                    raise ValueError(f'SQL{number:02}: 取得形態にない関連データがあります')
                 if number >= 7:
                     # SQLのtalent_idを既存詳細DTOの関連ID名にも対応させる。
                     kind = {7: 'effect_target', 8: 'effect', 9: 'ability'}[number]
@@ -79,7 +74,10 @@ def get_character_detail(character_id):
                     for i in range(1, 11):
                         item.pop(f'lv{i}')
                     item.setdefault('parameter_values', None)
-                    forms[form_id]['talents'][key].append(item)
+                    character['talents'][key].append(item)
                 else:
+                    form_id = item.pop('form_id')
+                    if form_id not in forms:
+                        raise ValueError(f'SQL{number:02}: 取得形態にない関連データがあります')
                     forms[form_id][key].append(item)
         return character

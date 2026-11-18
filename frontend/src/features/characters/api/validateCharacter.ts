@@ -51,52 +51,54 @@ export function isCharacterDto(v: unknown): v is CharacterDetailDto {
   )
     return false;
   const formIds = new Set<number>();
-  return v.forms.every((f) => {
-    if (
-      !object(f) ||
-      !id(f.form_id) ||
-      formIds.has(f.form_id as number) ||
-      !id(f.form_number) ||
-      !text(f.form_name)
-    )
-      return false;
-    formIds.add(f.form_id as number);
-    return (
-      [
-        'hp',
-        'attack_power',
-        'knockbacks',
-        'movement_speed',
-        'attack_range',
-        'attack_frequency_frames',
-        'attack_startup_frames',
-        'respawn_frames',
-        'production_cost',
-      ].every((k) => nullableNumber(f[k])) &&
-      ['image_url', 'description_body', 'game_version_name'].every((k) => nullableText(f[k])) &&
-      (f.form_short_name === undefined || nullableText(f.form_short_name)) &&
-      nullableNumber(f.required_level) &&
-      (f.required_stage_id === null || id(f.required_stage_id)) &&
-      list(
-        f.materials,
-        (m) =>
-          object(m) &&
-          id(m.form_material_id) &&
-          id(m.material_id) &&
-          text(m.material_code) &&
-          text(m.material_name) &&
-          text(m.material_type) &&
-          nullableText(m.image_url) &&
-          number(m.required_quantity),
-      ) &&
-      list(f.effect_targets, (item) => entry(item, 'effect_target')) &&
-      list(f.effects, (item) => entry(item, 'effect')) &&
-      list(f.abilities, (item) => entry(item, 'ability')) &&
-      (f.talents === null ||
-        (object(f.talents) &&
-          list(f.talents.effect_targets, (item) => entry(item, 'effect_target', true)) &&
-          list(f.talents.effects, (item) => entry(item, 'effect', true)) &&
-          list(f.talents.abilities, (item) => entry(item, 'ability', true))))
-    );
-  });
+  return (
+    (v.talents === null ||
+      (object(v.talents) &&
+        list(v.talents.effect_targets, (item) => entry(item, 'effect_target', true)) &&
+        list(v.talents.effects, (item) => entry(item, 'effect', true)) &&
+        list(v.talents.abilities, (item) => entry(item, 'ability', true)))) &&
+    v.forms.every((f) => {
+      if (
+        !object(f) ||
+        !id(f.form_id) ||
+        formIds.has(f.form_id as number) ||
+        !id(f.form_number) ||
+        !text(f.form_name)
+      )
+        return false;
+      formIds.add(f.form_id as number);
+      return (
+        [
+          'hp',
+          'attack_power',
+          'knockbacks',
+          'movement_speed',
+          'attack_range',
+          'attack_frequency_frames',
+          'attack_startup_frames',
+          'respawn_frames',
+          'production_cost',
+        ].every((k) => nullableNumber(f[k])) &&
+        ['image_url', 'description_body', 'game_version_name'].every((k) => nullableText(f[k])) &&
+        (f.form_short_name === undefined || nullableText(f.form_short_name)) &&
+        nullableNumber(f.required_level) &&
+        (f.required_stage_id === null || id(f.required_stage_id)) &&
+        list(
+          f.materials,
+          (m) =>
+            object(m) &&
+            id(m.form_material_id) &&
+            id(m.material_id) &&
+            text(m.material_code) &&
+            text(m.material_name) &&
+            text(m.material_type) &&
+            nullableText(m.image_url) &&
+            number(m.required_quantity),
+        ) &&
+        list(f.effect_targets, (item) => entry(item, 'effect_target')) &&
+        list(f.effects, (item) => entry(item, 'effect')) &&
+        list(f.abilities, (item) => entry(item, 'ability'))
+      );
+    })
+  );
 }

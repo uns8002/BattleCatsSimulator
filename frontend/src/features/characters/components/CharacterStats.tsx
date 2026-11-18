@@ -1,16 +1,18 @@
-import type { CharacterFormDto as Form } from '../api/characterDto';
-import { statValues } from '../model/characterDisplay';
+import type { CharacterDetailDto, CharacterFormDto as Form } from '../api/characterDto';
+import { statValues, talentEntries } from '../model/characterDisplay';
 import { statLabels } from './statLabels';
 export function CharacterStats({
   form,
+  character,
   level,
   talentLevels,
 }: {
   form: Form;
+  character: CharacterDetailDto;
   level: number;
   talentLevels: Record<string, number>;
 }) {
-  const values = statValues(form, level, undefined, talentLevels);
+  const values = statValues(form, level, undefined, talentLevels, talentEntries(character));
   return (
     <section className="card character-stats">
       <h2>ステータス</h2>
