@@ -2,7 +2,11 @@ import type { CharacterDetailDto, CharacterFormDto, TalentDto } from '../api/cha
 import { framesLabel } from './state';
 import { calculateBaseStats } from './baseStats';
 import { supportsSimpleDps, calculateSimpleDps } from './dps';
-import { parseTalentModifiers, applyTalentModifiers } from './talentModifiers';
+import {
+  parseTalentModifiers,
+  applyTalentModifiers,
+  applyAttackFrequencyReduction,
+} from './talentModifiers';
 
 const numberLabel = (value: number | null) =>
   value === null ? '未提供' : value.toLocaleString('ja-JP');
@@ -17,13 +21,23 @@ export function statValues(
   entries: TalentDisplay[] = [],
 ): string[] {
   const base = calculateBaseStats(form, level);
-  const modifiers = entries.map(
-    (entry) => parseTalentModifiers(entry.dto, talentLevels[entry.key] ?? 0).percentages,
+  const modifiers = entries.map((entry) =>
+    parseTalentModifiers(entry.dto, talentLevels[entry.key] ?? 0),
   );
-  const stats = applyTalentModifiers(base, modifiers);
-  const dps = simpleDpsSupported
-    ? calculateSimpleDps(stats.attackPower, form.attack_frequency_frames)
-    : null;
+  const stats = applyTalentModifiers(
+    base,
+    modifiers.map((m) => m.percentages),
+  );
+  const frequency = modifiers.some((m) =>
+    m.invalidParameters.includes('attack_frequency_reduction_frames'),
+  )
+    ? null
+    : applyAttackFrequencyReduction(
+        form.attack_frequency_frames,
+        form.attack_startup_frames,
+        modifiers.reduce((sum, m) => sum + m.attackFrequencyReductionFrames, 0),
+      );
+  const dps = simpleDpsSupported ? calculateSimpleDps(stats.attackPower, frequency) : null;
   return [
     base.supported ? numberLabel(stats.hp) : '未対応',
     base.supported ? numberLabel(stats.attackPower) : '未対応',
@@ -32,7 +46,7 @@ export function statValues(
     '未提供',
     numberLabel(form.movement_speed),
     numberLabel(form.knockbacks),
-    timeLabel(form.attack_frequency_frames),
+    timeLabel(frequency),
     timeLabel(form.attack_startup_frames),
     timeLabel(form.respawn_frames),
     form.production_cost === null ? '未提供' : `${numberLabel(form.production_cost)}円`,

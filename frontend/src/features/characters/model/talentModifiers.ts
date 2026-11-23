@@ -11,6 +11,7 @@ const parameterStats: Record<string, Stat> = {
 
 export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
   const percentages: TalentModifiers = { hp: 0, attackPower: 0 };
+  let attackFrequencyReductionFrames = 0;
   const unsupportedParameters: string[] = [];
   const invalidParameters: string[] = [];
   const level = Math.min(
@@ -19,11 +20,16 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
   );
   const parameters = talent.parameter_values;
   if (!parameters || typeof parameters !== 'object' || Array.isArray(parameters)) {
-    return { percentages, unsupportedParameters, invalidParameters };
+    return {
+      percentages,
+      attackFrequencyReductionFrames,
+      unsupportedParameters,
+      invalidParameters,
+    };
   }
   for (const [key, value] of Object.entries(parameters)) {
     if (key === 'action') continue; // 解放情報のみでは補正しない。
-    if (!Object.hasOwn(parameterStats, key)) {
+    if (key !== 'attack_frequency_reduction_frames' && !Object.hasOwn(parameterStats, key)) {
       unsupportedParameters.push(key);
       continue;
     }
@@ -45,9 +51,12 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
       continue;
     }
     // Lv0は未解放。baseが0以外でも補正を適用しない。
-    if (level > 0) percentages[parameterStats[key]] += rate;
+    if (key === 'attack_frequency_reduction_frames') {
+      if (!Number.isInteger(rate) || rate < 0) invalidParameters.push(key);
+      else if (level > 0) attackFrequencyReductionFrames += rate;
+    } else if (level > 0) percentages[parameterStats[key]] += rate;
   }
-  return { percentages, unsupportedParameters, invalidParameters };
+  return { percentages, attackFrequencyReductionFrames, unsupportedParameters, invalidParameters };
 }
 
 export function applyTalentModifiers(
@@ -65,4 +74,26 @@ export function applyTalentModifiers(
     attackPower:
       base.attackPower === null ? null : base.attackPower * (1 + totals.attackPower / 100),
   };
+}
+
+// 保存された短縮量Fを使用。%→Fは収集ツールの暫定式で各Lv検証済み。
+export function applyAttackFrequencyReduction(
+  frequency: number | null,
+  startup: number | null,
+  reduction: number,
+): number | null {
+  if (reduction === 0) return frequency;
+  if (
+    frequency === null ||
+    startup === null ||
+    !Number.isInteger(frequency) ||
+    !Number.isInteger(startup) ||
+    !Number.isInteger(reduction) ||
+    startup < 0 ||
+    reduction < 0 ||
+    frequency <= 0 ||
+    frequency - reduction < startup
+  )
+    return null;
+  return frequency - reduction;
 }

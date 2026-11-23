@@ -86,3 +86,29 @@ describe('JSON表示・NP集計', () => {
     expect(resolveImageUrl('missing.png')).toBeNull();
   });
 });
+
+describe('攻撃間隔短縮（暫定）', () => {
+  it('Lv0は未適用、Lv10は279F→219F、攻撃発生は80Fを維持してDPSに反映', () => {
+    const form = { ...fixture.forms[0], attack_frequency_frames: 279, attack_startup_frames: 80 };
+    const dto = {
+      ...fixture.talents!.abilities![0],
+      max_level: 10,
+      parameter_values: { action: 'add', attack_frequency_reduction_frames: { base: 0, step: 6 } },
+    };
+    const entries = [{ key: 'frequency', name: '攻撃間隔短縮', category: '能力', dto }];
+    const zero = statValues(form, 1, true, { frequency: 0 }, entries);
+    const max = statValues(form, 1, true, { frequency: 10 }, entries);
+    expect(zero[7]).toBe('279F (9.30秒)');
+    expect(max[7]).toBe('219F (7.30秒)');
+    expect(max[8]).toBe('80F (2.67秒)');
+    expect(max[2]).toBe(
+      Math.floor((Number(max[1].replaceAll(',', '')) * 30) / 219).toLocaleString('ja-JP'),
+    );
+    expect(form.attack_frequency_frames).toBe(279);
+    expect(statValues(form, 1, true, { frequency: 1 }, entries)[7]).toBe('273F (9.10秒)');
+    expect(statValues(form, 1, true, { frequency: 99 }, entries)[7]).toBe(max[7]);
+    expect(
+      statValues({ ...form, attack_startup_frames: null }, 1, true, { frequency: 10 }, entries)[2],
+    ).toBe('未対応');
+  });
+});

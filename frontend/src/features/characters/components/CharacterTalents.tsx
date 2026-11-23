@@ -57,6 +57,9 @@ function TalentCard({
         const p = progress[index];
         const parsed = parseTalentModifiers(t, p.level);
         const corrections = [
+          parsed.attackFrequencyReductionFrames !== 0
+            ? `攻撃頻度 −${parsed.attackFrequencyReductionFrames}F（暫定）`
+            : '',
           parsed.percentages.hp !== 0
             ? `体力 ${parsed.percentages.hp > 0 ? '+' : ''}${parsed.percentages.hp}%`
             : '',
