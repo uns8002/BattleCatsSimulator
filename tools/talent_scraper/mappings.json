@@ -1,0 +1,218 @@
+[
+  {
+    "source_name": "悪魔シールドブレイク",
+    "master_table": "abilities",
+    "master_code": "shield_piercing",
+    "parameter_keys": [
+      "activation_rate_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "波動耐性",
+    "master_table": "abilities",
+    "master_code": "resist_wave",
+    "parameter_keys": [
+      "wave_damage_reduction_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "攻撃力低下耐性",
+    "master_table": "abilities",
+    "master_code": "resist_weaken",
+    "parameter_keys": [
+      "weaken_duration_reduction_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "動きを遅くする耐性",
+    "master_table": "abilities",
+    "master_code": "resist_slow",
+    "parameter_keys": [
+      "slow_duration_reduction_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "基本攻撃力上昇",
+    "master_table": "abilities",
+    "master_code": "attack_buff",
+    "parameter_keys": [
+      "attack_buff_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "追加対象: 悪魔",
+    "master_table": "effect_targets",
+    "master_code": "aku",
+    "parameter_keys": [],
+    "provisional": true
+  },
+  {
+    "source_name": "古代呪い無効",
+    "master_table": "abilities",
+    "master_code": "immune_to_curse",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "基本体力上昇",
+    "master_table": "abilities",
+    "master_code": "defense_buff",
+    "parameter_keys": [
+      "defense_buff_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "攻撃力アップ",
+    "master_table": "abilities",
+    "master_code": "strengthen",
+    "parameter_keys": [
+      "strengthen_trigger_hp_percent",
+      "strengthen_attack_percent"
+    ],
+    "action": "enhance",
+    "attack_order": null,
+    "provisional": true,
+    "conversion": "strengthen_all_parameters",
+    "source_issues": [
+      {
+        "catid": 272,
+        "reason": "サイトの発動体力100%と既存DBの80%に差があり、ユーザー判断で補正は保留。原文を保持しSQL生成対象外"
+      }
+    ]
+  },
+  {
+    "source_name": "ふっとばし無効",
+    "master_table": "abilities",
+    "master_code": "immune_to_knockback",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "攻撃間隔短縮",
+    "master_table": "abilities",
+    "master_code": "attack_frequency_up",
+    "parameter_keys": [
+      "attack_frequency_reduction_frames"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "conversion": "attack_frequency_percent_to_frames"
+  },
+  {
+    "source_name": "波動ダメージ無効",
+    "master_table": "abilities",
+    "master_code": "immune_to_waves",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "動きを止める無効",
+    "master_table": "abilities",
+    "master_code": "immune_to_freeze",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "動きを止める",
+    "master_table": "effects",
+    "master_code": "freeze",
+    "parameter_keys": [
+      "activation_rate_percent",
+      "freeze_duration_frames"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "conversion": "freeze_seconds_to_frames"
+  },
+  {
+    "source_name": "生き残る",
+    "master_table": "abilities",
+    "master_code": "survives",
+    "parameter_keys": [
+      "activation_rate_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "non_parameter_phrases": [
+      "致死ダメージを1回だけ耐える"
+    ]
+  },
+  {
+    "source_name": "烈波攻撃",
+    "master_table": "abilities",
+    "master_code": "surge_attacks",
+    "parameter_keys": [
+      "activation_rate_percent",
+      "surge_level",
+      "surge_start_range",
+      "surge_end_range"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "conversion": "surge_all_parameters"
+  },
+  {
+    "source_name": "クリティカル",
+    "master_table": "abilities",
+    "master_code": "critical",
+    "parameter_keys": [
+      "activation_rate_percent"
+    ],
+    "action": "enhance",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "ふっとばし耐性",
+    "master_table": "abilities",
+    "master_code": "resist_knockback",
+    "parameter_keys": [
+      "knockback_distance_reduction_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "コスト減少",
+    "master_table": "abilities",
+    "master_code": "cost_down",
+    "parameter_keys": [
+      "cost_down"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "unresolved_reason": "掲載の生産コスト減少量に単位表記がなく、DBの円への換算・基準と符号の既存登録規則が未確認"
+  }
+]
