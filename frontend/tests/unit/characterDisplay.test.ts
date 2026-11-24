@@ -112,3 +112,90 @@ describe('攻撃間隔短縮（暫定）', () => {
     ).toBe('未対応');
   });
 });
+
+describe('基本体力・基本攻撃力の本能をステータスに反映', () => {
+  const entries = talentEntries(fixture);
+  const hp = entries.find((e) => {
+    const p = e.dto.parameter_values;
+    return p && typeof p === 'object' && !Array.isArray(p) && 'defense_buff_percent' in p;
+  })!;
+  const attack = entries.find((e) => {
+    const p = e.dto.parameter_values;
+    return p && typeof p === 'object' && !Array.isArray(p) && 'attack_buff_percent' in p;
+  })!;
+  const form = { ...fixture.forms[0], hp: 1000, attack_power: 500, attack_frequency_frames: 60 };
+
+  it('＋操作に対応するLv1・最大Lvを反映し、Lv0へ戻すと補正を解除する', () => {
+    const display = (hpLevel: number, attackLevel: number) =>
+      statValues(form, 1, true, { [hp.key]: hpLevel, [attack.key]: attackLevel }, entries);
+    expect(display(0, 0).slice(0, 3)).toEqual(['1,000', '500', '250']);
+    expect(display(1, 0).slice(0, 3)).toEqual(['1,020', '500', '250']);
+    expect(display(0, 1).slice(0, 3)).toEqual(['1,000', '510', '255']);
+    expect(display(10, 10).slice(0, 3)).toEqual(['1,200', '600', '300']);
+    expect(display(0, 0).slice(0, 3)).toEqual(['1,000', '500', '250']);
+    expect(form.hp).toBe(1000);
+    expect(form.attack_power).toBe(500);
+  });
+
+  it('キャラレベルの成長後に本能を適用し、形態変更後も選択レベルを使う', () => {
+    const levels = { [hp.key]: 10, [attack.key]: 10 };
+    expect(statValues(form, 30, true, levels, entries).slice(0, 3)).toEqual([
+      '8,160',
+      '4,080',
+      '2,040',
+    ]);
+    const evolved = { ...form, form_id: 999, hp: 2000, attack_power: 1000 };
+    expect(statValues(evolved, 1, true, levels, entries).slice(0, 3)).toEqual([
+      '2,400',
+      '1,200',
+      '600',
+    ]);
+  });
+});
+
+describe('生産コスト割引', () => {
+  const form = { ...fixture.forms[0], production_cost: 300 };
+  const dto = {
+    ...fixture.talents!.abilities![0],
+    max_level: 10,
+    parameter_values: { action: 'add', cost_down: { base: 0, step: 15 } },
+  };
+  const entries = [{ key: 'cost', name: '生産コスト割引', category: '能力', dto }];
+
+  it('換算済みの円を引き、Lv0・Lv1・最大Lv・解除・形態変更に反映する', () => {
+    const display = (level: number) => statValues(form, 1, true, { cost: level }, entries);
+    expect(display(0)[10]).toBe('300円');
+    expect(display(1)[10]).toBe('285円');
+    expect(display(10)[10]).toBe('150円');
+    expect(display(99)[10]).toBe('150円');
+    expect(display(0)[10]).toBe('300円');
+    expect(display(10).slice(0, 10)).toEqual(display(0).slice(0, 10));
+    expect(statValues({ ...form, production_cost: 600 }, 30, true, { cost: 10 }, entries)[10]).toBe(
+      '450円',
+    );
+    expect(form.production_cost).toBe(300);
+  });
+
+  it('Lv0ではbaseを適用せず、欠落・不正・過大な割引を金額として表示しない', () => {
+    const changed = (base: number, step: number) => [
+      {
+        ...entries[0],
+        dto: {
+          ...dto,
+          parameter_values: { cost_down: { base, step } },
+        },
+      },
+    ];
+    expect(statValues(form, 1, true, { cost: 0 }, changed(30, 15))[10]).toBe('300円');
+    expect(statValues(form, 1, true, { cost: 1 }, changed(30, 15))[10]).toBe('255円');
+    for (const step of [-1, 0.5, 301]) {
+      expect(statValues(form, 1, true, { cost: 1 }, changed(0, step))[10]).toBe('未提供');
+    }
+    expect(statValues({ ...form, production_cost: null }, 1, true, { cost: 10 }, entries)[10]).toBe(
+      '未提供',
+    );
+    expect(statValues({ ...form, production_cost: 150 }, 1, true, { cost: 10 }, entries)[10]).toBe(
+      '0円',
+    );
+  });
+});

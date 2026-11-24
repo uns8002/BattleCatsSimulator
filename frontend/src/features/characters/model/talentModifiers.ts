@@ -12,6 +12,7 @@ const parameterStats: Record<string, Stat> = {
 export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
   const percentages: TalentModifiers = { hp: 0, attackPower: 0 };
   let attackFrequencyReductionFrames = 0;
+  let productionCostReduction = 0;
   const unsupportedParameters: string[] = [];
   const invalidParameters: string[] = [];
   const level = Math.min(
@@ -23,13 +24,18 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
     return {
       percentages,
       attackFrequencyReductionFrames,
+      productionCostReduction,
       unsupportedParameters,
       invalidParameters,
     };
   }
   for (const [key, value] of Object.entries(parameters)) {
     if (key === 'action') continue; // 解放情報のみでは補正しない。
-    if (key !== 'attack_frequency_reduction_frames' && !Object.hasOwn(parameterStats, key)) {
+    if (
+      key !== 'cost_down' &&
+      key !== 'attack_frequency_reduction_frames' &&
+      !Object.hasOwn(parameterStats, key)
+    ) {
       unsupportedParameters.push(key);
       continue;
     }
@@ -51,12 +57,21 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
       continue;
     }
     // Lv0は未解放。baseが0以外でも補正を適用しない。
-    if (key === 'attack_frequency_reduction_frames') {
+    if (key === 'cost_down') {
+      if (!Number.isSafeInteger(rate) || rate < 0) invalidParameters.push(key);
+      else if (level > 0) productionCostReduction += rate;
+    } else if (key === 'attack_frequency_reduction_frames') {
       if (!Number.isInteger(rate) || rate < 0) invalidParameters.push(key);
       else if (level > 0) attackFrequencyReductionFrames += rate;
     } else if (level > 0) percentages[parameterStats[key]] += rate;
   }
-  return { percentages, attackFrequencyReductionFrames, unsupportedParameters, invalidParameters };
+  return {
+    percentages,
+    attackFrequencyReductionFrames,
+    productionCostReduction,
+    unsupportedParameters,
+    invalidParameters,
+  };
 }
 
 export function applyTalentModifiers(
@@ -96,4 +111,21 @@ export function applyAttackFrequencyReduction(
   )
     return null;
   return frequency - reduction;
+}
+
+// cost_downは換算済みの減少額（円）。ここでは1.5倍しない。
+export function applyProductionCostReduction(
+  cost: number | null,
+  reduction: number,
+): number | null {
+  if (
+    cost === null ||
+    !Number.isSafeInteger(cost) ||
+    cost < 0 ||
+    !Number.isSafeInteger(reduction) ||
+    reduction < 0 ||
+    reduction > cost
+  )
+    return null;
+  return cost - reduction;
 }

@@ -6,6 +6,7 @@ import {
   parseTalentModifiers,
   applyTalentModifiers,
   applyAttackFrequencyReduction,
+  applyProductionCostReduction,
 } from './talentModifiers';
 
 const numberLabel = (value: number | null) =>
@@ -37,6 +38,12 @@ export function statValues(
         form.attack_startup_frames,
         modifiers.reduce((sum, m) => sum + m.attackFrequencyReductionFrames, 0),
       );
+  const productionCost = modifiers.some((m) => m.invalidParameters.includes('cost_down'))
+    ? null
+    : applyProductionCostReduction(
+        form.production_cost,
+        modifiers.reduce((sum, m) => sum + m.productionCostReduction, 0),
+      );
   const dps = simpleDpsSupported ? calculateSimpleDps(stats.attackPower, frequency) : null;
   return [
     base.supported ? numberLabel(stats.hp) : '未対応',
@@ -49,7 +56,7 @@ export function statValues(
     timeLabel(frequency),
     timeLabel(form.attack_startup_frames),
     timeLabel(form.respawn_frames),
-    form.production_cost === null ? '未提供' : `${numberLabel(form.production_cost)}円`,
+    productionCost === null ? '未提供' : `${numberLabel(productionCost)}円`,
   ];
 }
 
