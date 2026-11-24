@@ -294,6 +294,8 @@ def convert_freeze(item):
     # Only the observed explicit grammar is supported; additional numbers fail closed.
     match = re.fullmatch(r'(\d+(?:\.\d+)?)%で動きを止める、持続 (\d+(?:\.\d+)?)秒\s*->\s*(\d+(?:\.\d+)?)秒', item.get('description') or '')
     if not match:
+        if re.fullmatch(r'\d+(?:\.\d+)?\s*->\s*\d+(?:\.\d+)?%で動きを止める', item.get('description') or ''):
+            raise ReviewError('発動率のみ掲載。必須の停止時間freeze_duration_framesを取得できないため補完しない')
         raise ReviewError('停止の発動率・時間を一意に抽出できない')
     rate, low, high = map(Fraction, match.groups())
     if not 0 <= rate <= 100:
@@ -319,6 +321,14 @@ def convert_all_parameters(item, conversion):
         if not 0 <= Fraction(trigger) <= 100:
             raise ReviewError('発動体力割合が範囲外')
         triples = [(trigger, trigger, '%'), (low, high, '%')]
+    elif conversion == 'cost_down_standard_yen':
+        match = re.fullmatch(r'生産コスト\s*(\d+(?:\.\d+)?)\s*(?:円)?\s*(?:->|→|〜|～)\s*(\d+(?:\.\d+)?)\s*(?:円)?\s*減少', item.get('description') or '')
+        if not match:
+            raise ReviewError('生産コスト減少量を抽出できない')
+        low, high = map(Fraction, match.groups())
+        if low > high:
+            raise ReviewError('生産コスト減少量の最小・最大が逆転')
+        triples = [(low * Fraction(3, 2), high * Fraction(3, 2), '円')]
     elif conversion == 'surge_all_parameters':
         match = re.fullmatch(r'(\d+(?:\.\d+)?)\s*->\s*(\d+(?:\.\d+)?)%でLv\s*(\d+)\s*烈波攻撃\s*を放つ、範囲\s*(\d+)\s*[~〜～]\s*(\d+)', item.get('description') or '')
         if not match:
@@ -334,6 +344,11 @@ def convert_all_parameters(item, conversion):
         calc = calculate(low, high, item['min_level'], item['max_level'], unit, unit)
         result.append({**calc, 'minimum': number(Fraction(low)), 'maximum': number(Fraction(high)),
                        'unit': unit, 'max_unit': unit, 'source_text': match[0]})
+    if conversion == 'cost_down_standard_yen':
+        result[0]['conversion'] = '日本編1章の掲載減少額 × 1.5 = 標準の減少額（円）'
+        result[0]['source_minimum'] = match[1]
+        result[0]['source_maximum'] = match[2]
+        result[0]['conversion_factor'] = 1.5
     return result
 
 
@@ -409,7 +424,7 @@ def normalize(item, db, identity, duplicate=False, mappings=()):
                     result['warnings'] = [w for w in result['warnings'] if w != 'stepが小数（丸めなし）']
                 except (ReviewError, ValueError, TypeError) as exc:
                     reasons.append(str(exc) if isinstance(exc, ReviewError) else '停止パラメータ変換不可')
-            if mapping.get('conversion') in ('strengthen_all_parameters', 'surge_all_parameters'):
+            if mapping.get('conversion') in ('strengthen_all_parameters', 'surge_all_parameters', 'cost_down_standard_yen'):
                 try:
                     result['calculations'] = convert_all_parameters(item, mapping['conversion'])
                     fully_parsed = True

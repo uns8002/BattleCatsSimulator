@@ -213,6 +213,37 @@
     "action": "add",
     "attack_order": null,
     "provisional": true,
-    "unresolved_reason": "掲載の生産コスト減少量に単位表記がなく、DBの円への換算・基準と符号の既存登録規則が未確認"
+    "conversion": "cost_down_standard_yen"
+  },
+  {
+    "source_name": "バリアブレイク",
+    "master_table": "abilities",
+    "master_code": "barrier_breaker",
+    "parameter_keys": [
+      "activation_rate_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "ワープ無効",
+    "master_table": "abilities",
+    "master_code": "immune_to_warp",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "呪い耐性",
+    "master_table": "abilities",
+    "master_code": "resist_curse",
+    "parameter_keys": [
+      "curse_duration_reduction_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
   }
 ]

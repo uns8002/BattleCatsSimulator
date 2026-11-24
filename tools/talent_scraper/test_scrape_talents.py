@@ -55,6 +55,17 @@ class CoreTests(unittest.TestCase):
         with self.assertRaises(s.ReviewError):
             s.convert_all_parameters(item, 'surge_all_parameters')
 
+    def test_cost_down_standard_yen(self):
+        for low, high, step in [(10, 100, 15), (20, 200, 30)]:
+            item = {'description': f'生産コスト {low} -> {high} 減少', 'min_level': 1, 'max_level': 10}
+            calc = s.convert_all_parameters(item, 'cost_down_standard_yen')[0]
+            self.assertEqual((calc['base'], calc['step'], calc['unit']), (0, step, '円'))
+            self.assertEqual(calc['levels'], {str(i): step*i for i in range(1, 11)})
+            self.assertEqual(calc['source_minimum'], str(low))
+            self.assertEqual(s.convert_all_parameters(item, 'cost_down_standard_yen')[0], calc)
+        with self.assertRaises(s.ReviewError):
+            s.convert_all_parameters(dict(item, description='生産コスト 10 -> 100% 減少'), 'cost_down_standard_yen')
+
     def test_calculations(self):
         for low, high, base, step in [(2, 20, 0, 2), (16, 70, 10, 6), (5, 50, 0, 5)]:
             result = s.calculate(low, high, 1, 10, '%', '%')
