@@ -1,6 +1,8 @@
 import type { CharacterDetailDto, CharacterFormDto, TalentDto } from '../api/characterDto';
 import { framesLabel } from './state';
 import { calculateBaseStats } from './baseStats';
+import type { TreasureSettings } from '../../settings/model/treasureSettings';
+import { applyTreasureStatModifiers, calculateTreasureRespawn } from './treasureModifiers';
 import { supportsSimpleDps, calculateSimpleDps } from './dps';
 import {
   parseTalentModifiers,
@@ -20,15 +22,22 @@ export function statValues(
   simpleDpsSupported = supportsSimpleDps(form.form_id),
   talentLevels: Record<string, number> = {},
   entries: TalentDisplay[] = [],
+  treasures?: TreasureSettings,
 ): string[] {
   const base = calculateBaseStats(form, level);
   const modifiers = entries.map((entry) =>
     parseTalentModifiers(entry.dto, talentLevels[entry.key] ?? 0),
   );
-  const stats = applyTalentModifiers(
-    base,
-    modifiers.map((m) => m.percentages),
-  );
+  const stats = treasures
+    ? applyTreasureStatModifiers(
+        base,
+        treasures,
+        modifiers.map((m) => m.percentages),
+      )
+    : applyTalentModifiers(
+        base,
+        modifiers.map((m) => m.percentages),
+      );
   const frequency = modifiers.some((m) =>
     m.invalidParameters.includes('attack_frequency_reduction_frames'),
   )
@@ -55,7 +64,9 @@ export function statValues(
     numberLabel(form.knockbacks),
     timeLabel(frequency),
     timeLabel(form.attack_startup_frames),
-    timeLabel(form.respawn_frames),
+    timeLabel(
+      treasures ? calculateTreasureRespawn(form.respawn_frames, treasures) : form.respawn_frames,
+    ),
     productionCost === null ? '未提供' : `${numberLabel(productionCost)}円`,
   ];
 }

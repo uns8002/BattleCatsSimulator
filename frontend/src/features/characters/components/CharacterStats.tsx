@@ -1,6 +1,7 @@
 import type { CharacterDetailDto, CharacterFormDto as Form } from '../api/characterDto';
 import { statValues, talentEntries } from '../model/characterDisplay';
 import { statLabels } from './statLabels';
+import { useTreasureSettings } from '../../settings/state/TreasureSettingsProvider';
 export function CharacterStats({
   form,
   character,
@@ -12,7 +13,15 @@ export function CharacterStats({
   level: number;
   talentLevels: Record<string, number>;
 }) {
-  const values = statValues(form, level, undefined, talentLevels, talentEntries(character));
+  const { settings: treasures } = useTreasureSettings();
+  const values = statValues(
+    form,
+    level,
+    undefined,
+    talentLevels,
+    talentEntries(character),
+    treasures,
+  );
   return (
     <section className="card character-stats">
       <h2>ステータス</h2>

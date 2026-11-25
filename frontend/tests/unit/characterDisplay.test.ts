@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { normalizeTreasureSettings } from '../../src/features/settings/model/treasureSettings';
 import { isCharacterDto } from '../../src/features/characters/api/validateCharacter';
 import rawFixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v3.json';
 import type { CharacterDetailDto } from '../../src/features/characters/api/characterDto';
@@ -14,6 +15,88 @@ const fixture = (() => {
   if (!isCharacterDto(data)) throw new Error('Invalid fixture');
   return data;
 })();
+
+describe('お宝設定とステータス表示の接続', () => {
+  const form = fixture.forms[0];
+  const display = (health: number, attack: number, level = 1) =>
+    statValues(
+      form,
+      level,
+      true,
+      {},
+      [],
+      normalizeTreasureSettings({ treasures: { health, attack } }),
+    );
+  it.each([
+    [0, '900', '400', '122'],
+    [100, '1,350', '600', '183'],
+    [200, '1,800', '800', '244'],
+    [300, '2,250', '1,000', '306'],
+  ])('お宝%s%%を体力・攻撃力・DPSに反映する', (rate, hp, attack, dps) => {
+    expect(display(Number(rate), Number(rate)).slice(0, 3)).toEqual([hp, attack, dps]);
+  });
+  it('体力と攻撃力を独立して変更し、レベルを保持する', () => {
+    expect(display(0, 300, 30).slice(0, 3)).toEqual(['6,120', '6,800', '2,081']);
+    expect(display(300, 0, 30).slice(0, 3)).toEqual(['15,300', '2,720', '832']);
+  });
+  it('選択済み本能と組み合わせ、形態変更にも同じお宝を使う', () => {
+    const entries = talentEntries(fixture);
+    const hp = entries.find((entry) => {
+      const parameters = entry.dto.parameter_values;
+      return (
+        parameters !== null &&
+        typeof parameters === 'object' &&
+        Object.hasOwn(parameters, 'defense_buff_percent')
+      );
+    })!;
+    const settings = normalizeTreasureSettings(null);
+    const levels = { [hp.key]: 10 };
+    expect(statValues(form, 30, true, levels, entries, settings)[0]).toBe('18,360');
+    expect(statValues(fixture.forms[1], 30, true, levels, entries, settings)[0]).toBe('118,320');
+    expect(levels).toEqual({ [hp.key]: 10 });
+    expect(form.hp).toBe(900);
+  });
+  it('中国の伝統・研究力を再生産に反映し、果実は表示を変更しない', () => {
+    const max = normalizeTreasureSettings(null);
+    const min = normalizeTreasureSettings({
+      treasures: {
+        production: 300,
+        red: 0,
+        floating: 0,
+        black: 0,
+        angel: 0,
+        metal: 0,
+        alien: 0,
+        zombie: 0,
+      },
+      research: { level: 1, plusLevel: 0 },
+    });
+    const values = statValues(form, 1, true, {}, [], max);
+    const minimumResearch = statValues(form, 1, true, {}, [], min);
+    expect(minimumResearch[9]).toBe('300F (10.00秒)');
+    expect(statValues(form, 1, true, {}, [], { ...min, research: max.research })).toEqual(values);
+    expect(values[9]).toBe('126F (4.20秒)');
+    const zero = statValues(form, 1, true, {}, [], {
+      ...max,
+      treasures: { ...max.treasures, production: 0 },
+    });
+    expect(zero[9]).toBe('216F (7.20秒)');
+    expect(form.respawn_frames).toBe(396);
+    expect(values.filter((_, i) => i !== 9)).toEqual(zero.filter((_, i) => i !== 9));
+  });
+  it('小数の攻撃力を切り捨ててからDPSを計算し、欠落値は維持する', () => {
+    const settings = normalizeTreasureSettings({ treasures: { attack: 1 } });
+    const values = statValues(
+      { ...form, hp: null, attack_power: 1, attack_frequency_frames: 1 },
+      2,
+      true,
+      {},
+      [],
+      settings,
+    );
+    expect(values.slice(0, 3)).toEqual(['未提供', '1', '30']);
+  });
+});
 
 describe('JSON表示・NP集計', () => {
   it('Lv1の単発DPSを表示し攻撃範囲は補完しない', () => {

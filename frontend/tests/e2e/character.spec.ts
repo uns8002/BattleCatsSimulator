@@ -25,10 +25,10 @@ for (const width of [390, 1280]) {
       await page.getByRole('button', { name: `第${form.form_number}`, exact: true }).click();
       await expect(page.getByRole('heading', { name: form.form_name, exact: true })).toBeVisible();
       await expect(page.getByTestId('stat-0').locator('strong')).toHaveText(
-        form.hp.toLocaleString('ja-JP'),
+        Math.floor(form.hp * 2.5).toLocaleString('ja-JP'),
       );
       await expect(page.getByTestId('stat-1').locator('strong')).toHaveText(
-        form.attack_power.toLocaleString('ja-JP'),
+        Math.floor(form.attack_power * 2.5).toLocaleString('ja-JP'),
       );
       await page.getByRole('button', { name: '解説' }).click();
       await expect(page.getByRole('dialog')).toContainText(form.description_body.split('\n')[0]);
@@ -43,11 +43,11 @@ for (const width of [390, 1280]) {
     }
     await page.getByLabel('キャラクターレベル').fill('60');
     await page.getByLabel('キャラクターレベル').press('Enter');
-    await expect(page.getByTestId('stat-0').locator('strong')).toHaveText('14,080');
-    await expect(page.getByTestId('stat-2').locator('strong')).toHaveText('1,567');
+    await expect(page.getByTestId('stat-0').locator('strong')).toHaveText('35,200');
+    await expect(page.getByTestId('stat-2').locator('strong')).toHaveText('3,918');
     await page.getByRole('button', { name: '基本体力アップを上げる', exact: true }).click();
     await expect(page.getByTestId('total-np')).toContainText('15');
-    await expect(page.getByTestId('stat-0').locator('strong')).toHaveText('14,361.6');
+    await expect(page.getByTestId('stat-0').locator('strong')).toHaveText('35,904');
     await page.getByRole('button', { name: '古代の呪い無効を上げる', exact: true }).click();
     await expect(page.getByTestId('total-np')).toContainText('115');
     await expect(
@@ -60,9 +60,9 @@ for (const width of [390, 1280]) {
     await expect(page.getByRole('heading', { name: '超本能', exact: true })).toHaveCount(0);
     await page.getByRole('button', { name: '第4', exact: true }).click();
     await expect(page.getByLabel('基本体力アップのレベル')).toHaveText('1');
-    await page.getByRole('link', { name: '⚙ お宝設定', exact: true }).click();
+    await page.getByRole('button', { name: '⚙ お宝設定', exact: true }).click();
     await expect(page.getByRole('checkbox')).toHaveCount(0);
-    await page.getByRole('link', { name: 'キャラクター詳細に戻る' }).click();
+    await page.getByRole('button', { name: 'お宝設定を閉じる' }).click();
     await expect(page.getByLabel('キャラクターレベル')).toHaveValue('60');
     await expect(page.getByLabel('基本体力アップのレベル')).toHaveText('1');
     await page.getByRole('button', { name: 'メニュー', exact: true }).click();

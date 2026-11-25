@@ -422,6 +422,47 @@ dialog {
 dialog::backdrop {
   background: #25304788;
 }
+.treasure-dialog {
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+.treasure-heading {
+  position: sticky;
+  top: -16px;
+  background: white;
+  padding: 8px 0;
+  z-index: 1;
+}
+.treasure-heading button {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 24px;
+}
+.treasure-settings section + section {
+  margin-top: 24px;
+}
+.treasure-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.treasure-setting label {
+  font-weight: 700;
+}
+.treasure-setting small {
+  display: block;
+}
+.treasure-setting .stepper button,
+.treasure-setting .stepper input {
+  min-height: 44px;
+}
+.treasure-setting .stepper {
+  flex-shrink: 0;
+}
 .description-text {
   white-space: pre-line;
   margin-bottom: 16px;

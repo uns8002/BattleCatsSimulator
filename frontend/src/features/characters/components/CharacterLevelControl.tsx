@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { validLevel } from '../model/state';
 import { MAX_BASIC_LEVEL } from '../model/baseStats';
+import { TreasureSettingsDialog } from '../../settings/components/TreasureSettingsDialog';
 export function CharacterLevelControl({
   level,
   onChange,
@@ -60,9 +61,7 @@ export function CharacterLevelControl({
         </button>
       </div>
       <div className="settings-links">
-        <Link className="button" to="/settings/treasures">
-          ⚙ お宝設定
-        </Link>
+        <TreasureSettingsDialog />
         <Link className="button" to="/settings/combos">
           ⚙ にゃんコンボ設定
         </Link>
