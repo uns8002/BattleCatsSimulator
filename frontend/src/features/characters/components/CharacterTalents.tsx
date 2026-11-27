@@ -1,14 +1,17 @@
-import type { CharacterDetailDto } from '../api/characterDto';
+import { canApplyTalents } from '../model/talentApplication';
+import type { CharacterDetailDto, CharacterFormDto } from '../api/characterDto';
 import type { CharacterSettings } from '../model/state';
 import { talentEntries, talentProgress, type TalentDisplay } from '../model/characterDisplay';
 import { parseTalentModifiers } from '../model/talentModifiers';
 import { IconBadge } from '../../../shared/ui/IconBadge';
 export function CharacterTalents({
   character,
+  form,
   settings,
   onChange,
 }: {
   character: CharacterDetailDto;
+  form: CharacterFormDto;
   settings: CharacterSettings;
   onChange: (s: CharacterSettings) => void;
 }) {
@@ -19,6 +22,7 @@ export function CharacterTalents({
         <TalentCard
           key={kind}
           kind={kind}
+          applicable={canApplyTalents(form)}
           entries={entries.filter((entry) => entry.dto.talent_type_name === kind)}
           settings={settings}
           onChange={onChange}
@@ -30,11 +34,13 @@ export function CharacterTalents({
 
 function TalentCard({
   kind,
+  applicable,
   entries,
   settings,
   onChange,
 }: {
   kind: '本能' | '超本能';
+  applicable: boolean;
   entries: TalentDisplay[];
   settings: CharacterSettings;
   onChange: (s: CharacterSettings) => void;
@@ -55,7 +61,7 @@ function TalentCard({
       {entries.map((entry, index) => {
         const t = entry.dto;
         const p = progress[index];
-        const parsed = parseTalentModifiers(t, p.level);
+        const parsed = parseTalentModifiers(t, applicable ? p.level : 0);
         const corrections = [
           parsed.productionCostReduction !== 0
             ? `生産コスト −${parsed.productionCostReduction}円`
@@ -70,13 +76,15 @@ function TalentCard({
             ? `攻撃力 ${parsed.percentages.attackPower > 0 ? '+' : ''}${parsed.percentages.attackPower}%`
             : '',
         ].filter(Boolean);
-        const correctionLabel = corrections.length
-          ? corrections.join(' / ')
-          : parsed.unsupportedParameters.length || parsed.invalidParameters.length
-            ? '補正計算は未対応'
-            : Object.keys(t.parameter_values ?? {}).some((key) => key !== 'action')
-              ? '補正なし'
-              : '戦闘処理は未対応';
+        const correctionLabel = !applicable
+          ? 'この形態では適用されません（第3形態以降で適用）'
+          : corrections.length
+            ? corrections.join(' / ')
+            : parsed.unsupportedParameters.length || parsed.invalidParameters.length
+              ? '補正計算は未対応'
+              : Object.keys(t.parameter_values ?? {}).some((key) => key !== 'action')
+                ? '補正なし'
+                : '戦闘処理は未対応';
         const change = (value: number) =>
           onChange({ ...settings, talents: { ...settings.talents, [entry.key]: value } });
         return (

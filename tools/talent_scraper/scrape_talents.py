@@ -321,6 +321,11 @@ def convert_all_parameters(item, conversion):
         if not 0 <= Fraction(trigger) <= 100:
             raise ReviewError('発動体力割合が範囲外')
         triples = [(trigger, trigger, '%'), (low, high, '%')]
+    elif conversion == 'move_speed_increase':
+        match = re.fullmatch(r'移動速度\s*(\d+)\s*(?:->|→|〜|～)\s*(\d+)\s*上昇', item.get('description') or '')
+        if not match or int(match[1]) > int(match[2]):
+            raise ReviewError('移動速度増加量を一意に抽出できない')
+        triples = [(match[1], match[2], '速度')]
     elif conversion == 'cost_down_standard_yen':
         match = re.fullmatch(r'生産コスト\s*(\d+(?:\.\d+)?)\s*(?:円)?\s*(?:->|→|〜|～)\s*(\d+(?:\.\d+)?)\s*(?:円)?\s*減少', item.get('description') or '')
         if not match:
@@ -424,7 +429,7 @@ def normalize(item, db, identity, duplicate=False, mappings=()):
                     result['warnings'] = [w for w in result['warnings'] if w != 'stepが小数（丸めなし）']
                 except (ReviewError, ValueError, TypeError) as exc:
                     reasons.append(str(exc) if isinstance(exc, ReviewError) else '停止パラメータ変換不可')
-            if mapping.get('conversion') in ('strengthen_all_parameters', 'surge_all_parameters', 'cost_down_standard_yen'):
+            if mapping.get('conversion') in ('strengthen_all_parameters', 'surge_all_parameters', 'cost_down_standard_yen', 'move_speed_increase'):
                 try:
                     result['calculations'] = convert_all_parameters(item, mapping['conversion'])
                     fully_parsed = True

@@ -69,7 +69,7 @@ export function CharacterDetailPage({
       />
       <CharacterTargetsAndEffects form={form} />
       <CharacterAbilities form={form} />
-      <CharacterTalents character={character} settings={settings} onChange={onChange} />
+      <CharacterTalents form={form} character={character} settings={settings} onChange={onChange} />
       <CharacterCombos />
       <CharacterGachas />
       <dialog

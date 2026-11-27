@@ -66,6 +66,14 @@ class CoreTests(unittest.TestCase):
         with self.assertRaises(s.ReviewError):
             s.convert_all_parameters(dict(item, description='生産コスト 10 -> 100% 減少'), 'cost_down_standard_yen')
 
+    def test_movement_speed_units(self):
+        item = {'description': '移動速度 1 -> 10 上昇', 'min_level': 1, 'max_level': 10}
+        calc = s.convert_all_parameters(item, 'move_speed_increase')[0]
+        self.assertEqual((calc['base'], calc['step'], calc['unit']), (0, 1, '速度'))
+        for description in ['移動速度 1 -> 10% 上昇', '移動速度 10 -> 1 上昇', '移動速度 1 -> 10 上昇 20%']:
+            with self.assertRaises(s.ReviewError):
+                s.convert_all_parameters(dict(item, description=description), 'move_speed_increase')
+
     def test_calculations(self):
         for low, high, base, step in [(2, 20, 0, 2), (16, 70, 10, 6), (5, 50, 0, 5)]:
             result = s.calculate(low, high, 1, 10, '%', '%')

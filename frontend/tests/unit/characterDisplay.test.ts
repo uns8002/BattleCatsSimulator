@@ -4,6 +4,7 @@ import { isCharacterDto } from '../../src/features/characters/api/validateCharac
 import rawFixture from '../../src/features/characters/fixtures/kasajizou_character_detail_display_v3.json';
 import type { CharacterDetailDto } from '../../src/features/characters/api/characterDto';
 import {
+  type TalentDisplay,
   statValues,
   talentEntries,
   talentProgress,
@@ -51,8 +52,8 @@ describe('お宝設定とステータス表示の接続', () => {
     })!;
     const settings = normalizeTreasureSettings(null);
     const levels = { [hp.key]: 10 };
-    expect(statValues(form, 30, true, levels, entries, settings)[0]).toBe('18,360');
-    expect(statValues(fixture.forms[1], 30, true, levels, entries, settings)[0]).toBe('118,320');
+    expect(statValues(form, 30, true, levels, entries, settings)[0]).toBe('15,300');
+    expect(statValues(fixture.forms[1], 30, true, levels, entries, settings)[0]).toBe('98,600');
     expect(levels).toEqual({ [hp.key]: 10 });
     expect(form.hp).toBe(900);
   });
@@ -172,7 +173,12 @@ describe('JSON表示・NP集計', () => {
 
 describe('攻撃間隔短縮（暫定）', () => {
   it('Lv0は未適用、Lv10は279F→219F、攻撃発生は80Fを維持してDPSに反映', () => {
-    const form = { ...fixture.forms[0], attack_frequency_frames: 279, attack_startup_frames: 80 };
+    const form = {
+      ...fixture.forms[0],
+      form_number: 3,
+      attack_frequency_frames: 279,
+      attack_startup_frames: 80,
+    };
     const dto = {
       ...fixture.talents!.abilities![0],
       max_level: 10,
@@ -206,7 +212,13 @@ describe('基本体力・基本攻撃力の本能をステータスに反映', (
     const p = e.dto.parameter_values;
     return p && typeof p === 'object' && !Array.isArray(p) && 'attack_buff_percent' in p;
   })!;
-  const form = { ...fixture.forms[0], hp: 1000, attack_power: 500, attack_frequency_frames: 60 };
+  const form = {
+    ...fixture.forms[0],
+    form_number: 3,
+    hp: 1000,
+    attack_power: 500,
+    attack_frequency_frames: 60,
+  };
 
   it('＋操作に対応するLv1・最大Lvを反映し、Lv0へ戻すと補正を解除する', () => {
     const display = (hpLevel: number, attackLevel: number) =>
@@ -237,7 +249,7 @@ describe('基本体力・基本攻撃力の本能をステータスに反映', (
 });
 
 describe('生産コスト割引', () => {
-  const form = { ...fixture.forms[0], production_cost: 300 };
+  const form = { ...fixture.forms[0], form_number: 3, production_cost: 300 };
   const dto = {
     ...fixture.talents!.abilities![0],
     max_level: 10,
@@ -280,5 +292,85 @@ describe('生産コスト割引', () => {
     expect(statValues({ ...form, production_cost: 150 }, 1, true, { cost: 10 }, entries)[10]).toBe(
       '0円',
     );
+  });
+});
+
+describe('形態に応じた本能・超本能の適用と設定保持', () => {
+  const entries: TalentDisplay[] = [
+    {
+      key: 'hp',
+      name: '体力',
+      category: '能力',
+      dto: {
+        ...fixture.talents!.abilities![0],
+        max_level: 10,
+        talent_type_name: '本能',
+        parameter_values: { defense_buff_percent: { base: 0, step: 2 } },
+      },
+    },
+    {
+      key: 'atk',
+      name: '攻撃',
+      category: '能力',
+      dto: {
+        ...fixture.talents!.abilities![0],
+        max_level: 10,
+        talent_type_name: '超本能',
+        parameter_values: { attack_buff_percent: { base: 0, step: 2 } },
+      },
+    },
+    {
+      key: 'cost',
+      name: 'コスト',
+      category: '能力',
+      dto: {
+        ...fixture.talents!.abilities![0],
+        max_level: 10,
+        parameter_values: { cost_down: { base: 0, step: 15 } },
+      },
+    },
+    {
+      key: 'freq',
+      name: '頻度',
+      category: '能力',
+      dto: {
+        ...fixture.talents!.abilities![0],
+        max_level: 10,
+        parameter_values: { attack_frequency_reduction_frames: { base: 0, step: 6 } },
+      },
+    },
+  ];
+  const levels = Object.freeze({ hp: 10, atk: 10, cost: 10, freq: 10 });
+  const form = {
+    ...fixture.forms[0],
+    hp: 1000,
+    attack_power: 500,
+    production_cost: 300,
+    attack_frequency_frames: 279,
+    attack_startup_frames: 80,
+  };
+  it('3→1→2→3→4で設定を保持し、全ステータス本能をまとめて切り替える', () => {
+    for (const form_number of [3, 1, 2, 3, 4]) {
+      const values = statValues({ ...form, form_number }, 1, true, levels, entries);
+      expect(values.slice(0, 3)).toEqual(
+        form_number >= 3 ? ['1,200', '600', '82'] : ['1,000', '500', '53'],
+      );
+      expect(values[7]).toBe(form_number >= 3 ? '219F (7.30秒)' : '279F (9.30秒)');
+      expect(values[8]).toBe('80F (2.67秒)');
+      expect(values[10]).toBe(form_number >= 3 ? '150円' : '300円');
+    }
+    expect(levels).toEqual({ hp: 10, atk: 10, cost: 10, freq: 10 });
+  });
+  it.each([1, 2])('第%i形態のお宝・研究力・レベル補正を維持する', (form_number) => {
+    const selected = { ...form, form_number };
+    const treasure = normalizeTreasureSettings(null);
+    const expected = statValues(selected, 30, true, {}, [], treasure);
+    expect(statValues(selected, 30, true, levels, entries, treasure)).toEqual(expected);
+    expect(expected[0]).toBe('17,000');
+    expect(expected[9]).toBe('126F (4.20秒)');
+  });
+  it.each([1, 2, 3, 4])('第%i形態で本能未解放なら従来の基礎値を維持する', (form_number) => {
+    const selected = { ...form, form_number };
+    expect(statValues(selected, 30, true, {}, entries)).toEqual(statValues(selected, 30, true));
   });
 });

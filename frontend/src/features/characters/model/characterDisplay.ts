@@ -1,3 +1,4 @@
+import { applicableTalents } from './talentApplication';
 import type { CharacterDetailDto, CharacterFormDto, TalentDto } from '../api/characterDto';
 import { framesLabel } from './state';
 import { calculateBaseStats } from './baseStats';
@@ -25,7 +26,7 @@ export function statValues(
   treasures?: TreasureSettings,
 ): string[] {
   const base = calculateBaseStats(form, level);
-  const modifiers = entries.map((entry) =>
+  const modifiers = applicableTalents(form, entries).map((entry) =>
     parseTalentModifiers(entry.dto, talentLevels[entry.key] ?? 0),
   );
   const stats = treasures

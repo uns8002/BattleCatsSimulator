@@ -245,5 +245,77 @@
     "action": "add",
     "attack_order": null,
     "provisional": true
+  },
+  {
+    "source_name": "動きを止める耐性",
+    "master_table": "abilities",
+    "master_code": "resist_freeze",
+    "parameter_keys": [
+      "freeze_duration_reduction_percent"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "魂攻撃",
+    "master_table": "abilities",
+    "master_code": "soulstrike",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "移動速度上昇",
+    "master_table": "abilities",
+    "master_code": "move_speed_up",
+    "parameter_keys": [
+      "move_speed_increase"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "conversion": "move_speed_increase"
+  },
+  {
+    "source_name": "烈波ダメージ無効",
+    "master_table": "abilities",
+    "master_code": "immune_to_surge",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "超生命体特効",
+    "master_table": "abilities",
+    "master_code": "colossus_slayer",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "non_parameter_phrases": [
+      "（攻撃ダメージ x1.6、受けるダメージ x0.7）"
+    ]
+  },
+  {
+    "source_name": "撃破時お金アップ",
+    "master_table": "abilities",
+    "master_code": "extra_money",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "non_parameter_phrases": [
+      "お金2倍（撃破時の獲得金額 x2）"
+    ]
+  },
+  {
+    "source_name": "追加対象: エイリアン",
+    "master_table": "effect_targets",
+    "master_code": "alien",
+    "parameter_keys": [],
+    "provisional": true
   }
 ]
