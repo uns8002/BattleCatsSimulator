@@ -63,6 +63,7 @@ function TalentCard({
         const p = progress[index];
         const parsed = parseTalentModifiers(t, applicable ? p.level : 0);
         const corrections = [
+          parsed.movementSpeedIncrease !== 0 ? `移動速度 +${parsed.movementSpeedIncrease}` : '',
           parsed.productionCostReduction !== 0
             ? `生産コスト −${parsed.productionCostReduction}円`
             : '',

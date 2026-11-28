@@ -317,5 +317,27 @@
     "master_code": "alien",
     "parameter_keys": [],
     "provisional": true
+  },
+  {
+    "source_name": "攻撃力低下無効",
+    "master_table": "abilities",
+    "master_code": "immune_to_weaken",
+    "parameter_keys": [],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true
+  },
+  {
+    "source_name": "波動",
+    "master_table": "abilities",
+    "master_code": "wave_attack",
+    "parameter_keys": [
+      "activation_rate_percent",
+      "wave_level"
+    ],
+    "action": "add",
+    "attack_order": null,
+    "provisional": true,
+    "conversion": "wave_all_parameters"
   }
 ]

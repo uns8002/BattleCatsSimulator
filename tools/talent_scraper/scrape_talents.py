@@ -334,6 +334,14 @@ def convert_all_parameters(item, conversion):
         if low > high:
             raise ReviewError('生産コスト減少量の最小・最大が逆転')
         triples = [(low * Fraction(3, 2), high * Fraction(3, 2), '円')]
+    elif conversion == 'wave_all_parameters':
+        match = re.fullmatch(r'(\d+(?:\.\d+)?)\s*->\s*(\d+(?:\.\d+)?)%でLv\s*(\d+)\s*波動\s*を放つ', item.get('description') or '')
+        if not match:
+            raise ReviewError('波動の発動率・Lvを抽出できない')
+        low, high, level = match.groups()
+        if not 0 <= Fraction(low) <= Fraction(high) <= 100 or int(level) < 1:
+            raise ReviewError('波動パラメータの範囲不正')
+        triples = [(low, high, '%'), (level, level, 'Lv')]
     elif conversion == 'surge_all_parameters':
         match = re.fullmatch(r'(\d+(?:\.\d+)?)\s*->\s*(\d+(?:\.\d+)?)%でLv\s*(\d+)\s*烈波攻撃\s*を放つ、範囲\s*(\d+)\s*[~〜～]\s*(\d+)', item.get('description') or '')
         if not match:
@@ -429,7 +437,7 @@ def normalize(item, db, identity, duplicate=False, mappings=()):
                     result['warnings'] = [w for w in result['warnings'] if w != 'stepが小数（丸めなし）']
                 except (ReviewError, ValueError, TypeError) as exc:
                     reasons.append(str(exc) if isinstance(exc, ReviewError) else '停止パラメータ変換不可')
-            if mapping.get('conversion') in ('strengthen_all_parameters', 'surge_all_parameters', 'cost_down_standard_yen', 'move_speed_increase'):
+            if mapping.get('conversion') in ('strengthen_all_parameters', 'wave_all_parameters', 'surge_all_parameters', 'cost_down_standard_yen', 'move_speed_increase'):
                 try:
                     result['calculations'] = convert_all_parameters(item, mapping['conversion'])
                     fully_parsed = True

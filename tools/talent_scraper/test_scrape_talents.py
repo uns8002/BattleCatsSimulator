@@ -55,6 +55,28 @@ class CoreTests(unittest.TestCase):
         with self.assertRaises(s.ReviewError):
             s.convert_all_parameters(item, 'surge_all_parameters')
 
+    def test_wave_all_parameters_and_nonintegral_rate(self):
+        item, db, identity, mapping = self.fixture()
+        item['description'] = '5 -> 15%でLv 6 波動 を放つ'
+        mapping[0].update(conversion='wave_all_parameters', parameter_keys=['activation_rate_percent', 'wave_level'])
+        db['abilities']['rows'][0]['parameter_schema'] = json.dumps({
+            'activation_rate_percent': {'type': 'integer', 'unit': '%'},
+            'wave_level': {'type': 'integer', 'unit': 'Lv'}})
+        rate, level = s.convert_all_parameters(item, 'wave_all_parameters')
+        self.assertEqual(rate['step'], '10/9')
+        self.assertEqual((level['base'], level['step']), (6, 0))
+        result = s.normalize(item, db, identity, mappings=mapping)
+        self.assertEqual(result['status'], '未解決')
+        self.assertIsNone(result['sql'])
+        self.assertEqual(result['parameter_values']['wave_level'], {'base': 6, 'step': 0})
+        item['description'] = '5 -> 50%でLv 6 波動 を放つ'
+        result = s.normalize(item, db, identity, mappings=mapping)
+        self.assertIsNotNone(result['sql'])
+        for description in ['5 -> 101%でLv 6 波動 を放つ', '5 -> 15%でLv 0 波動 を放つ',
+                            '5 -> 15%でLv 6 波動 を放つ 10%']:
+            with self.assertRaises(s.ReviewError):
+                s.convert_all_parameters(dict(item, description=description), 'wave_all_parameters')
+
     def test_cost_down_standard_yen(self):
         for low, high, step in [(10, 100, 15), (20, 200, 30)]:
             item = {'description': f'生産コスト {low} -> {high} 減少', 'min_level': 1, 'max_level': 10}

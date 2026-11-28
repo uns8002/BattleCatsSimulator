@@ -374,3 +374,64 @@ describe('形態に応じた本能・超本能の適用と設定保持', () => {
     expect(statValues(selected, 30, true, {}, entries)).toEqual(statValues(selected, 30, true));
   });
 });
+
+describe('本能の移動速度上昇', () => {
+  const form = { ...fixture.forms[0], form_number: 3, movement_speed: 12 };
+  const entries: TalentDisplay[] = [
+    {
+      key: 'speed',
+      name: '移動速度アップ',
+      category: '能力',
+      dto: {
+        ...fixture.talents!.abilities![0],
+        max_level: 10,
+        parameter_values: { move_speed_increase: { base: 0, step: 1 } },
+      },
+    },
+  ];
+  it('Lvに応じた増加量を加算し、最大Lv・解除・他ステータスを維持する', () => {
+    const display = (level: number) => statValues(form, 30, true, { speed: level }, entries);
+    expect(display(0)[5]).toBe('12');
+    expect(display(1)[5]).toBe('13');
+    expect(display(10)[5]).toBe('22');
+    expect(display(99)[5]).toBe('22');
+    expect(display(0)[5]).toBe('12');
+    expect(display(10).filter((_, i) => i !== 5)).toEqual(display(0).filter((_, i) => i !== 5));
+    expect(form.movement_speed).toBe(12);
+  });
+  it('通常・超本能とも3→1→2→3→4の形態変更で設定を保持する', () => {
+    const levels = Object.freeze({ speed: 10 });
+    for (const kind of ['本能', '超本能']) {
+      const selected = [{ ...entries[0], dto: { ...entries[0].dto, talent_type_name: kind } }];
+      for (const form_number of [3, 1, 2, 3, 4]) {
+        expect(statValues({ ...form, form_number }, 1, true, levels, selected)[5]).toBe(
+          form_number >= 3 ? '22' : '12',
+        );
+      }
+    }
+    expect(levels).toEqual({ speed: 10 });
+  });
+  it('固定baseもLv0では未適用、欠落・不正値は未提供として扱う', () => {
+    const fixed = [
+      {
+        ...entries[0],
+        dto: { ...entries[0].dto, parameter_values: { move_speed_increase: { base: 5, step: 1 } } },
+      },
+    ];
+    expect(statValues(form, 1, true, { speed: 0 }, fixed)[5]).toBe('12');
+    expect(statValues(form, 1, true, { speed: 1 }, fixed)[5]).toBe('18');
+    expect(statValues({ ...form, movement_speed: null }, 1, true, { speed: 10 }, entries)[5]).toBe(
+      '未提供',
+    );
+    for (const step of [-1, 0.5, NaN, Infinity, Number.MAX_SAFE_INTEGER]) {
+      const invalid = [
+        {
+          ...entries[0],
+          dto: { ...entries[0].dto, parameter_values: { move_speed_increase: { base: 0, step } } },
+        },
+      ];
+      expect(statValues(form, 1, true, { speed: 1 }, invalid)[5]).toBe('未提供');
+      expect(statValues({ ...form, form_number: 1 }, 1, true, { speed: 1 }, invalid)[5]).toBe('12');
+    }
+  });
+});

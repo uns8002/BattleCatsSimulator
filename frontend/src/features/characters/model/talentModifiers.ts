@@ -13,6 +13,7 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
   const percentages: TalentModifiers = { hp: 0, attackPower: 0 };
   let attackFrequencyReductionFrames = 0;
   let productionCostReduction = 0;
+  let movementSpeedIncrease = 0;
   const unsupportedParameters: string[] = [];
   const invalidParameters: string[] = [];
   const level = Math.min(
@@ -25,6 +26,7 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
       percentages,
       attackFrequencyReductionFrames,
       productionCostReduction,
+      movementSpeedIncrease,
       unsupportedParameters,
       invalidParameters,
     };
@@ -32,6 +34,7 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
   for (const [key, value] of Object.entries(parameters)) {
     if (key === 'action') continue; // 解放情報のみでは補正しない。
     if (
+      key !== 'move_speed_increase' &&
       key !== 'cost_down' &&
       key !== 'attack_frequency_reduction_frames' &&
       !Object.hasOwn(parameterStats, key)
@@ -57,7 +60,10 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
       continue;
     }
     // Lv0は未解放。baseが0以外でも補正を適用しない。
-    if (key === 'cost_down') {
+    if (key === 'move_speed_increase') {
+      if (!Number.isSafeInteger(rate) || rate < 0) invalidParameters.push(key);
+      else if (level > 0) movementSpeedIncrease += rate;
+    } else if (key === 'cost_down') {
       if (!Number.isSafeInteger(rate) || rate < 0) invalidParameters.push(key);
       else if (level > 0) productionCostReduction += rate;
     } else if (key === 'attack_frequency_reduction_frames') {
@@ -69,6 +75,7 @@ export function parseTalentModifiers(talent: TalentDto, selectedLevel: number) {
     percentages,
     attackFrequencyReductionFrames,
     productionCostReduction,
+    movementSpeedIncrease,
     unsupportedParameters,
     invalidParameters,
   };
@@ -128,4 +135,18 @@ export function applyProductionCostReduction(
   )
     return null;
   return cost - reduction;
+}
+
+// 移動速度は割合ではなく、マスタの速度増加量を加算する。
+export function applyMovementSpeedIncrease(speed: number | null, increase: number): number | null {
+  if (
+    speed === null ||
+    !Number.isSafeInteger(speed) ||
+    speed < 0 ||
+    !Number.isSafeInteger(increase) ||
+    increase < 0 ||
+    !Number.isSafeInteger(speed + increase)
+  )
+    return null;
+  return speed + increase;
 }

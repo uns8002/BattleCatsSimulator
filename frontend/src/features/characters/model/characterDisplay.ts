@@ -10,6 +10,7 @@ import {
   applyTalentModifiers,
   applyAttackFrequencyReduction,
   applyProductionCostReduction,
+  applyMovementSpeedIncrease,
 } from './talentModifiers';
 
 const numberLabel = (value: number | null) =>
@@ -54,6 +55,12 @@ export function statValues(
         form.production_cost,
         modifiers.reduce((sum, m) => sum + m.productionCostReduction, 0),
       );
+  const movementSpeed = modifiers.some((m) => m.invalidParameters.includes('move_speed_increase'))
+    ? null
+    : applyMovementSpeedIncrease(
+        form.movement_speed,
+        modifiers.reduce((sum, m) => sum + m.movementSpeedIncrease, 0),
+      );
   const dps = simpleDpsSupported ? calculateSimpleDps(stats.attackPower, frequency) : null;
   return [
     base.supported ? numberLabel(stats.hp) : '未対応',
@@ -61,7 +68,7 @@ export function statValues(
     dps === null ? '未対応' : numberLabel(dps),
     numberLabel(form.attack_range),
     '未提供',
-    numberLabel(form.movement_speed),
+    numberLabel(movementSpeed),
     numberLabel(form.knockbacks),
     timeLabel(frequency),
     timeLabel(form.attack_startup_frames),
