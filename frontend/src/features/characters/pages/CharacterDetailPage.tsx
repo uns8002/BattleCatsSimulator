@@ -28,7 +28,7 @@ export function CharacterDetailPage({
   const form = character.forms.find((f) => f.form_id === selectedId) ?? character.forms.at(-1);
   if (!form) return <p role="status">形態情報は登録されていません。</p>;
   return (
-    <>
+    <div className="character-detail">
       <CharacterBreadcrumbs name={character.character_name} />
       <section className="card character-basic">
         <div className="identity">
@@ -85,6 +85,6 @@ export function CharacterDetailPage({
           閉じる
         </button>
       </dialog>
-    </>
+    </div>
   );
 }

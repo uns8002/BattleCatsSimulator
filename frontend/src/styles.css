@@ -279,12 +279,12 @@ main {
   gap: 0 14px;
 }
 .stat {
-  padding: 8px 0 10px;
+  padding: 3px 0;
   border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-height: 56px;
+  min-height: 0;
 }
 .stat > span,
 .stat small {
@@ -313,7 +313,7 @@ main {
 }
 .badges {
   display: flex;
-  gap: 9px;
+  gap: 9px 4px;
 }
 .icon-badge {
   display: inline-flex;
@@ -509,9 +509,6 @@ dialog::backdrop {
   .stat strong {
     font-size: 17px;
   }
-  .stat {
-    min-height: 56px;
-  }
   .evolution {
     padding: 16px 0;
   }
@@ -612,9 +609,6 @@ dialog::backdrop {
   }
   .stats-grid {
     gap: 0 10px;
-  }
-  .stat {
-    min-height: 56px;
   }
   h2 {
     font-size: 13px;
@@ -837,4 +831,36 @@ h3 {
   width: auto;
   height: auto;
   font-size: 10px;
+}
+
+/* キャラクター詳細内の縦余白をステータスと揃える。 */
+.character-detail .card,
+.character-detail .evolution,
+.character-detail .talent-row {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.character-detail .effect-group + .effect-group {
+  margin-top: 3px;
+  padding-top: 3px;
+}
+.character-detail .effect-group p,
+.character-detail .talent-row h3 {
+  margin-bottom: 3px;
+}
+.character-detail .form-selector,
+.character-detail .evolution {
+  margin-top: 3px;
+}
+.character-detail .level-settings {
+  padding-top: 3px;
+}
+.character-detail .talent-controls {
+  margin-block: 3px;
+}
+.character-detail .badges,
+.character-detail .evolution-materials,
+.character-detail .evolution,
+.character-detail .level-settings {
+  row-gap: 3px;
 }

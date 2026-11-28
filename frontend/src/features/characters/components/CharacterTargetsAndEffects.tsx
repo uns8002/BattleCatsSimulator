@@ -2,10 +2,9 @@ import type { CharacterFormDto as Form } from '../api/characterDto';
 import { IconBadge } from '../../../shared/ui/IconBadge';
 export function CharacterTargetsAndEffects({ form }: { form: Form }) {
   return (
-    <section className="card">
-      <h2>効果対象・効果</h2>
-      <div className="effect-group">
-        <p>効果対象</p>
+    <>
+      <section className="card">
+        <h2>ターゲット</h2>
         <div className="badges">
           {form.effect_targets?.length ? (
             form.effect_targets.map((t) => (
@@ -20,9 +19,9 @@ export function CharacterTargetsAndEffects({ form }: { form: Form }) {
             <span className="muted">{form.effect_targets === null ? '未提供' : '登録なし'}</span>
           )}
         </div>
-      </div>
-      <div className="effect-group">
-        <p>効果</p>
+      </section>
+      <section className="card">
+        <h2>効果</h2>
         <div className="badges">
           {form.effects?.length ? (
             form.effects.map((e) => (
@@ -37,7 +36,7 @@ export function CharacterTargetsAndEffects({ form }: { form: Form }) {
             <span className="muted">{form.effects === null ? '未提供' : '登録なし'}</span>
           )}
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
