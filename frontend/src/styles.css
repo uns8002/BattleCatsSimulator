@@ -319,8 +319,12 @@ main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  height: 42px;
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+  flex-shrink: 0;
   background: var(--pale);
   border: 1px solid var(--border);
   border-radius: 7px;
@@ -650,13 +654,6 @@ dialog::backdrop {
   }
 }
 /* Development sample controls: preserve the shared layout and palette. */
-.icon-badge {
-  padding: 0;
-  width: 36px;
-  height: 36px;
-  min-height: 36px;
-  flex-shrink: 0;
-}
 .icon-badge img {
   width: 100%;
   height: 100%;
